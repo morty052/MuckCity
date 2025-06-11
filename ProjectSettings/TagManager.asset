@@ -39,8 +39,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - drivable
+  - carbody
   - Player
   - Enemy
   - CompanionAI
@@ -52,10 +52,10 @@ TagManager:
   - BlockAIRayCast
   - Pushable
   - CoverPoint
-  - 
-  - 
-  - 
-  - 
+  - SphereRB
+  - Interactable
+  - Phone
+  - Map
   - 
   - 
   - 
