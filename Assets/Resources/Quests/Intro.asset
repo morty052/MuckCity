@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0e0f66981273be4299c5397df10761a, type: 3}
+  m_Name: Intro
+  m_EditorClassIdentifier: 
+  <_id>k__BackingField: Intro
+  _displayName: 
+  dayRequirement: 0
+  questPrerequisites: []
+  questStepPrefabs:
+  - {fileID: 519952148645942609, guid: 60ddcce0c000ca8499acf57f1d925f41, type: 3}
+  goldReward: 0
+  experienceReward: 0

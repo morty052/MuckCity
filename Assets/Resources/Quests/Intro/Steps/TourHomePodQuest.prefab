@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &519952148645942609
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1567791899681075389}
+  - component: {fileID: -1629767005848133412}
+  m_Layer: 0
+  m_Name: TourHomePodQuest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1567791899681075389
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519952148645942609}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-1629767005848133412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519952148645942609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7fb9dec6163054593c7e23613ba533, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _questInfoSo: {fileID: 11400000, guid: f2ecee9b3979f8c468951d869e5757c6, type: 2}
+  _questPointPrefab: {fileID: 5783401725927670678, guid: 89b4cd5bfe195334180a364f101c0279, type: 3}
+  _tutorialTriggerPrefab: {fileID: 7435705475112992583, guid: 96542d181ccb8344fa496633bc07a1d8, type: 3}
+  _tiedCharactersQuestData:
+  - _characterID: 1
+    _conversationForQuest: {fileID: 967415334066115386, guid: 0236e1cf245c2a246ade3ee0b34e4ab7, type: 3}
+    _npcSO: {fileID: 11400000, guid: 8e1207fec0d97e64d83df4d84ee192e9, type: 2}
+    _specialPosition:
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 90, z: 0}
+  - _characterID: 2
+    _conversationForQuest: {fileID: 2315960693268669948, guid: 09ef9fa2e08d53d428fa0d847acf9a29, type: 3}
+    _npcSO: {fileID: 11400000, guid: 5537c39891b084941ae504d329e7d0fd, type: 2}
+    _specialPosition:
+      position: {x: -9.91, y: -5.67, z: 3.8862844}
+      rotation: {x: 0, y: 90, z: 0}
+  - _characterID: 3
+    _conversationForQuest: {fileID: 5174738624814373698, guid: c094ed537bcede64f8b6b44392071894, type: 3}
+    _npcSO: {fileID: 11400000, guid: 957f48fe0b2bd3a42926e0f13dd3cd60, type: 2}
+    _specialPosition:
+      position: {x: -6.28, y: -2.73, z: 4.11}
+      rotation: {x: 0, y: 90, z: 0}
+  _questPointsData:
+  - _spawnPosition:
+      position: {x: -1.75, y: -2.72, z: 2.6962843}
+      rotation: {x: 0, y: 0, z: 0}
+    _name: INTRO_TO_HAZMAT_BILL
+  _questCutScenes:
+  - _name: INTRO_TO_HAZMAT_BILL
+    _spawnPosition:
+      position: {x: -4.94, y: -4.32, z: 2.6962843}
+      rotation: {x: 0, y: 0, z: 0}
+    _cutScenePlayer: {fileID: 7038046814094832206, guid: f1d798197feb0694dab2f20afd7eeff2, type: 3}
+  _eventClips:
+  - _name: Wing is Getting Detached
+    _clip: {fileID: 8300000, guid: 689d5a07a2c018e4690d71f242356428, type: 3}
+    _clipType: 0
+    _position: {x: -108.21, y: 1.762411, z: 29.01}
+  _tutorials:
+  - _image: {fileID: 21300000, guid: 0db456daf88f3fe438a4943fc64eff49, type: 3}
+    _pcTitle: Basic Locomotion
+    _xboxTitle: Basic Locomotion
+    _playstationTitle: Basic Locomotion
+    _pcDescription: Move around with <sprite name=w> <sprite name=a> <sprite name=s> 
+      <sprite name=d>
+    _xboxDescription: Move around with <sprite name=jr>
+    _playstationDescription: Move around with <sprite name=jr>
+    _spawnPoint: {x: 0, y: 0, z: 0}
+  - _image: {fileID: 21300000, guid: 0db456daf88f3fe438a4943fc64eff49, type: 3}
+    _pcTitle: Shooting
+    _xboxTitle: Shooting
+    _playstationTitle: Shooting
+    _pcDescription: Click <sprite name=mr> to fire weapon
+    _xboxDescription: Press <sprite name=rt> to fire weapon
+    _playstationDescription: Press <sprite name=rt> to fire weapon
+    _spawnPoint: {x: 0, y: 0, z: 0}
+  - _image: {fileID: 21300000, guid: 0db456daf88f3fe438a4943fc64eff49, type: 3}
+    _pcTitle: <sprite name=ctrl> Aim
+    _xboxTitle: <sprite name=lt> Aim
+    _playstationTitle: <sprite name=lt> Aim
+    _pcDescription: Press and hold <sprite name=ctrl> to aim your weapon
+    _xboxDescription: Press and hold <sprite name=lt> to aim your weapon
+    _playstationDescription: Press and hold <sprite name=lt> to aim your weapon
+    _spawnPoint: {x: -83.55, y: -0.15999994, z: 40.58}
+  _spawnableCreatures:
+  - _spawnPositions:
+    - {x: -87.65, y: -2.2, z: 26.439999}
+    _creaturePrefab: {fileID: 3519536000938682549, guid: c335dc62e4832014fa348e67604c9ed9, type: 3}
+    _name: 0
+    _tag: WAVE_ONE
+  _currentClipObject: {fileID: 0}
