@@ -94,6 +94,7 @@ public class CraftingArea : MonoBehaviour, IInteractable
     }
     void SetupRequirementIcons()
     {
+        if (_discoveredRecipes.Count == 0) return;
         int index = 0;
         for (int i = 0; i < _discoveredRecipes[index]._requiredItems.Count; i++)
         {

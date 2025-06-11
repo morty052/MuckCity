@@ -63,7 +63,9 @@ public class CatalogueManager : MonoBehaviour
 
     public void IncInventoryItemCount(Substance substance, int count = 1)
     {
+        if (_inventory == null) return;
         SubstanceData substanceData = _inventory.Find(x => x._id == substance);
+        if (substanceData == null) return;
         substanceData._count += count;
     }
     public void DecreaseItemCount(Substance substance, int count)

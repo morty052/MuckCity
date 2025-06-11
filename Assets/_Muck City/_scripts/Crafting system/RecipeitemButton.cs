@@ -11,6 +11,7 @@ public class RecipeitemButton : MonoBehaviour
 
     public void InitVisuals(RecipeSO shopItemSO)
     {
+        if (shopItemSO == null) return;
         _text.text = shopItemSO._name;
         _image.sprite = shopItemSO._icon;
     }
