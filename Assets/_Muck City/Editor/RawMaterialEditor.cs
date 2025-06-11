@@ -11,6 +11,10 @@ using System.IO;
 using Unity.VisualScripting;
 using Invector.vItemManager;
 using Sirenix.Utilities;
+using Invector;
+using System.Linq;
+
+
 
 public class RawMaterialMaker : OdinMenuEditorWindow
 {
@@ -20,7 +24,7 @@ public class RawMaterialMaker : OdinMenuEditorWindow
     private CreateNewCraftingItemSO _createNewCraftingItemSO;
     private CreateNewCraftingItem _createNewCraftingItem;
 
-    [MenuItem("Tools/Raw Material Maker")]
+    [MenuItem("Jive Tools/Raw Material Maker")]
     private static void OpenWindow()
     {
         GetWindow<RawMaterialMaker>().Show();
@@ -52,25 +56,26 @@ public class RawMaterialMaker : OdinMenuEditorWindow
         _createNewCraftingItemSO = new CreateNewCraftingItemSO();
         _createNewCraftingItem = new CreateNewCraftingItem();
         tree.Config.DrawSearchToolbar = true;
-        tree.Add("New Crafting Item ID", new EnumEditor());
+
         tree.Add("New Crafting Item Container", _createNewCraftingItem);
         tree.Add("New Crafting Item SO", _createNewCraftingItemSO);
-        tree.AddAllAssetsAtPath("Crafting Materials", "Assets/_Citizen16/ScriptableObjects/Crafting Materials", typeof(RawMaterialSO));
+        tree.AddAllAssetsAtPath("Crafting Materials", "Assets/_Muck City/Prefabs/Construction/Crafting Materials", typeof(RawMaterialSO));
 
         SetItemListData();
         SetPlaceHolderImage();
+        tree.Add("New Crafting Item ID", new EnumEditor());
         return tree;
     }
 
     void SetItemListData()
     {
-        string path = "Assets/_Citizen16/Prefabs/Items/itemsLibrary.asset";
+        string path = "Assets/_Muck City/ScriptableObjects/ItemsLibrary.asset";
         vItemListData itemListData = AssetDatabase.LoadAssetAtPath<vItemListData>(path);
         _itemListData = itemListData;
     }
     void SetPlaceHolderImage()
     {
-        string path = "Assets/_Citizen16/Prefabs/UI/SPR_HUD_InactiveItem.png";
+        string path = "Assets/_Muck City/Syn/InterfaceApocalypseHUD/Sprites/HUD/SPR_HUD_InactiveItem.png";
         Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
 
 
@@ -81,6 +86,37 @@ public class RawMaterialMaker : OdinMenuEditorWindow
     public class EnumEditor
     {
 
+
+
+        public void AddItem(vItem item)
+        {
+            if (item.name.Contains("(Clone)"))
+            {
+                item.name = item.name.Replace("(Clone)", string.Empty);
+            }
+
+            if (item && !_itemListData.items.Find(it => it.name.ToClearUpper().Equals(item.name.ToClearUpper())))
+            {
+
+                AssetDatabase.AddObjectToAsset(item, AssetDatabase.GetAssetPath(_itemListData));
+                item.hideFlags = HideFlags.HideInHierarchy;
+
+                if (_itemListData.items.Exists(it => it.id.Equals(item.id)))
+                    item.id = GetUniqueID(_itemListData.items);
+                _itemListData.items.Add(item);
+                OrderByID(ref _itemListData.items);
+            }
+
+        }
+
+        protected virtual void OrderByID(ref List<vItem> items)
+        {
+            if (_itemListData != null && _itemListData.items.Count > 0)
+            {
+                items = items.OrderBy(i => i.id).ToList();
+            }
+        }
+
         public EnumEditor()
         {
             ReadEnumsFromScript();
@@ -89,15 +125,32 @@ public class RawMaterialMaker : OdinMenuEditorWindow
         [Serializable]
         public struct EnumDisplayStruct
         {
+
+            [HideLabel]
             public string _name;
+
+            [HideLabel]
             public int _id;
-            public EnumDisplayStruct(string name, int id)
+
+            bool _enumCanBeCreated;
+
+
+            [Button("Set Active"), ShowIf("@_enumCanBeCreated == true")]
+            public void SetActive()
+            {
+                _activeEnum = _name;
+            }
+            public EnumDisplayStruct(string name, int id, bool enumCanBeCreated = true)
             {
                 _name = name;
                 _id = id;
+                _enumCanBeCreated = enumCanBeCreated;
             }
         }
         public List<EnumDisplayStruct> _enumList = new();
+
+        [ShowInInspector, OnValueChanged("CreatePlaceHolderIdInline")]
+        public static string _activeEnum;
 
         [HorizontalGroup("Enum Settings")]
         [OnValueChanged("CleanupNewEnumName")]
@@ -120,7 +173,23 @@ public class RawMaterialMaker : OdinMenuEditorWindow
             _name = "";
         }
 
-        readonly string _rawMaterialsEnumScriptPath = "Assets/_Citizen16/_scripts/Crafting system/RM.cs";
+        [Button("Create Active Enum")]
+        public void CreatePlaceHolderIdInline()
+        {
+            if (_activeEnum == " ")
+            {
+                Debug.LogError("name not set");
+                return;
+            }
+            EnumDisplayStruct structToUpdate = _enumList.Find(x => x._name == _activeEnum);
+
+            EnumDisplayStruct structToAdd = new(_activeEnum, CreateVItemPlaceHolderToGetID(true), false);
+
+            _enumList[_enumList.IndexOf(structToUpdate)] = structToAdd;
+            _activeEnum = "";
+        }
+
+        readonly string _rawMaterialsEnumScriptPath = "Assets/_Muck City/_scripts/Crafting system/RM.cs";
 
         public MonoScript GetMonoScriptFromAsset(string assetPath)
         {
@@ -143,9 +212,20 @@ public class RawMaterialMaker : OdinMenuEditorWindow
             {
                 int underlyingValue = (int)Enum.Parse(enumType, enumValue.ToString());
                 Debug.Log(enumValue.ToString() + " = " + underlyingValue);
-                _enumList.Add(new EnumDisplayStruct(enumValue.ToString(), underlyingValue));
+                _enumList.Add(new EnumDisplayStruct(enumValue.ToString(), underlyingValue, IsAlreadyInItemList(enumValue.ToString())));
             }
 
+        }
+
+        bool IsAlreadyInItemList(string query)
+        {
+            string nameToQuery = GetCleanNameFromEnum(query);
+            vItem vItem = _itemListData.items.Find(x => x.name == nameToQuery);
+            if (vItem != null)
+            {
+                return false;
+            }
+            return true;
         }
 
         bool IsIdAlreadyInUse(int id)
@@ -221,22 +301,45 @@ public class RawMaterialMaker : OdinMenuEditorWindow
             }
 
         }
-
-        int CreateVItemPlaceHolderToGetID()
+        public string GetCleanNameFromEnum(string name)
         {
+
+            string[] names = name.ToLower().Split("_");
+            if (names.Length > 1)
+            {
+                name = names[0].FirstCharacterToUpper() + " " + names[1].FirstCharacterToUpper();
+                return name;
+            }
+            else
+            {
+                name = names[0].FirstCharacterToUpper();
+                return name;
+            }
+
+        }
+
+        int CreateVItemPlaceHolderToGetID(bool isInline = false)
+        {
+
+            if (vItemListWindow.Instance == null)
+            {
+                vItemListWindow.CreateWindow(_itemListData);
+            }
+
             int _id = GetUniqueID(_itemListData.items);
             vItem vItem = new()
             {
-                name = GetCleanNameFromEnum(),
+                name = GetCleanNameFromEnum(isInline ? _activeEnum : _name),
                 type = vItemType.CraftingMaterials,
                 description = "Description has not been assigned",
                 id = _id,
                 icon = _placeHolderImage,
             };
 
-            vItemAttribute vItemAttribute = new(name: vItemAttributes.CanCraftItemID, value: 0);
+            vItemAttribute vItemAttribute = new(name: Invector.vItemManager.vItemAttributes.CanCraftItemID, value: 0);
             vItem.attributes.Add(vItemAttribute);
-            _itemListData.items.Add(vItem);
+
+            vItemListWindow.Instance.AddItem(vItem);
             return _id;
         }
 
@@ -260,15 +363,35 @@ public class RawMaterialMaker : OdinMenuEditorWindow
 
             return result;
         }
+
+        void OpenVitemListWindow()
+        {
+            vItemListWindow.CreateWindow(_itemListData);
+
+            int _id = GetUniqueID(_itemListData.items);
+            vItem vItem = new()
+            {
+                name = GetCleanNameFromEnum(_enumList[0]._name),
+                type = vItemType.CraftingMaterials,
+                description = "Description has not been assigned",
+                id = _id,
+                icon = _placeHolderImage,
+            };
+
+            vItemAttribute vItemAttribute = new(name: Invector.vItemManager.vItemAttributes.CanCraftItemID, value: 0);
+            vItem.attributes.Add(vItemAttribute);
+
+            vItemListWindow.Instance.AddItem(vItem);
+        }
     }
 
     public class CreateNewCraftingItemSO
     {
-        public static string _rawMaterialsPath = "Assets/_Citizen16/ScriptableObjects/Crafting Materials/";
+        public static string _rawMaterialsPath = "Assets/_Muck City/ScriptableObjects/Crafting Materials/";
 
         public CreateNewCraftingItemSO()
         {
-            _newSO = ScriptableObject.CreateInstance<RawMaterialSO>();
+            _newSO = CreateInstance<RawMaterialSO>();
             _newSO.name = "New Crafting Item";
             _newSO._disableAutoUpdateName = true;
             _newSO._itemImage = _placeHolderImage;
@@ -291,7 +414,7 @@ public class RawMaterialMaker : OdinMenuEditorWindow
             AssetDatabase.CreateAsset(_newSO, _rawMaterialsPath + _newSO._name + ".asset");
             AssetDatabase.SaveAssets();
 
-            _newSO = ScriptableObject.CreateInstance<RawMaterialSO>();
+            _newSO = CreateInstance<RawMaterialSO>();
             _newSO.name = "New Crafting Item";
             _newSO._disableAutoUpdateName = true;
             _newSO._itemImage = _placeHolderImage;
@@ -335,7 +458,7 @@ public class RawMaterialMaker : OdinMenuEditorWindow
                 _newSO._name = vItem.name;
                 _newSO._ref.name = vItem.name;
                 _newSO._itemImage = vItem.icon;
-                vItemAttribute vItemAttribute = new(name: vItemAttributes.CanCraftItemID, value: 0);
+                vItemAttribute vItemAttribute = new(name: Invector.vItemManager.vItemAttributes.CanCraftItemID, value: 0);
                 _newSO._ref.attributes.Add(vItemAttribute);
             }
             catch (Exception)

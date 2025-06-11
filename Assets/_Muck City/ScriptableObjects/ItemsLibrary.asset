@@ -125,6 +125,49 @@ MonoBehaviour:
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-2268978445196880274
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1adabc1ae49fd3c44a36cc9152ebb0f9, type: 3}
+  m_Name: Gun Powder
+  m_EditorClassIdentifier: 
+  id: 34
+  description: Description has not been assigned
+  type: 7
+  icon: {fileID: 21300000, guid: f03655fd9199df644ba92830d7084702, type: 3}
+  stackable: 1
+  createNewItem: 1
+  maxStack: 0
+  amount: 0
+  originalObject: {fileID: 0}
+  dropObject: {fileID: 0}
+  attributes:
+  - name: 11
+    value: 0
+    isOpen: 0
+    isBool: 0
+  isInEquipArea: 0
+  isEquiped: 0
+  destroyAfterUse: 1
+  canBeEquipped: 1
+  canBeUsed: 1
+  canBeDroped: 1
+  canBeDestroyed: 1
+  EnableAnim: LowBack
+  DisableAnim: LowBack
+  enableDelayTime: 0.5
+  disableDelayTime: 0.5
+  customHandler: 
+  twoHandWeapon: 0
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,7 +211,12 @@ MonoBehaviour:
   - {fileID: -6067380429623673844}
   - {fileID: 5440309841161798788}
   - {fileID: 9220526243217188814}
+  - {fileID: 2688741095199853162}
   - {fileID: -2934942995992439575}
+  - {fileID: 8313783492311829315}
+  - {fileID: 2996892630323490028}
+  - {fileID: -2268978445196880274}
+  - {fileID: 377454851857368432}
   inEdition: 1
   itemsHidden: 0
 --- !u!114 &11427962
@@ -1352,6 +1400,49 @@ MonoBehaviour:
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &377454851857368432
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1adabc1ae49fd3c44a36cc9152ebb0f9, type: 3}
+  m_Name: Aspirin
+  m_EditorClassIdentifier: 
+  id: 35
+  description: Description has not been assigned
+  type: 7
+  icon: {fileID: 21300000, guid: f03655fd9199df644ba92830d7084702, type: 3}
+  stackable: 1
+  createNewItem: 1
+  maxStack: 0
+  amount: 0
+  originalObject: {fileID: 0}
+  dropObject: {fileID: 0}
+  attributes:
+  - name: 11
+    value: 0
+    isOpen: 0
+    isBool: 0
+  isInEquipArea: 0
+  isEquiped: 0
+  destroyAfterUse: 1
+  canBeEquipped: 1
+  canBeUsed: 1
+  canBeDroped: 1
+  canBeDestroyed: 1
+  EnableAnim: LowBack
+  DisableAnim: LowBack
+  enableDelayTime: 0.5
+  disableDelayTime: 0.5
+  customHandler: 
+  twoHandWeapon: 0
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1942869621032062961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1391,6 +1482,92 @@ MonoBehaviour:
   onDestroy:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2688741095199853162
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1adabc1ae49fd3c44a36cc9152ebb0f9, type: 3}
+  m_Name: Razor Mushroom
+  m_EditorClassIdentifier: 
+  id: 30
+  description: Description has not been assigned
+  type: 7
+  icon: {fileID: 21300000, guid: f03655fd9199df644ba92830d7084702, type: 3}
+  stackable: 1
+  createNewItem: 1
+  maxStack: 0
+  amount: 0
+  originalObject: {fileID: 0}
+  dropObject: {fileID: 0}
+  attributes:
+  - name: 11
+    value: 0
+    isOpen: 0
+    isBool: 0
+  isInEquipArea: 0
+  isEquiped: 0
+  destroyAfterUse: 1
+  canBeEquipped: 1
+  canBeUsed: 1
+  canBeDroped: 1
+  canBeDestroyed: 1
+  EnableAnim: LowBack
+  DisableAnim: LowBack
+  enableDelayTime: 0.5
+  disableDelayTime: 0.5
+  customHandler: 
+  twoHandWeapon: 0
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2996892630323490028
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1adabc1ae49fd3c44a36cc9152ebb0f9, type: 3}
+  m_Name: Gasoline
+  m_EditorClassIdentifier: 
+  id: 33
+  description: Description has not been assigned
+  type: 7
+  icon: {fileID: 21300000, guid: f03655fd9199df644ba92830d7084702, type: 3}
+  stackable: 1
+  createNewItem: 1
+  maxStack: 0
+  amount: 0
+  originalObject: {fileID: 0}
+  dropObject: {fileID: 0}
+  attributes:
+  - name: 11
+    value: 0
+    isOpen: 0
+    isBool: 0
+  isInEquipArea: 0
+  isEquiped: 0
+  destroyAfterUse: 1
+  canBeEquipped: 1
+  canBeUsed: 1
+  canBeDroped: 1
+  canBeDestroyed: 1
+  EnableAnim: LowBack
+  DisableAnim: LowBack
+  enableDelayTime: 0.5
+  disableDelayTime: 0.5
+  customHandler: 
+  twoHandWeapon: 0
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &5440309841161798788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1419,6 +1596,49 @@ MonoBehaviour:
   destroyAfterUse: 0
   canBeEquipped: 1
   canBeUsed: 0
+  canBeDroped: 1
+  canBeDestroyed: 1
+  EnableAnim: LowBack
+  DisableAnim: LowBack
+  enableDelayTime: 0.5
+  disableDelayTime: 0.5
+  customHandler: 
+  twoHandWeapon: 0
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &8313783492311829315
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1adabc1ae49fd3c44a36cc9152ebb0f9, type: 3}
+  m_Name: Nail
+  m_EditorClassIdentifier: 
+  id: 32
+  description: Description has not been assigned
+  type: 7
+  icon: {fileID: 21300000, guid: f03655fd9199df644ba92830d7084702, type: 3}
+  stackable: 1
+  createNewItem: 1
+  maxStack: 0
+  amount: 0
+  originalObject: {fileID: 0}
+  dropObject: {fileID: 0}
+  attributes:
+  - name: 11
+    value: 0
+    isOpen: 0
+    isBool: 0
+  isInEquipArea: 0
+  isEquiped: 0
+  destroyAfterUse: 1
+  canBeEquipped: 1
+  canBeUsed: 1
   canBeDroped: 1
   canBeDestroyed: 1
   EnableAnim: LowBack

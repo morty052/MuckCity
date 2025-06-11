@@ -337,7 +337,8 @@ namespace Invector.vItemManager
                                     continue;
                                 list.Add(newObject);
                             }
-                            catch { };
+                            catch { }
+                            ;
                         }
                     }
                     serializedObject.ApplyModifiedProperties();
@@ -490,7 +491,7 @@ namespace Invector.vItemManager
                 AddItem(items[i]);
             }
         }
-        private void AddItem(vItem item)
+        public void AddItem(vItem item)
         {
             if (item.name.Contains("(Clone)"))
             {
