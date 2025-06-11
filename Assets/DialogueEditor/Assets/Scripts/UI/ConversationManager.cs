@@ -72,14 +72,14 @@ namespace DialogueEditor
         public int m_targetScrollTextCount;
         private eState m_state;
         private float m_stateTime;
-        
+
         private Conversation m_conversation;
         private SpeechNode m_currentSpeech;
         private OptionNode m_selectedOption;
 
         // Selection options
         private List<UIConversationButton> m_uiOptions;
-        private int m_currentSelectedIndex;
+        public int m_currentSelectedIndex;
 
 
         //--------------------------------------
@@ -158,8 +158,7 @@ namespace DialogueEditor
         {
             SetState(eState.TransitioningDialogueOff);
 
-            if (OnConversationEnded != null)
-                OnConversationEnded.Invoke();
+            GameEventsManager.Instance.OnConversationEnded();
         }
 
         public void SelectNextOption()
@@ -218,7 +217,7 @@ namespace DialogueEditor
                 LogWarning("parameter \'" + paramName + "\' does not exist.");
             }
         }
-        
+
         public void SetBool(string paramName, bool value)
         {
             eParamStatus status;
@@ -547,7 +546,7 @@ namespace DialogueEditor
             else
             {
                 SetState(eState.TransitioningOptionsOn);
-            }            
+            }
         }
 
 
@@ -690,7 +689,7 @@ namespace DialogueEditor
                         {
                             uiOption.SetupButton(UIConversationButton.eButtonType.Speech, next, continueFont: m_conversation.ContinueFont);
                         }
-                        
+
                     }
                     else if (m_currentSpeech.ConnectionType == Connection.eConnectionType.None)
                     {
