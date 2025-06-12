@@ -87,8 +87,7 @@ BlendTree:
   m_Name: Idle
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 5908583710877457969, guid: 009c43c371cbf974f860ee540816fa3d,
-      type: 3}
+    m_Motion: {fileID: 5908583710877457969, guid: 009c43c371cbf974f860ee540816fa3d, type: 3}
     m_Threshold: -0.5
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -104,8 +103,7 @@ BlendTree:
     m_DirectBlendParameter: InputHorizontal
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 5908583710877457969, guid: 009c43c371cbf974f860ee540816fa3d,
-      type: 3}
+    m_Motion: {fileID: 5908583710877457969, guid: 009c43c371cbf974f860ee540816fa3d, type: 3}
     m_Threshold: 0.5
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -22914,12 +22912,12 @@ AnimatorStateMachine:
   m_StateMachineTransitions:
   - first: {fileID: 0}
     second: []
-  - first: {fileID: 1107317655660455606}
-    second:
-    - {fileID: 1109702216339247894}
   - first: {fileID: 1107506582051915410}
     second:
     - {fileID: 1109589162062948926}
+  - first: {fileID: 1107317655660455606}
+    second:
+    - {fileID: 1109702216339247894}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: -528, y: 60, z: 0}
   m_EntryPosition: {x: -528, y: 24, z: 0}
@@ -24141,8 +24139,7 @@ BlendTree:
   m_Name: Crouch Idle
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: -2893743026720447327, guid: 009c43c371cbf974f860ee540816fa3d,
-      type: 3}
+    m_Motion: {fileID: -2893743026720447327, guid: 009c43c371cbf974f860ee540816fa3d, type: 3}
     m_Threshold: -0.5
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -24158,8 +24155,7 @@ BlendTree:
     m_DirectBlendParameter: InputHorizontal
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -2893743026720447327, guid: 009c43c371cbf974f860ee540816fa3d,
-      type: 3}
+    m_Motion: {fileID: -2893743026720447327, guid: 009c43c371cbf974f860ee540816fa3d, type: 3}
     m_Threshold: 0.5
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
