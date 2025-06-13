@@ -1,7 +1,5 @@
 using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Pool;
 [CreateAssetMenu(fileName = "PoolData", menuName = "ScriptableObjects/PoolData", order = 1)]
 public class PoolData : ScriptableObject
 {
