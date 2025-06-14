@@ -11,9 +11,15 @@ public class DogSensor : MonoBehaviour
     public float _detectionRate = 1;
 
     public float _detectionRange = 5;
-    public LayerMask _detectionLayerMask = new();
+    public LayerMask _playerLayerMask = new();
+    public LayerMask _enemyLayerMask = new();
 
-    public bool _playerIsInRange = false;
+    [ShowInInspector]
+    private bool _playerIsInRange = false;
+
+    public bool PlayerIsInRange => _playerIsInRange;
+    public bool EnemiesInSight => _detectedEnemies.Count > 0;
+
 
     public static Action OnPlayerExitRange;
 
@@ -25,50 +31,59 @@ public class DogSensor : MonoBehaviour
         _detectionTimer = new CountdownTimer(_detectionRate);
         _detectionTimer.OnTimerStop += () =>
         {
-            DetectWithSphereOverlap();
+            SenseEnvironment();
             _detectionTimer.Start();
         };
         _detectionTimer.Start();
     }
 
-    void DetectWithSphereOverlap()
+    void SenseEnvironment()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, _detectionRange, _detectionLayerMask);
+        DetectPlayer();
+        DetectEnemies();
+    }
+
+    void DetectPlayer()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, _detectionRange, _playerLayerMask);
+        if (colliders.Length > 0)
+        {
+            _playerIsInRange = true;
+        }
+
+        else                              // if player is out of range
+        {
+            _playerIsInRange = false;
+        }
+    }
+    void DetectEnemies()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, _detectionRange, _enemyLayerMask);
         if (colliders.Length > 0)
         {
 
             foreach (Collider collider in colliders)
             {
-                if (collider.CompareTag("Player")) // if player is in range
-                {
-                    _playerIsInRange = true;
-                    Debug.Log("Dog Detected Player");
 
-                }
-                else                                 // if player is out of range
-                {
-                    _playerIsInRange = false;
-                    OnPlayerExitRange?.Invoke();
-                    Debug.Log("Player Out of Range");
-                }
                 if (collider.CompareTag("Enemy"))             // if enemy is in range
                 {
                     if (!_detectedEnemies.Contains(collider.gameObject))
                         _detectedEnemies.Add(collider.gameObject);
-                    Debug.Log("Dog Detected" + collider.name);
                 }
 
-                else                                 // if enemy is out of range
-                {
-                    _detectedEnemies.Clear();
-
-                }
 
             }
 
         }
 
+        else                             // if player is out of range
+        {
+            if (_detectedEnemies.Count > 0)                                 // if enemy is out of range
+            {
+                _detectedEnemies.Clear();
 
+            }
+        }
     }
 
     // Update is called once per frame

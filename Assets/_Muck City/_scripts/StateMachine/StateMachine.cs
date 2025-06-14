@@ -85,7 +85,7 @@ public class StateMachine
 
     public void AddTransition(IState from, IState to, IPredicate condition)
     {
-        Debug.Log($"Adding transition from {from} to {to}");
+        // Debug.Log($"Adding transition from {from} to {to}");
         GetOrAddNode(from).AddTransition(GetOrAddNode(to).State, condition);
     }
 

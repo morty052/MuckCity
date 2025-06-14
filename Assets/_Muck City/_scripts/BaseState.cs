@@ -25,6 +25,10 @@ public abstract class BaseState : IState
         _animator = animator;
         _AI = ai;
     }
+    protected BaseState(Animator animator)
+    {
+        _animator = animator;
+    }
     public virtual void FixedUpdate()
     {
         throw new System.NotImplementedException();
