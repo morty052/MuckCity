@@ -217,257 +217,257 @@ public class POLYGON_DogAnimationController : MonoBehaviour
         dogAnim.SetInteger("ActionType_int", 0); // Disable animation
         dogActionEnabled = false; // Disable the dog animation flag
     }
-    void OnGUI()
-    {
-        if(DisplayUI) // Display Dog keycodes on UI
-        {
-        GUI.backgroundColor = Color.yellow;
-        for (int i = 0; i < dogKeyCodes.Length; i++)
-        {
-        GUI.Label(new Rect(10, 10 + (i * 30), 400, 30), dogLabels[i] + " " + dogKeyCodes[i].ToString(), guiStyle);
-        }
-        } 
-    }
-   void Update()
-    {
-        bool attackMode = Input.GetKey(dogKeyCodes[0]); // Get the current keycodes assigned by user
-        bool secondAttack = Input.GetKey(dogKeyCodes[1]);
-        bool walkPressed = Input.GetKey(dogKeyCodes[2]);
-        bool turnBack = Input.GetKey(dogKeyCodes[3]);
-        bool leftTurn = Input.GetKey(dogKeyCodes[4]);
-        bool rightTurn = Input.GetKey(dogKeyCodes[5]);
-        bool randActionPressed = Input.GetKeyDown(dogKeyCodes[6]);
-        bool jumpPressed = Input.GetKeyDown(dogKeyCodes[7]);
-        bool runPressed = Input.GetKey(dogKeyCodes[8]);
-        bool sitPressed = Input.GetKeyDown(dogKeyCodes[9]);
-        bool sleepPressed = Input.GetKeyDown(dogKeyCodes[10]);
-        bool exitPressed = Input.GetKeyDown(dogKeyCodes[11]);
-        bool deathPressed = Input.GetKeyDown(dogKeyCodes[12]);
-        bool resetPressed = Input.GetKeyDown(dogKeyCodes[13]);
-        bool a1Pressed = Input.GetKey(dogKeyCodes[14]);
-        bool a2Pressed = Input.GetKey(dogKeyCodes[15]);
-        bool a3Pressed = Input.GetKey(dogKeyCodes[16]);
-        bool a4Pressed = Input.GetKey(dogKeyCodes[17]);
-        bool a5Pressed = Input.GetKey(dogKeyCodes[18]);
-        bool a6Pressed = Input.GetKey(dogKeyCodes[19]);
-        bool a7Pressed = Input.GetKey(dogKeyCodes[20]);
-        bool a8Pressed = Input.GetKey(dogKeyCodes[21]);
-        bool a9Pressed = Input.GetKey(dogKeyCodes[22]);
-        bool a10Pressed = Input.GetKey(dogKeyCodes[23]);
-        bool a11Pressed = Input.GetKey(dogKeyCodes[24]);
-        bool a12Pressed = Input.GetKey(dogKeyCodes[25]);
-        bool a13Pressed = Input.GetKey(dogKeyCodes[26]);
-        if (attackMode)
-        {
-            dogAnim.SetBool("AttackReady_b", true);
-        }
-        else
-        {
-            dogAnim.SetBool("AttackReady_b", false);
-        }
-        if (secondAttack)
-        {
-            dogAnim.SetInteger("AttackType_int", 2);
-        }
-        else
-        {
-            dogAnim.SetInteger("AttackType_int", 0);
-        }
-        if (randActionPressed)
-        {
-            float currentSpeed = a1Pressed ? 1 : maxWalk;
-            dogAnim.SetInteger("ActionType_int", Random.Range(0, 13));
-        }
-        if (runPressed)
-        {
-            currentSpeed = maxRun;
-        }
-        if (!runPressed)
-        {
-            currentSpeed = maxWalk;
-        }
-        if (walkPressed && (w_movement < currentSpeed)) // If walking
-        {
-            w_movement += Time.deltaTime * acceleration;
-        }
-        if (walkPressed && !runPressed && w_movement > currentSpeed) // Slow down
-        {
-            w_movement -= Time.deltaTime * decelleration;
+    // void OnGUI()
+    // {
+    //     if (DisplayUI) // Display Dog keycodes on UI
+    //     {
+    //         GUI.backgroundColor = Color.yellow;
+    //         for (int i = 0; i < dogKeyCodes.Length; i++)
+    //         {
+    //             GUI.Label(new Rect(10, 10 + (i * 30), 400, 30), dogLabels[i] + " " + dogKeyCodes[i].ToString(), guiStyle);
+    //         }
+    //     }
+    // }
+    //    void Update()
+    //     {
+    //         bool attackMode = Input.GetKey(dogKeyCodes[0]); // Get the current keycodes assigned by user
+    //         bool secondAttack = Input.GetKey(dogKeyCodes[1]);
+    //         bool walkPressed = Input.GetKey(dogKeyCodes[2]);
+    //         bool turnBack = Input.GetKey(dogKeyCodes[3]);
+    //         bool leftTurn = Input.GetKey(dogKeyCodes[4]);
+    //         bool rightTurn = Input.GetKey(dogKeyCodes[5]);
+    //         bool randActionPressed = Input.GetKeyDown(dogKeyCodes[6]);
+    //         bool jumpPressed = Input.GetKeyDown(dogKeyCodes[7]);
+    //         bool runPressed = Input.GetKey(dogKeyCodes[8]);
+    //         bool sitPressed = Input.GetKeyDown(dogKeyCodes[9]);
+    //         bool sleepPressed = Input.GetKeyDown(dogKeyCodes[10]);
+    //         bool exitPressed = Input.GetKeyDown(dogKeyCodes[11]);
+    //         bool deathPressed = Input.GetKeyDown(dogKeyCodes[12]);
+    //         bool resetPressed = Input.GetKeyDown(dogKeyCodes[13]);
+    //         bool a1Pressed = Input.GetKey(dogKeyCodes[14]);
+    //         bool a2Pressed = Input.GetKey(dogKeyCodes[15]);
+    //         bool a3Pressed = Input.GetKey(dogKeyCodes[16]);
+    //         bool a4Pressed = Input.GetKey(dogKeyCodes[17]);
+    //         bool a5Pressed = Input.GetKey(dogKeyCodes[18]);
+    //         bool a6Pressed = Input.GetKey(dogKeyCodes[19]);
+    //         bool a7Pressed = Input.GetKey(dogKeyCodes[20]);
+    //         bool a8Pressed = Input.GetKey(dogKeyCodes[21]);
+    //         bool a9Pressed = Input.GetKey(dogKeyCodes[22]);
+    //         bool a10Pressed = Input.GetKey(dogKeyCodes[23]);
+    //         bool a11Pressed = Input.GetKey(dogKeyCodes[24]);
+    //         bool a12Pressed = Input.GetKey(dogKeyCodes[25]);
+    //         bool a13Pressed = Input.GetKey(dogKeyCodes[26]);
+    //         if (attackMode)
+    //         {
+    //             dogAnim.SetBool("AttackReady_b", true);
+    //         }
+    //         else
+    //         {
+    //             dogAnim.SetBool("AttackReady_b", false);
+    //         }
+    //         if (secondAttack)
+    //         {
+    //             dogAnim.SetInteger("AttackType_int", 2);
+    //         }
+    //         else
+    //         {
+    //             dogAnim.SetInteger("AttackType_int", 0);
+    //         }
+    //         if (randActionPressed)
+    //         {
+    //             float currentSpeed = a1Pressed ? 1 : maxWalk;
+    //             dogAnim.SetInteger("ActionType_int", Random.Range(0, 13));
+    //         }
+    //         if (runPressed)
+    //         {
+    //             currentSpeed = maxRun;
+    //         }
+    //         if (!runPressed)
+    //         {
+    //             currentSpeed = maxWalk;
+    //         }
+    //         if (walkPressed && (w_movement < currentSpeed)) // If walking
+    //         {
+    //             w_movement += Time.deltaTime * acceleration;
+    //         }
+    //         if (walkPressed && !runPressed && w_movement > currentSpeed) // Slow down
+    //         {
+    //             w_movement -= Time.deltaTime * decelleration;
 
-        }
-        if (!walkPressed && w_movement > 0.0f) // If no longer walking
-        {
-            w_movement -= Time.deltaTime * decelleration;
-        }
-        if (leftTurn)
-        {
-            if (w_movement > 0.25 && w_movement < 0.75)
-            {
-                transform.Rotate(Vector3.up * Time.deltaTime * -45, Space.Self);
-            }
-            if (w_movement > 0.75)
-            {
-                transform.Rotate(Vector3.up * Time.deltaTime * -65, Space.Self);
-            }
-            if (w_movement < 0.25)
-            {
-                dogAnim.SetInteger("TurnAngle_int", -90);
-            }
-        }
-        else if (rightTurn)
-        {
-            if (w_movement > 0.25 && w_movement < 0.75)
-            {
-                transform.Rotate(-Vector3.down * Time.deltaTime * 45, Space.Self);
-            }
-            if (w_movement > 0.75)
-            {
-                transform.Rotate(-Vector3.down * Time.deltaTime * 65, Space.Self);
-            }
-            if (w_movement < 0.25)
-            {
-                dogAnim.SetInteger("TurnAngle_int", 90);
-            }
-        }
-        else if (turnBack)
-        {
-            dogAnim.SetInteger("TurnAngle_int", 180);
-        }
-        else
-        {
-            dogAnim.SetInteger("TurnAngle_int", 0);
-        }
-        if (randActionPressed)
-        {
-            StartCoroutine(DogActions(Random.Range(1, 13)));
-        }
-        if (jumpPressed)
-        {
-            dogAnim.SetTrigger("Jump_tr");
-        }
-        if (sitPressed) // Sit
-        {
-            if (Sit_b == false)
-            {
-                Sit_b = true;
-            }
-            else if (Sit_b == true)
-            {
-                Sit_b = false;
-            }
-            dogAnim.SetBool("Sit_b", Sit_b); // Set sit animation
-        }
-        if (sleepPressed) // Sleep
-        {
-            if (Sleep_b == false)
-            {
-                Sleep_b = true;
-            }
-            else if (Sleep_b == true)
-            {
-                Sleep_b = false;
-            }
-            dogAnim.SetBool("Sleep_b", Sleep_b); // Set sleep animation
-        }
-        if (exitPressed)
-        {
+    //         }
+    //         if (!walkPressed && w_movement > 0.0f) // If no longer walking
+    //         {
+    //             w_movement -= Time.deltaTime * decelleration;
+    //         }
+    //         if (leftTurn)
+    //         {
+    //             if (w_movement > 0.25 && w_movement < 0.75)
+    //             {
+    //                 transform.Rotate(Vector3.up * Time.deltaTime * -45, Space.Self);
+    //             }
+    //             if (w_movement > 0.75)
+    //             {
+    //                 transform.Rotate(Vector3.up * Time.deltaTime * -65, Space.Self);
+    //             }
+    //             if (w_movement < 0.25)
+    //             {
+    //                 dogAnim.SetInteger("TurnAngle_int", -90);
+    //             }
+    //         }
+    //         else if (rightTurn)
+    //         {
+    //             if (w_movement > 0.25 && w_movement < 0.75)
+    //             {
+    //                 transform.Rotate(-Vector3.down * Time.deltaTime * 45, Space.Self);
+    //             }
+    //             if (w_movement > 0.75)
+    //             {
+    //                 transform.Rotate(-Vector3.down * Time.deltaTime * 65, Space.Self);
+    //             }
+    //             if (w_movement < 0.25)
+    //             {
+    //                 dogAnim.SetInteger("TurnAngle_int", 90);
+    //             }
+    //         }
+    //         else if (turnBack)
+    //         {
+    //             dogAnim.SetInteger("TurnAngle_int", 180);
+    //         }
+    //         else
+    //         {
+    //             dogAnim.SetInteger("TurnAngle_int", 0);
+    //         }
+    //         if (randActionPressed)
+    //         {
+    //             StartCoroutine(DogActions(Random.Range(1, 13)));
+    //         }
+    //         if (jumpPressed)
+    //         {
+    //             dogAnim.SetTrigger("Jump_tr");
+    //         }
+    //         if (sitPressed) // Sit
+    //         {
+    //             if (Sit_b == false)
+    //             {
+    //                 Sit_b = true;
+    //             }
+    //             else if (Sit_b == true)
+    //             {
+    //                 Sit_b = false;
+    //             }
+    //             dogAnim.SetBool("Sit_b", Sit_b); // Set sit animation
+    //         }
+    //         if (sleepPressed) // Sleep
+    //         {
+    //             if (Sleep_b == false)
+    //             {
+    //                 Sleep_b = true;
+    //             }
+    //             else if (Sleep_b == true)
+    //             {
+    //                 Sleep_b = false;
+    //             }
+    //             dogAnim.SetBool("Sleep_b", Sleep_b); // Set sleep animation
+    //         }
+    //         if (exitPressed)
+    //         {
 
-        #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-        #elif UNITY_WEBPLAYER
-                Application.OpenURL(webplayerQuitURL);
-        #else
-            Application.Quit();
-        #endif
-        }
-        if (deathPressed)
-        {
-            dogAnim.SetBool("Death_b", true);  // Kill the dog 
-        }
-        if (resetPressed)
-        {
-            dogAnim.Rebind();
-            dogAnim.Update(0f);
-        }
-        if (a1Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(1));
-        }
-        if (a2Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(2));
-        }
-        if (a3Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(3));
-        }
-        if (a4Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(4));
-            if(!Sit_b)
-            {
-            ParticleSystem go = Instantiate(dirtFX, new Vector3(this.transform.position.x, fxTransform.transform.position.y, fxTransform.transform.position.z), this.transform.rotation);
-            go.transform.SetParent(fxTransform);
-            go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y, go.transform.localPosition.z + 0.3f); 
-            }           
-        }
-        if (a5Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(5));
-        }
-        if (a6Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(6));
-        }
-        if (a7Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(7));
-        }
-        if (a8Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(8));
-             if(!Sit_b)
-            {
-            ParticleSystem go = Instantiate(peeFX, new Vector3(this.transform.position.x, fxTransform.transform.position.y + 0.5f, fxTransform.transform.position.z - 0f), this.transform.rotation);
-            go.transform.SetParent(fxTransform);
-            go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y, go.transform.localPosition.z - 0.2f);
-            go.transform.localRotation = Quaternion.Euler(0, -45, 0);
-            }  
-        }
-        if (a9Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(9));
-             if(!Sit_b)
-            {
-            ParticleSystem go = Instantiate(poopFX, new Vector3(this.transform.position.x, fxTransform.transform.position.y + 0.5f, fxTransform.transform.position.z - 0f), this.transform.rotation);
-            go.transform.SetParent(fxTransform);
-            go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y, go.transform.localPosition.z - 0.35f);
-            }
-        }
-        if (a10Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(10));
-             if(!Sit_b)
-            {
-            ParticleSystem go = Instantiate(waterFX, new Vector3(this.transform.position.x, fxTransform.transform.position.y + 0.5f, fxTransform.transform.position.z - 0f), this.transform.rotation);
-            go.transform.SetParent(fxTransform);
-            go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y - 0.0f, go.transform.localPosition.z);
-            go.gameObject.transform.GetChild(0).transform.position = new Vector3(fxTail.transform.position.x, fxTail.transform.position.y, fxTail.transform.position.z);
-            }
-        }
-        if (a11Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(11));
-        }
-        if (a12Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(12));
-        }
-        if (a13Pressed && !dogActionEnabled)
-        {
-            StartCoroutine(DogActions(13));
-        }
-        dogAnim.SetTrigger("Blink_tr"); // Blink will continue unless asleep or dead
-        dogAnim.SetFloat("Movement_f", w_movement); // Set movement speed for all required parameters
-    }
+    //         #if UNITY_EDITOR
+    //                 UnityEditor.EditorApplication.isPlaying = false;
+    //         #elif UNITY_WEBPLAYER
+    //                 Application.OpenURL(webplayerQuitURL);
+    //         #else
+    //             Application.Quit();
+    //         #endif
+    //         }
+    //         if (deathPressed)
+    //         {
+    //             dogAnim.SetBool("Death_b", true);  // Kill the dog 
+    //         }
+    //         if (resetPressed)
+    //         {
+    //             dogAnim.Rebind();
+    //             dogAnim.Update(0f);
+    //         }
+    //         if (a1Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(1));
+    //         }
+    //         if (a2Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(2));
+    //         }
+    //         if (a3Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(3));
+    //         }
+    //         if (a4Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(4));
+    //             if(!Sit_b)
+    //             {
+    //             ParticleSystem go = Instantiate(dirtFX, new Vector3(this.transform.position.x, fxTransform.transform.position.y, fxTransform.transform.position.z), this.transform.rotation);
+    //             go.transform.SetParent(fxTransform);
+    //             go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y, go.transform.localPosition.z + 0.3f); 
+    //             }           
+    //         }
+    //         if (a5Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(5));
+    //         }
+    //         if (a6Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(6));
+    //         }
+    //         if (a7Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(7));
+    //         }
+    //         if (a8Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(8));
+    //              if(!Sit_b)
+    //             {
+    //             ParticleSystem go = Instantiate(peeFX, new Vector3(this.transform.position.x, fxTransform.transform.position.y + 0.5f, fxTransform.transform.position.z - 0f), this.transform.rotation);
+    //             go.transform.SetParent(fxTransform);
+    //             go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y, go.transform.localPosition.z - 0.2f);
+    //             go.transform.localRotation = Quaternion.Euler(0, -45, 0);
+    //             }  
+    //         }
+    //         if (a9Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(9));
+    //              if(!Sit_b)
+    //             {
+    //             ParticleSystem go = Instantiate(poopFX, new Vector3(this.transform.position.x, fxTransform.transform.position.y + 0.5f, fxTransform.transform.position.z - 0f), this.transform.rotation);
+    //             go.transform.SetParent(fxTransform);
+    //             go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y, go.transform.localPosition.z - 0.35f);
+    //             }
+    //         }
+    //         if (a10Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(10));
+    //              if(!Sit_b)
+    //             {
+    //             ParticleSystem go = Instantiate(waterFX, new Vector3(this.transform.position.x, fxTransform.transform.position.y + 0.5f, fxTransform.transform.position.z - 0f), this.transform.rotation);
+    //             go.transform.SetParent(fxTransform);
+    //             go.transform.localPosition = new Vector3(go.transform.localPosition.x, go.transform.localPosition.y - 0.0f, go.transform.localPosition.z);
+    //             go.gameObject.transform.GetChild(0).transform.position = new Vector3(fxTail.transform.position.x, fxTail.transform.position.y, fxTail.transform.position.z);
+    //             }
+    //         }
+    //         if (a11Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(11));
+    //         }
+    //         if (a12Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(12));
+    //         }
+    //         if (a13Pressed && !dogActionEnabled)
+    //         {
+    //             StartCoroutine(DogActions(13));
+    //         }
+    //         dogAnim.SetTrigger("Blink_tr"); // Blink will continue unless asleep or dead
+    //         dogAnim.SetFloat("Movement_f", w_movement); // Set movement speed for all required parameters
+    //     }
 }

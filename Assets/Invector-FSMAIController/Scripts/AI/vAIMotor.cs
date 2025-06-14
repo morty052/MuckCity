@@ -84,7 +84,7 @@ namespace Invector.vCharacterController.AI
         public bool isStrafing { get; protected set; }
         public bool isGrounded { get; protected set; }
 
-        [HideInInspector]
+        // [HideInInspector]
         public Rigidbody _rigidbody;
         [HideInInspector]
         public PhysicsMaterial frictionPhysics, maxFrictionPhysics, slippyPhysics;
@@ -211,6 +211,7 @@ namespace Invector.vCharacterController.AI
             {
                 animatorStateInfos = new vEventSystems.vAnimatorStateInfos(animator);
                 animatorStateInfos.RegisterListener();
+
 
                 hitDirectionHash = new vAnimatorParameter(animator, "HitDirection");
                 reactionIDHash = new vAnimatorParameter(animator, "ReactionID");

@@ -1,4 +1,5 @@
 using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -27,6 +28,8 @@ namespace Invector.vCharacterController
         [vEditorToolbar("Debug", order = 9)]
         [HideInInspector]
         public bool debugActionListener;
+
+        [ShowInInspector]
         public Animator animator { get; protected set; }
         public bool _ragdolled = false;
         public virtual bool ragdolled { get { return _ragdolled; } set { _ragdolled = value; } }
