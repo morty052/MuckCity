@@ -86,6 +86,22 @@ public class DogSensor : MonoBehaviour
         }
     }
 
+    public GameObject GetClosestEnemy()
+    {
+        if (_detectedEnemies.Count == 0) return null;
+        GameObject closestEnemy = null;
+        float closestDistance = Mathf.Infinity;
+        foreach (GameObject enemy in _detectedEnemies)
+        {
+            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestEnemy = enemy;
+            }
+        }
+        return closestEnemy;
+    }
     // Update is called once per frame
     void OnDrawGizmos()
     {

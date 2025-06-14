@@ -31,7 +31,7 @@ public class StateMachine
         }
 
         //! UNCOMMENT TO USE UPDATE FUNC WITH STATES
-        // _currentState.State?.Update();
+        _currentState.State?.Update();
     }
 
     public void FixedUpdate()
