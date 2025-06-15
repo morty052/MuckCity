@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DialogueEditor;
@@ -12,6 +13,34 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityUtils;
 
+[System.Serializable]
+public struct GenericInputStruct
+{
+    public string _name;
+    // public string _gamePadInput;
+    // public string _mobileInput;
+    public List<GenericInput> _interactionInput;
+
+    public GenericInputStruct(string name, string input2, string input3)
+    {
+        // _desktopInput = input;
+        // _gamePadInput = input2;
+        _name = name;
+        _interactionInput = new();
+    }
+}
+
+[Serializable, ShowInInspector]
+public class InputsGroup
+{
+    string _inputName;
+
+    public virtual void Update()
+    {
+
+    }
+}
+
 
 public class Player : MonoBehaviour
 {
@@ -22,7 +51,6 @@ public class Player : MonoBehaviour
     public GenericInput _exitInput = new("C", "Y", "Y");
     public GenericInput _dialogueOneInput = new("C", "Y", "Y");
     public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
-
 
     public bool _shouldAutoSave = false;
     public float _interactionRange = 1f;
@@ -47,10 +75,6 @@ public class Player : MonoBehaviour
     public vThirdPersonCamera _vThirdPersonCamera;
 
     vItemManager _inventory;
-
-
-
-
     string _lastBlendedState;
 
     [SerializeField] GameObject _phoneModel;
@@ -64,6 +88,7 @@ public class Player : MonoBehaviour
     public Storage _activeStorage;
 
     public bool IsInVehicle => _currentVehicle != null;
+    public Observer<bool> _isPhoneShowing = new(false);
 
 
     CancellationTokenSource cts = new();
@@ -198,16 +223,18 @@ public class Player : MonoBehaviour
     {
         if (!_phoneCamera.gameObject.activeSelf)
         {
-
             _phoneCamera.gameObject.SetActive(true);
             _phoneModel.SetActive(true);
+            _vThirdPersonInput.SetLockBasicInput(true);
         }
 
         else
         {
             _phoneCamera.gameObject.SetActive(false);
             _phoneModel.SetActive(false);
+            _vThirdPersonInput.SetLockBasicInput(false);
         }
+        _isPhoneShowing.Value = _phoneCamera.gameObject.activeSelf;
     }
 
 

@@ -17,6 +17,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
 using Invector;
+using System.Collections.Generic;
 
 public class Dog : MonoBehaviour
 {
@@ -31,8 +32,9 @@ public class Dog : MonoBehaviour
 
     CountdownTimer _stateTimer;// Timer for the current state
 
-    StateMachine _stateMachine;// State machine for the dog
+    public StateMachine _stateMachine;// State machine for the dog
 
+    [TabGroup("State")]
     public float _stateUpdateTime = 1f;
     bool dogActionEnabled;
 
@@ -74,6 +76,7 @@ public class Dog : MonoBehaviour
     [TabGroup("Particle FX")]
     public Transform fxTail;
 
+    [HideInInspector]
     public NavMeshAgent _agent;
 
     [HideInInspector]
@@ -83,7 +86,9 @@ public class Dog : MonoBehaviour
     public float _walkingStoppingDistance = 1.4f;
     [TabGroup("Movement")]
     public float _runningStoppingDistance = 2.8f;
+    [TabGroup("Attack")]
     public float _combatDistance = 1f;
+    [TabGroup("Attack")]
     public float _chaseDistance = 2.8f;
 
     [TabGroup("Movement")]
@@ -95,16 +100,35 @@ public class Dog : MonoBehaviour
     [TabGroup("Movement")]
 
     public bool _shouldRun;
+    [TabGroup("State")]
     public bool _isChasing = false;
 
-    public bool _searchingForPlayer = false;
+    [TabGroup("State")]
 
+    public bool _searchingForPlayer = false;
+    [TabGroup("State")]
+
+    public Mode _mode;
+
+    [TabGroup("Attack")]
     public Transform _currentTarget;
 
     [TabGroup("Attack")]
     public vObjectDamage _mouthTransform;
     [TabGroup("Attack")]
     public float _maxEnemyFollowDistance = 8f;
+
+    [TabGroup("Debug")]
+    public bool _debug;
+    [TabGroup("Debug")]
+    public DogDebugger _debugger;
+
+
+    [TabGroup("State")]
+    public bool _playerIsCalling;
+
+
+    public HashSet<GameObject> _ignoreList = new();
 
     void Awake()
     {
@@ -115,6 +139,7 @@ public class Dog : MonoBehaviour
             _animator = GetComponent<Animator>();
             _dogSensor = GetComponent<DogSensor>();
             SetupTransitions();
+
         }
         else
         {
@@ -123,14 +148,14 @@ public class Dog : MonoBehaviour
 
     }
 
-    // void OnEnable()
-    // {
-    //     DogSensor.OnPlayerExitRange += MoveToPlayer;
-    // }
+    void OnEnable()
+    {
+        DogInputsListener.OnCallRoverPressed += FindPlayer;
+    }
 
     void OnDisable()
     {
-        // DogSensor.OnPlayerExitRange -= MoveToPlayer;
+        DogInputsListener.OnCallRoverPressed -= FindPlayer;
         _stateTimer.Dispose();
     }
 
@@ -139,12 +164,16 @@ public class Dog : MonoBehaviour
         _stateTimer = new CountdownTimer(_stateUpdateTime);
         _stateTimer.OnTimerStop += UpdateState;
         _stateTimer.Start();
+        if (_debug)
+        {
+            InitDebugger();
+        }
     }
 
 
     void Update() // Update loop for dog actions
     {
-        if (_animator.GetBool("IsMoving"))
+        if (_agent.hasPath && _agent.remainingDistance >= _agent.stoppingDistance)
         {
             if (!_shouldRun)
             {
@@ -160,13 +189,20 @@ public class Dog : MonoBehaviour
                 // _agent.stoppingDistance = _runningStoppingDistance;
             }
 
+            _animator.SetBool("IsMoving", true);
         }
         else
         {
             walkPressed = false;
             runPressed = false;
+            _animator.SetBool("IsMoving", false);
         }
         HandleMovement();
+
+        if (_debug)
+        {
+            _debugger.Update();
+        }
         // Debug.Log($"agent has Path: {_agent.hasPath}, agent remaining distance: {_agent.remainingDistance}, agent stopping distance: {_agent.stoppingDistance}, walkPressed: {walkPressed}, runPressed: {runPressed}, PathPending: {_agent.pathPending}  IsPlayerInRange: {_dogSensor.PlayerIsInRange} Active state {_stateMachine._currentState}");
 
         // Debug.Log($"Player in Range {_dogSensor.PlayerIsInRange} state {_stateMachine._currentState.State.GetType().Name}");
@@ -192,7 +228,7 @@ public class Dog : MonoBehaviour
         //* DECLARE STATES
         var locomotionState = new DogLocomotion(_animator);
         var chaseState = new DogChaseState(_animator, this);
-        var idleState = new DogIdleState(_animator);
+        var idleState = new DogIdleState(_animator, this);
         var playerSearchState = new PlayerSearchState(_animator, this);
         var attackState = new DogAttackState(_animator, this);
         // var closeRangeAttackState = new CloseRangeAttackState(_animator, this);
@@ -201,10 +237,10 @@ public class Dog : MonoBehaviour
 
 
         //* FROM SEARCHING FOR PLAYER TO IDLE
-        At(playerSearchState, idleState, new FuncPredicate(() => _dogSensor.PlayerIsInRange));
+        // At(playerSearchState, idleState, new FuncPredicate(() => _dogSensor.PlayerIsInRange));
 
         //* FROM IDLE TO CHASE
-        At(idleState, chaseState, new FuncPredicate(() => _dogSensor.EnemiesInSight && _dogSensor.PlayerIsInRange && !_searchingForPlayer));
+        At(idleState, chaseState, new FuncPredicate(() => _dogSensor.EnemiesInSight));
 
         // //* FROM CHASING TO ATTACK
         At(chaseState, attackState, new FuncPredicate(() => _dogSensor.EnemiesInSight && CanAttack()));
@@ -219,6 +255,9 @@ public class Dog : MonoBehaviour
         //    ADD ANY TRANSITION
         Any(idleState, new FuncPredicate(() => _dogSensor.PlayerIsInRange && !_dogSensor.EnemiesInSight));
         Any(playerSearchState, new FuncPredicate(() => !_dogSensor.PlayerIsInRange && _currentTarget == null));
+        Any(playerSearchState, new FuncPredicate(() => _playerIsCalling));
+        Any(chaseState, new FuncPredicate(() => CanChase()));
+
 
 
 
@@ -250,14 +289,29 @@ public class Dog : MonoBehaviour
 
     #region Movement
 
+    [TabGroup("Debug")]
     [Button("Move To Player")]
     public void MoveToPlayer()
     {
-        _agent.SetDestination(Player.Instance.transform.position);
         _animator.SetBool("IsMoving", true);
-        StartCoroutine(CheckIfAgentReachedDestination());
+        _agent.SetDestination(Player.Instance.transform.position);
+        StartCoroutine(CheckIfAgentReachedDestination(() => _playerIsCalling = false));
         // Bite();
     }
+    public void FindPlayer()
+    {
+        _playerIsCalling = true;
+        if (_currentTarget != null)
+        {
+            _ignoreList.Add(_currentTarget.gameObject);
+            _currentTarget = null;
+        }
+        MoveToPlayer();
+        // Bite();
+    }
+
+
+    [TabGroup("Debug")]
     public void MoveToTarget(Transform target, Vector3 direction = default)
     {
         if (target != null)
@@ -277,7 +331,7 @@ public class Dog : MonoBehaviour
         // Bite();
     }
 
-    IEnumerator CheckIfAgentReachedDestination()
+    IEnumerator CheckIfAgentReachedDestination(Action OnDestinationReached = null)
     {
         yield return new WaitForSeconds(0.5f);
         while (_agent.remainingDistance >= _agent.stoppingDistance && !_agent.pathPending)
@@ -294,6 +348,7 @@ public class Dog : MonoBehaviour
             // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookPos), Time.deltaTime * 5f);
         }
         _animator.SetBool("IsMoving", false);
+        OnDestinationReached?.Invoke();
     }
 
     void HandleMovement()
@@ -328,7 +383,7 @@ public class Dog : MonoBehaviour
     bool IsOutOfChaseRange()
     {
 
-        Debug.Log("Distance from player " + Vector3.Distance(transform.position, Player.Instance.transform.position));
+        // Debug.Log("Distance from player " + Vector3.Distance(transform.position, Player.Instance.transform.position));
         if (Vector3.Distance(transform.position, Player.Instance.transform.position) > _maxEnemyFollowDistance)
         {
             return true;
@@ -455,6 +510,7 @@ public class Dog : MonoBehaviour
 
     #region Attack
 
+    [TabGroup("Debug")]
     [Button("Bite")]
     public async void Bite()
     {
@@ -485,6 +541,17 @@ public class Dog : MonoBehaviour
         return false;
     }
 
+    bool CanChase()
+    {
+
+        if (_dogSensor.EnemiesInSight && !CanAttack() && !IsOutOfChaseRange())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    [TabGroup("Debug")]
     [Button("RayCastToTarget")]
     void RayCastToTarget()
     {
@@ -496,7 +563,10 @@ public class Dog : MonoBehaviour
 
                 if (colliders[0].TryGetComponent(out vHealthController health))
                 {
-                    _mouthTransform.ApplyDamage(colliders[0], _currentTarget.transform.position);
+                    if (_mouthTransform != null)
+                    {
+                        _mouthTransform.ApplyDamage(colliders[0], _currentTarget.transform.position);
+                    }
                     Debug.Log("colliders: " + colliders[0].name);
                 }
 
@@ -508,6 +578,7 @@ public class Dog : MonoBehaviour
 
         }
     }
+
 
     #endregion
     async void ResetAnimation(string boolName, float delay)
@@ -521,13 +592,23 @@ public class Dog : MonoBehaviour
         _animator.SetInteger(intName, index);
     }
 
-
+    void InitDebugger()
+    {
+        Debug.Log("Init Debugger");
+        _debugger = new(this);
+    }
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
 
         Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, 0, _combatDistance));
     }
+}
+
+public enum Mode
+{
+    OFFENSIVE,
+    EVASIVE
 }
 
 public class DogLocomotion : BaseState
@@ -541,6 +622,8 @@ public class DogChaseState : BaseState
 {
     Dog _dog;
     Transform _target;
+
+
     public DogChaseState(Animator animator, Dog dog) : base(animator)
     {
         _dog = dog;
@@ -548,10 +631,10 @@ public class DogChaseState : BaseState
 
     public override void OnEnter()
     {
+        _target = _dog._dogSensor.GetClosestEnemy().transform;
 
         _dog._isChasing = true;
         _dog._shouldRun = true;
-        _target = _dog._dogSensor.GetClosestEnemy().transform;
         _dog._agent.stoppingDistance = _dog._combatDistance;
     }
     public override void OnExit()
@@ -562,21 +645,26 @@ public class DogChaseState : BaseState
 
     public override void Update()
     {
-
         // Vector3 position = _target.position - new Vector3(0, 0, _dog._combatDistance);
         _dog.MoveToTarget(_target.transform);
     }
 }
 public class DogIdleState : BaseState
 {
-    public DogIdleState(Animator animator) : base(animator)
-    {
 
+    Dog _dog;
+    public DogIdleState(Animator animator, Dog dog) : base(animator)
+    {
+        _dog = dog;
     }
     public override void OnEnter()
     {
         // Debug.Log("Dog entered idle");
         _animator.SetBool("Sit_b", true);
+        if (_dog._currentTarget != null)
+        {
+            _dog._currentTarget = null;
+        }
     }
     public override void OnExit()
     {
@@ -587,7 +675,8 @@ public class DogIdleState : BaseState
 
 public class PlayerSearchState : BaseState
 {
-    Dog _dog;
+    readonly Dog _dog;
+
     public PlayerSearchState(Animator animator, Dog dog) : base(animator)
     {
         _dog = dog;
@@ -595,14 +684,16 @@ public class PlayerSearchState : BaseState
 
     public override void OnEnter()
     {
-        // Debug.Log("Searching for player");
-        Dog.Instance.MoveToPlayer();
         _dog._searchingForPlayer = true;
     }
     public override void OnExit()
     {
-        // Debug.Log("stopped Searching for player");
         _dog._searchingForPlayer = false;
+    }
+
+    public override void Update()
+    {
+        Dog.Instance.MoveToPlayer();
     }
 }
 
@@ -643,4 +734,40 @@ public class DogAttackState : BaseState
         }
     }
 
+}
+
+[Serializable]
+public class DogDebugger
+{
+    Dog _dog;
+    NavMeshAgent _agent;
+    [TabGroup("Agent")]
+    public float _remainingDistance;
+    [TabGroup("Agent")]
+    public float _stoppingDistance;
+    [TabGroup("Agent")]
+    public bool _hasPath;
+    [TabGroup("Agent")]
+    public bool _pathPending;
+    [TabGroup("Agent")]
+    public bool _pathStale;
+    [TabGroup("State")]
+    public string _currentState;
+
+    public void Update()
+    {
+        _remainingDistance = _agent.remainingDistance;
+        _hasPath = _agent.hasPath;
+        _stoppingDistance = _agent.stoppingDistance;
+        _pathPending = _agent.pathPending;
+        _pathStale = _agent.isPathStale;
+        _currentState = _dog._stateMachine._currentState.State.GetType().Name;
+    }
+
+    public DogDebugger(Dog dog)
+    {
+        _dog = dog;
+        _agent = dog._agent;
+        _currentState = _dog._stateMachine._currentState.State.GetType().Name;
+    }
 }

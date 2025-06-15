@@ -1246,6 +1246,74 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Rover",
+            "id": "bd1557c5-3552-43e3-8a7b-7660bd3f5864",
+            "actions": [
+                {
+                    "name": "AttackPressed",
+                    "type": "Button",
+                    "id": "437c9440-ad87-45f7-bc6e-de70b490681d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseRover",
+                    "type": "Button",
+                    "id": "25eb2280-7c54-477b-8350-baed04449768",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CallRover",
+                    "type": "Button",
+                    "id": "fa404077-d034-488f-923e-5d443ca2646e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "169fb849-9be1-4770-a7f5-8dab4652dfd7",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AttackPressed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4dd2ea32-6d50-4c16-a940-5e2a0e5105ad",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseRover",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "abe75b1f-038c-4ddc-a918-972c24628302",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CallRover",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

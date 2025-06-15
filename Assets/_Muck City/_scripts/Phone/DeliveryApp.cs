@@ -81,6 +81,7 @@ public class DeliveryApp : PhoneApp
 
     public override void OnSelectPressed()
     {
+        if (_storedPreviews.Count == 0) return;
         Debug.Log($"selected preview fee is {_storedPreviews[_selectedPreviewIndex]._deliveryFee}");
         DeliveryDisplayButton delivery = _storedPreviews[_selectedPreviewIndex];
         _deliveryPriceText.text = delivery._deliveryFee.ToString();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ImprovedTimers;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -18,7 +19,7 @@ public class DogSensor : MonoBehaviour
     private bool _playerIsInRange = false;
 
     public bool PlayerIsInRange => _playerIsInRange;
-    public bool EnemiesInSight => _detectedEnemies.Count > 0;
+    public bool EnemiesInSight => _detectedEnemies.Count > 0 && !_detectedEnemies.Any(x => Dog.Instance._ignoreList.Contains(x));
 
 
     public static Action OnPlayerExitRange;

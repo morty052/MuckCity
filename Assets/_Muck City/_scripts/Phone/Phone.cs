@@ -47,6 +47,8 @@ public class Phone : MonoBehaviour
 
     public DeliveryData? _currentDelivery;
 
+    public bool _isPhoneActive = false;
+
 
     void Awake()
     {
@@ -105,8 +107,14 @@ public class Phone : MonoBehaviour
         }
     }
 
+    public void ToggleUseInput()
+    {
+        _isPhoneActive = !_isPhoneActive;
+    }
+
     void OnPhoneButtonPress(PhoneInputs input)
     {
+        if (!_isPhoneActive) return;
         if (_currentApp == null)
         {
             UseHomePageNavigation(input);
