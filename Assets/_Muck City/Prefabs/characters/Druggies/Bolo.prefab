@@ -1112,7 +1112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 0
   _name: 
-  _npcSO: {fileID: 11400000, guid: ea78dbc37bda35048a86c5b880ae107c, type: 2}
+  _npcSO: {fileID: 11400000, guid: 3dc1897638a179844856db23cd6c23a0, type: 2}
   _activeConversation: {fileID: 0}
   _canInteract: 0
   _roles: 

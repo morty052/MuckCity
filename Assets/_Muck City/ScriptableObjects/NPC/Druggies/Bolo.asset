@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb713d054b27d7e44976d4b989444eeb, type: 3}
+  m_Name: Bolo
+  m_EditorClassIdentifier: 
+  _id: 0
+  _name: Bolo
+  _npcPrefab: {fileID: 8127491175867273070, guid: 282e5ce138137c443b308fc9c21f32f7, type: 3}
+  _roles: 04000000
+  _primaryLocation: 3
+  _defaultConversation: {fileID: 0}
+  _spawnPosition: {x: -5.162938, y: 0, z: -101.3973}
+  _spawnRotation: {x: 0, y: 0, z: 0}
+  _preferredSubstances: 00000000
+  _pickUpSpots:
+  - {x: -9.37, y: 0, z: -127.72}
+  _defaultPurchasingPower: 1
+  _deliveryPointPrefab: {fileID: 4633138635349451138, guid: 118d008c5c8508d468e85df86cef061a, type: 3}

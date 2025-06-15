@@ -130,6 +130,8 @@ public class Dog : MonoBehaviour
 
     public HashSet<GameObject> _ignoreList = new();
 
+    public bool _hasAccessToPlayer = true;
+
     void Awake()
     {
         if (Instance == null)
@@ -254,8 +256,8 @@ public class Dog : MonoBehaviour
 
         //    ADD ANY TRANSITION
         Any(idleState, new FuncPredicate(() => _dogSensor.PlayerIsInRange && !_dogSensor.EnemiesInSight));
-        Any(playerSearchState, new FuncPredicate(() => !_dogSensor.PlayerIsInRange && _currentTarget == null));
-        Any(playerSearchState, new FuncPredicate(() => _playerIsCalling));
+        Any(playerSearchState, new FuncPredicate(() => !_dogSensor.PlayerIsInRange && _currentTarget == null && _hasAccessToPlayer));
+        Any(playerSearchState, new FuncPredicate(() => _playerIsCalling && _hasAccessToPlayer));
         Any(chaseState, new FuncPredicate(() => CanChase()));
 
 

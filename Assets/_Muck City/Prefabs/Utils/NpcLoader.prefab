@@ -46,4 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _npcLists:
   - _location: 3
-    _npcList: []
+    _npcList:
+    - {fileID: 11400000, guid: 3dc1897638a179844856db23cd6c23a0, type: 2}
