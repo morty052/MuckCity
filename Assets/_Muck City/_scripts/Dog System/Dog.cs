@@ -15,10 +15,13 @@ using ImprovedTimers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
+using DG.Tweening;
+using Invector;
 public class Dog : MonoBehaviour
 {
 
     public static Dog Instance { get; private set; }
+    public LayerMask _enemyLayer;
     Animator _animator;// Animator for the assigned dog
 
     CountdownTimer _stateTimer;// Timer for the current state
@@ -33,19 +36,37 @@ public class Dog : MonoBehaviour
     bool death_b = false;
     bool Sleep_b = false;
     bool Sit_b = false;
+
+    [TabGroup("Movement")]
     private float w_movement = 0.0f; // Run value
+
+    [TabGroup("Movement")]
     public float acceleration = 1.0f;
+
+    [TabGroup("Movement")]
     public float decelleration = 1.0f;
+
+    [TabGroup("Movement")]
     private float maxWalk = 0.5f;
+    [TabGroup("Movement")]
     private float maxRun = 1.0f;
+
+    [TabGroup("Movement")]
     private float currentSpeed;
     [Header("Particle FX")]
+    [TabGroup("Particle FX")]
     public ParticleSystem poopFX;
+    [TabGroup("Particle FX")]
     public ParticleSystem dirtFX;
+    [TabGroup("Particle FX")]
     public ParticleSystem peeFX;
+    [TabGroup("Particle FX")]
     public ParticleSystem waterFX;
+    [TabGroup("Particle FX")]
     private Vector3 newSpawn = new Vector3();
+    [TabGroup("Particle FX")]
     public Transform fxTransform;
+    [TabGroup("Particle FX")]
     public Transform fxTail;
 
     public NavMeshAgent _agent;
@@ -53,19 +74,30 @@ public class Dog : MonoBehaviour
     [HideInInspector]
     public DogSensor _dogSensor;
 
+    [TabGroup("Movement")]
     public float _walkingStoppingDistance = 1.4f;
+    [TabGroup("Movement")]
     public float _runningStoppingDistance = 2.8f;
-    public float _combatDistance = 2.8f;
+    public float _combatDistance = 1f;
+    public float _attackRange = 1f;
     public float _chaseDistance = 2.8f;
 
+    [TabGroup("Movement")]
     public bool walkPressed = false;
+
+    [TabGroup("Movement")]
     public bool runPressed = false;
+
+    [TabGroup("Movement")]
 
     public bool _shouldRun;
 
     public bool _searchingForPlayer = false;
 
     public Transform _currentTarget;
+
+    [TabGroup("Attack")]
+    public Transform _mouthTransform;
 
 
 
@@ -114,14 +146,14 @@ public class Dog : MonoBehaviour
             {
                 walkPressed = true;
                 runPressed = false;
-                _agent.stoppingDistance = _walkingStoppingDistance;
+                // _agent.stoppingDistance = _walkingStoppingDistance;
             }
 
             else
             {
                 runPressed = true;
                 walkPressed = true;
-                _agent.stoppingDistance = _runningStoppingDistance;
+                // _agent.stoppingDistance = _runningStoppingDistance;
             }
 
         }
@@ -219,10 +251,20 @@ public class Dog : MonoBehaviour
         StartCoroutine(CheckIfAgentReachedDestination());
         // Bite();
     }
-    public void MoveToTarget(Transform target)
+    public void MoveToTarget(Transform target, Vector3 direction = default)
     {
-        _currentTarget = target;
-        _agent.SetDestination(target.transform.position);
+        if (target != null)
+        {
+            _currentTarget = target;
+        }
+        if (direction != default)
+        {
+            _agent.SetDestination(direction);
+        }
+        else
+        {
+            _agent.SetDestination(target.position);
+        }
         _animator.SetBool("IsMoving", true);
         StartCoroutine(CheckIfAgentReachedDestination());
         // Bite();
@@ -385,7 +427,7 @@ public class Dog : MonoBehaviour
     }
 
 
-
+    #region Attack
 
     [Button("Bite")]
     public async void Bite()
@@ -395,6 +437,8 @@ public class Dog : MonoBehaviour
 
         await Task.Delay(800);
         float animationLength = _animator.GetCurrentAnimatorStateInfo(0).length;
+
+        RayCastToTarget();
 
         Debug.Log(" animation length: " + animationLength);
 
@@ -406,12 +450,30 @@ public class Dog : MonoBehaviour
 
     bool CanAttack()
     {
-        if (_currentTarget != null && Vector3.Distance(transform.position, _currentTarget.transform.position) <= _combatDistance)
+        if (_currentTarget != null && Vector3.Distance(_mouthTransform.position, _currentTarget.transform.position) <= _walkingStoppingDistance)
         {
             return true;
         }
         return false;
     }
+
+    [Button("RayCastToTarget")]
+    void RayCastToTarget()
+    {
+        if (_currentTarget != null)
+        {
+            Collider[] colliders = Physics.OverlapSphere(_mouthTransform.position, _mouthTransform.localScale.x, _enemyLayer);
+            if (colliders.Length > 0)
+            {
+                Debug.Log("colliders: " + colliders[0].name);
+                vDamage damage = new vDamage(10, false);
+                colliders[0].GetComponent<vHealthController>().TakeDamage(damage);
+            }
+
+        }
+    }
+
+    #endregion
     async void ResetAnimation(string boolName, float delay)
     {
         await Task.Delay((int)(delay * 1000));
@@ -424,7 +486,14 @@ public class Dog : MonoBehaviour
     }
 
 
-
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        if (_currentTarget != null)
+        {
+            Gizmos.DrawSphere(_mouthTransform.position, _mouthTransform.localScale.x);
+        }
+    }
 }
 
 public class DogLocomotion : BaseState
@@ -444,8 +513,21 @@ public class DogChaseState : BaseState
 
     public override void OnEnter()
     {
-        // Debug.Log("Dog entered idle");
+
+        _dog._shouldRun = true;
+        _dog._agent.stoppingDistance = 1f;
+
+        Transform target = _dog._dogSensor.GetClosestEnemy().transform;
+
+        Vector3 position = target.position + new Vector3(0, 0, 3f);
+        _dog.MoveToTarget(target);
+    }
+
+    public override void Update()
+    {
+        _dog._shouldRun = true;
         _dog.MoveToTarget(_dog._dogSensor.GetClosestEnemy().transform);
+        Debug.Log("Chasing " + Vector3.Distance(_dog._mouthTransform.position, _dog._currentTarget.transform.position));
     }
 }
 public class DogIdleState : BaseState
@@ -502,6 +584,8 @@ public class DogAttackState : BaseState
     public override void OnEnter()
     {
         _timeSinceLastAttack = Time.time;
+        // Vector3 direction = (_dog._currentTarget.position - _dog.transform.position).normalized; // (target.position - _dog.transform.position).normalized;
+        // _dog.transform.DORotate(direction, 0.1f);
     }
 
     public override void Update()
@@ -513,4 +597,5 @@ public class DogAttackState : BaseState
             _timeSinceLastAttack = Time.time;
         }
     }
+
 }
