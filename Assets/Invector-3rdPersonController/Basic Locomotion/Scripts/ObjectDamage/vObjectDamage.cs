@@ -183,7 +183,7 @@ namespace Invector
             targets.Clear();
         }
 
-        protected virtual void ApplyDamage(Collider target, Vector3 hitPoint)
+        public virtual void ApplyDamage(Collider target, Vector3 hitPoint)
         {
             damage.hitReaction = true;
             damage.sender = overrideDamageSender ? overrideDamageSender : transform;

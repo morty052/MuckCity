@@ -17,12 +17,17 @@ using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
 using Invector;
+
 public class Dog : MonoBehaviour
 {
 
     public static Dog Instance { get; private set; }
+
+    [TabGroup("Attack")]
     public LayerMask _enemyLayer;
-    Animator _animator;// Animator for the assigned dog
+
+    [HideInInspector]
+    public Animator _animator;// Animator for the assigned dog
 
     CountdownTimer _stateTimer;// Timer for the current state
 
@@ -79,7 +84,6 @@ public class Dog : MonoBehaviour
     [TabGroup("Movement")]
     public float _runningStoppingDistance = 2.8f;
     public float _combatDistance = 1f;
-    public float _attackRange = 1f;
     public float _chaseDistance = 2.8f;
 
     [TabGroup("Movement")]
@@ -91,16 +95,16 @@ public class Dog : MonoBehaviour
     [TabGroup("Movement")]
 
     public bool _shouldRun;
+    public bool _isChasing = false;
 
     public bool _searchingForPlayer = false;
 
     public Transform _currentTarget;
 
     [TabGroup("Attack")]
-    public Transform _mouthTransform;
-
-
-
+    public vObjectDamage _mouthTransform;
+    [TabGroup("Attack")]
+    public float _maxEnemyFollowDistance = 8f;
 
     void Awake()
     {
@@ -165,7 +169,7 @@ public class Dog : MonoBehaviour
         HandleMovement();
         // Debug.Log($"agent has Path: {_agent.hasPath}, agent remaining distance: {_agent.remainingDistance}, agent stopping distance: {_agent.stoppingDistance}, walkPressed: {walkPressed}, runPressed: {runPressed}, PathPending: {_agent.pathPending}  IsPlayerInRange: {_dogSensor.PlayerIsInRange} Active state {_stateMachine._currentState}");
 
-        Debug.Log($"Player in Range {_dogSensor.PlayerIsInRange} state {_stateMachine._currentState.State.GetType().Name}");
+        // Debug.Log($"Player in Range {_dogSensor.PlayerIsInRange} state {_stateMachine._currentState.State.GetType().Name}");
     }
 
     void OnAnimatorMove()
@@ -205,13 +209,16 @@ public class Dog : MonoBehaviour
         // //* FROM CHASING TO ATTACK
         At(chaseState, attackState, new FuncPredicate(() => _dogSensor.EnemiesInSight && CanAttack()));
 
-        // //* FROM BITING TO CHASING
-        // At(closeRangeAttackState, chaseState, new FuncPredicate(() => !_attackSensor.IsTargetInRange));
+        // //* FROM ATTACK TO CHASING
+        At(attackState, chaseState, new FuncPredicate(() => !CanAttack()));
+
+        // //* FROM CHASING TO FIND PLAYER
+        At(chaseState, playerSearchState, new FuncPredicate(() => _isChasing && IsOutOfChaseRange()));
         //* TRANSITIONS END 
 
         //    ADD ANY TRANSITION
         Any(idleState, new FuncPredicate(() => _dogSensor.PlayerIsInRange && !_dogSensor.EnemiesInSight));
-        Any(playerSearchState, new FuncPredicate(() => !_dogSensor.PlayerIsInRange));
+        Any(playerSearchState, new FuncPredicate(() => !_dogSensor.PlayerIsInRange && _currentTarget == null));
 
 
 
@@ -277,8 +284,16 @@ public class Dog : MonoBehaviour
         {
             yield return null;
         }
+
+        if (_currentTarget != null)
+        {
+            Vector3 lookPos = _currentTarget.position - transform.position;
+            lookPos.y = 0; // Keep only horizontal rotation
+            if (lookPos != Vector3.zero)
+                transform.DORotate(Quaternion.LookRotation(lookPos).eulerAngles, 0.5f);
+            // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookPos), Time.deltaTime * 5f);
+        }
         _animator.SetBool("IsMoving", false);
-        // _agent.ResetPath();
     }
 
     void HandleMovement()
@@ -309,6 +324,17 @@ public class Dog : MonoBehaviour
         _animator.SetFloat("Movement_f", w_movement); // Set movement speed for all required parameters
     }
 
+
+    bool IsOutOfChaseRange()
+    {
+
+        Debug.Log("Distance from player " + Vector3.Distance(transform.position, Player.Instance.transform.position));
+        if (Vector3.Distance(transform.position, Player.Instance.transform.position) > _maxEnemyFollowDistance)
+        {
+            return true;
+        }
+        return false;
+    }
     #endregion
     // void Start() // On start store dogKeyCodes
     // {
@@ -436,21 +462,23 @@ public class Dog : MonoBehaviour
         _animator.SetInteger("AttackType_int", 1);
 
         await Task.Delay(800);
-        float animationLength = _animator.GetCurrentAnimatorStateInfo(0).length;
-
+        _animator.SetInteger("AttackType_int", 0);
         RayCastToTarget();
+        // float animationLength = _animator.GetCurrentAnimatorStateInfo(0).length;
 
-        Debug.Log(" animation length: " + animationLength);
 
-        ResetAnimation("AttackReady_b", animationLength);
-        ResetAnimation("AttackType_int", 0, animationLength);
+
+        // Debug.Log(" animation length: " + animationLength);
+
+        // ResetAnimation("AttackReady_b", animationLength);
+        // ResetAnimation("AttackType_int", 0, animationLength);
 
 
     }
 
     bool CanAttack()
     {
-        if (_currentTarget != null && Vector3.Distance(_mouthTransform.position, _currentTarget.transform.position) <= _walkingStoppingDistance)
+        if (_currentTarget != null && Vector3.Distance(_mouthTransform.transform.position, _currentTarget.transform.position) <= _combatDistance + 0.1f)
         {
             return true;
         }
@@ -462,12 +490,20 @@ public class Dog : MonoBehaviour
     {
         if (_currentTarget != null)
         {
-            Collider[] colliders = Physics.OverlapSphere(_mouthTransform.position, _mouthTransform.localScale.x, _enemyLayer);
+            Collider[] colliders = Physics.OverlapSphere(_mouthTransform.transform.position, _mouthTransform.transform.localScale.x, _enemyLayer);
             if (colliders.Length > 0)
             {
-                Debug.Log("colliders: " + colliders[0].name);
-                vDamage damage = new vDamage(10, false);
-                colliders[0].GetComponent<vHealthController>().TakeDamage(damage);
+
+                if (colliders[0].TryGetComponent(out vHealthController health))
+                {
+                    _mouthTransform.ApplyDamage(colliders[0], _currentTarget.transform.position);
+                    Debug.Log("colliders: " + colliders[0].name);
+                }
+
+                else
+                {
+                    Debug.Log(" damage not applied");
+                }
             }
 
         }
@@ -489,10 +525,8 @@ public class Dog : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
-        if (_currentTarget != null)
-        {
-            Gizmos.DrawSphere(_mouthTransform.position, _mouthTransform.localScale.x);
-        }
+
+        Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, 0, _combatDistance));
     }
 }
 
@@ -506,6 +540,7 @@ public class DogLocomotion : BaseState
 public class DogChaseState : BaseState
 {
     Dog _dog;
+    Transform _target;
     public DogChaseState(Animator animator, Dog dog) : base(animator)
     {
         _dog = dog;
@@ -514,20 +549,22 @@ public class DogChaseState : BaseState
     public override void OnEnter()
     {
 
+        _dog._isChasing = true;
         _dog._shouldRun = true;
-        _dog._agent.stoppingDistance = 1f;
+        _target = _dog._dogSensor.GetClosestEnemy().transform;
+        _dog._agent.stoppingDistance = _dog._combatDistance;
+    }
+    public override void OnExit()
+    {
 
-        Transform target = _dog._dogSensor.GetClosestEnemy().transform;
-
-        Vector3 position = target.position + new Vector3(0, 0, 3f);
-        _dog.MoveToTarget(target);
+        _dog._isChasing = false;
     }
 
     public override void Update()
     {
-        _dog._shouldRun = true;
-        _dog.MoveToTarget(_dog._dogSensor.GetClosestEnemy().transform);
-        Debug.Log("Chasing " + Vector3.Distance(_dog._mouthTransform.position, _dog._currentTarget.transform.position));
+
+        // Vector3 position = _target.position - new Vector3(0, 0, _dog._combatDistance);
+        _dog.MoveToTarget(_target.transform);
     }
 }
 public class DogIdleState : BaseState
@@ -584,12 +621,20 @@ public class DogAttackState : BaseState
     public override void OnEnter()
     {
         _timeSinceLastAttack = Time.time;
-        // Vector3 direction = (_dog._currentTarget.position - _dog.transform.position).normalized; // (target.position - _dog.transform.position).normalized;
-        // _dog.transform.DORotate(direction, 0.1f);
+        _animator.SetBool("IsMoving", false);
+        _animator.SetBool("AttackReady_b", true);
+    }
+
+    public override void OnExit()
+    {
+        _timeSinceLastAttack = Time.time;
+        _animator.SetBool("AttackReady_b", false);
+        _animator.SetInteger("AttackType_int", 0);
     }
 
     public override void Update()
     {
+
         if (Time.time - _timeSinceLastAttack > _attackCoolDown)
         {
             Debug.Log("Attacking");

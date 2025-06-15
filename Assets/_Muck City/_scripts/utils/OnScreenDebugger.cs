@@ -3,6 +3,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityUtils;
 
 
@@ -178,6 +179,12 @@ public class OnScreenDebugger : MonoBehaviour
             // _activeListCountText.text = _activeList.Count.ToString();
             _consoleText.text = _activeList[_index].condition + "\n";
         }
+    }
+
+    [Button("Reload Scene")]
+    void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void LogMessage(string condition, string stackTrace, LogType type)
