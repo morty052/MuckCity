@@ -14,6 +14,7 @@ namespace Invector.vCharacterController.AI
     {
         #region AI VARIABLES
 
+
         #region Inspector Variables
         [vEditorToolbar("Start")]
         public bool disableControllerOnStart;

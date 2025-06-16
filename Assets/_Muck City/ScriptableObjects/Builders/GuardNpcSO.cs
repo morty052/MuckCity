@@ -1,9 +1,7 @@
 using DialogueEditor;
 using UnityEngine;
-using System.Collections.Generic;
 using Invector.vCharacterController.AI;
-
-
+using Sirenix.OdinInspector;
 
 
 [CreateAssetMenu(fileName = "Npc", menuName = "ScriptableObjects/NewNpc/GuardNpc", order = 1)]
@@ -24,4 +22,6 @@ public class GuardNpcSO : NpcSO
         UnityEditor.EditorUtility.SetDirty(this);
 #endif
     }
+
+
 }

@@ -8,7 +8,9 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
     {
         [vEditorToolbar("FSM")]
         [SerializeField] protected vFSMBehaviour _fsmBehaviour;
-    
+
+
+
         [SerializeField] protected bool _stop;
         [SerializeField] protected bool _debugMode;
         public UnityEngine.Events.UnityEvent onStartFSM;
@@ -22,10 +24,11 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
         vFSMState _lastState;
         bool inChangeState;
         protected virtual void Start()
-        {           
-            aiController = GetComponent<vIControlAI>();         
+        {
+            aiController = GetComponent<vIControlAI>();
+
         }
-        
+
         protected virtual void Update()
         {
             if (aiController != null && !aiController.isDead && !isStopped) UpdateStates();
@@ -35,11 +38,11 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
         {
             if (currentState)
             {
-                if(!inChangeState)
+                if (!inChangeState)
                 {
-                    currentState.UpdateState(this);                   
+                    currentState.UpdateState(this);
                     UpdateAnyState();
-                }                     
+                }
             }
             else
             {
@@ -49,7 +52,7 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
 
         public virtual void ResetFSM()
         {
-            if (currentState)                
+            if (currentState)
                 currentState.OnStateExit(this);
             onResetFSM.Invoke();
             currentState = null;
@@ -61,7 +64,7 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
             if (_fsmBehaviour.states.Count > 1)
             {
                 currentState = _fsmBehaviour.states[0];
-                currentState.OnStateEnter(this);              
+                currentState.OnStateEnter(this);
 
             }
             else if (currentState != null) currentState = null;
@@ -77,7 +80,7 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
         }
 
         #region FSM Interface
-        public virtual vFSMBehaviour fsmBehaviour { get { return _fsmBehaviour; } set { _fsmBehaviour = value; } }      
+        public virtual vFSMBehaviour fsmBehaviour { get { return _fsmBehaviour; } set { _fsmBehaviour = value; } }
 
         public virtual bool debugMode { get { return _debugMode; } set { _debugMode = value; } }
 
@@ -111,12 +114,12 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
 
         public virtual List<vFSMDebugObject> debugList
         {
-            get;protected set;
+            get; protected set;
         }
 
         public virtual vFSMState anyState
         {
-            get { return _fsmBehaviour.states.Count > 1? _fsmBehaviour.states[1]:null; }
+            get { return _fsmBehaviour.states.Count > 1 ? _fsmBehaviour.states[1] : null; }
         }
 
         public virtual vFSMState currentState
@@ -130,7 +133,7 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
             get { return _lastState; }
             protected set { _lastState = value; }
         }
-        
+
         public virtual bool HasTimer(string key)
         {
             return _timers.ContainsKey(key);
@@ -155,7 +158,7 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
             return 0;
         }
 
-        public virtual void SetTimer(string key,float value)
+        public virtual void SetTimer(string key, float value)
         {
             if (!_timers.ContainsKey(key))
             {
@@ -163,9 +166,9 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
             }
             else if (_timers.ContainsKey(key))
             {
-                _timers[key] = value;                
+                _timers[key] = value;
             }
-            if (debugMode) SendDebug("<color=yellow>Set " + key+ " Timer to " +value.ToString("0.0") +" </color> ", gameObject);
+            if (debugMode) SendDebug("<color=yellow>Set " + key + " Timer to " + value.ToString("0.0") + " </color> ", gameObject);
         }
 
         public virtual void ChangeState(vFSMState state)
@@ -177,12 +180,12 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
                 currentState = null;
                 if (_lastState)
                 {
-                    if (debugMode) SendDebug("<color=red>EXIT:" + _lastState.name + "</color>" + "  "+"<color=yellow> ENTER :" + state.Name + " </color> ", gameObject);
+                    if (debugMode) SendDebug("<color=red>EXIT:" + _lastState.name + "</color>" + "  " + "<color=yellow> ENTER :" + state.Name + " </color> ", gameObject);
                     _lastState.OnStateExit(this);
                     onStateExit.Invoke(_lastState);
                 }
                 currentState = state;
-                state.OnStateEnter(this);                     
+                state.OnStateEnter(this);
                 inChangeState = false;
                 onStateEnter.Invoke(state);
             }
@@ -190,14 +193,14 @@ namespace Invector.vCharacterController.AI.FSMBehaviour
 
         public virtual void ChangeBehaviour(vFSMBehaviour behaviour)
         {
-            if(_fsmBehaviour !=behaviour)
+            if (_fsmBehaviour != behaviour)
             {
-                inChangeState = true;           
+                inChangeState = true;
                 _fsmBehaviour = behaviour;
                 currentState = null;
                 ResetFSM();
                 if (debugMode)
-                SendDebug("CHANGE BEHAVIOUR TO " + behaviour.name);
+                    SendDebug("CHANGE BEHAVIOUR TO " + behaviour.name);
                 inChangeState = false;
                 onChangeBehaviour.Invoke(_fsmBehaviour);
             }

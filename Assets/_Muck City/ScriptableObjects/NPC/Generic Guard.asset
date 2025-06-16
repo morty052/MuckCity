@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4a14c031e06e14a95fd0444718e8ee, type: 3}
+  m_Name: Generic Guard
+  m_EditorClassIdentifier: 
+  _id: 0
+  _name: Generic Guard
+  _npcPrefab: {fileID: 4153530080379316490, guid: 807a3db71fe4e6e45a8d87b02359e515, type: 3}
+  _roles: 05000000
+  _primaryLocation: 3
+  _defaultConversation: {fileID: 0}
+  _spawnPosition: {x: 41.7, y: 0, z: -73.9}
+  _spawnRotation: {x: -0, y: 179.99968, z: -0}
+  _defaultPatrolPoints: {fileID: 649329674490142394, guid: 7035ccc12f8fdde42b021ba5e41368a5, type: 3}
+  _idlePosition: {x: 0, y: 0, z: 0}

@@ -2,6 +2,8 @@ using DialogueEditor;
 using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
+using Sirenix.OdinInspector;
+using UnityEditor;
 
 
 
@@ -24,5 +26,17 @@ public class NpcSO : ScriptableObject
         _name = this.name;
         UnityEditor.EditorUtility.SetDirty(this);
 #endif
+    }
+
+    [Button("Copy Transform")]
+    public void CopyTransform()
+    {
+        if (Selection.activeGameObject == null)
+        {
+            Debug.LogError("No transform selected to copy");
+            return;
+        }
+        _spawnPosition = Selection.activeGameObject.transform.position;
+        _spawnRotation = Selection.activeGameObject.transform.rotation.eulerAngles;
     }
 }

@@ -36,6 +36,8 @@ public class NpcCharacter : MonoBehaviour, IInteractable
     public vControlAI _aiController;
     public vFSMBehaviourController _fsmController;
 
+
+
     void Awake()
     {
         if (_npcSO != null)
@@ -47,6 +49,9 @@ public class NpcCharacter : MonoBehaviour, IInteractable
             SetupTransitions();
         }
     }
+
+
+
 
 
     void Update()
