@@ -2,9 +2,8 @@ using UnityEngine;
 
 public enum SpecialCharacters
 {
-    NONE,
-    ALBERTO,
-
-    HAZMAT_BILL,
-    HAZMAT_BOB
+    NONE = 0,
+    HAZMAT_BILL = 1,
+    HAZMAT_BOB = 2,
+    ALBERTO = 3,
 }

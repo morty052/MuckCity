@@ -1541,9 +1541,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 0
   _name: 
-  _npcSO: {fileID: 11400000, guid: 8e1207fec0d97e64d83df4d84ee192e9, type: 2}
+  _npcSO: {fileID: 11400000, guid: e7643c4cd3609c8489350d05bd6382e5, type: 2}
+  _activeConversation: {fileID: 0}
   _canInteract: 1
   _roles: 0200000003000000
+  _aiController: {fileID: 0}
+  _fsmController: {fileID: 0}
 --- !u!114 &2213801177671038908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1772,6 +1775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _questInfoSo: {fileID: 0}
   _questStep: {fileID: 0}
+  _activeQuestHasConvo: 0
 --- !u!1 &5612078630103914046
 GameObject:
   m_ObjectHideFlags: 0

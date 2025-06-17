@@ -45,8 +45,8 @@ public class Lift : MonoBehaviour
 
     void ToggleAreaOff()
     {
-        _toggleAreaOff.gameObject.SetActive(false);
-        _toggleAreaOn.gameObject.SetActive(true);
+        _toggleAreaOff.gameObject.SetActive(!_toggleAreaOff.gameObject.activeSelf);
+        _toggleAreaOn.gameObject.SetActive(!_toggleAreaOn.gameObject.activeSelf);
     }
 
 }

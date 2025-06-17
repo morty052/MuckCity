@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +22,8 @@ namespace DialogueEditor
             Parameters = new List<Parameter>();
         }
 
+        public event Action OnDialogueFinished;
+
         /// <summary> The start of the conversation </summary>
         public SpeechNode Root;
 
@@ -34,6 +37,11 @@ namespace DialogueEditor
         public TMPro.TMP_FontAsset EndConversationFont;
 
         // ---
+
+        public void OnFinished()
+        {
+            OnDialogueFinished?.Invoke();
+        }
 
         public void SetInt(string paramName, int value, out eParamStatus status)
         {
@@ -85,7 +93,7 @@ namespace DialogueEditor
             {
                 status = eParamStatus.OK;
                 return param.BoolValue;
-                
+
             }
             else
             {

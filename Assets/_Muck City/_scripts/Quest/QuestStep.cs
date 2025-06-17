@@ -143,6 +143,10 @@ public abstract class QuestStep : MonoBehaviour
         return data;
     }
 
+    public virtual void OnQuestDialogFinished()
+    {
+
+    }
     protected void UseClip(string name)
     {
         EventClip clip = FindClipByName(name);
@@ -299,6 +303,9 @@ public abstract class QuestStep : MonoBehaviour
             // creatureObject.transform.SetParent(transform);
         }
     }
+
+
+
 }
 
 

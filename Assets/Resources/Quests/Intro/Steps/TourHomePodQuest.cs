@@ -17,6 +17,9 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
 
     TimelinePlayer _activeCutScenePlayer;
 
+    NpcQuestData billQuestData;
+    NpcQuestData bobQuestData;
+
     bool _doneSetup;
 
 
@@ -42,16 +45,19 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
     {
         if (_doneSetup) return;
         Debug.Log("Started Quest: " + _questInfoSo._id);
-        NpcQuestData billQuestData = FindNpcQuestDataByName(SpecialCharacters.HAZMAT_BILL);
-        NpcQuestData bobQuestData = FindNpcQuestDataByName(SpecialCharacters.HAZMAT_BOB);
+        billQuestData = FindNpcQuestDataByName(SpecialCharacters.HAZMAT_BILL);
+        // bobQuestData = FindNpcQuestDataByName(SpecialCharacters.HAZMAT_BOB);
 
         _hazmatBill = NpcManager.Instance.SpawnAndMoveToPosition(billQuestData._npcSO, billQuestData._specialPosition);
-        _hazmatBob = NpcManager.Instance.SpawnAndMoveToPosition(bobQuestData._npcSO, bobQuestData._specialPosition);
+        // _hazmatBob = NpcManager.Instance.SpawnAndMoveToPosition(bobQuestData._npcSO, bobQuestData._specialPosition);
 
         _hazmatBill.UpdateQuestData(_questInfoSo, this, billQuestData._conversationForQuest);
-        _hazmatBob.UpdateQuestData(_questInfoSo, this, bobQuestData._conversationForQuest);
+        // _hazmatBob.UpdateQuestData(_questInfoSo, this, bobQuestData._conversationForQuest);
 
-        // _hazmatBill.gameObject.SetActive(false);
+        billQuestData._conversationForQuest.OnDialogueFinishedEvent += OnConversationFinished;
+
+
+        _hazmatBill.gameObject.SetActive(false);
 
         // QuestPointData pointData = FindQuestPointDataByName("INTRO_TO_HAZMAT_BILL");
         // InstantiateQuestPoint(pointData._spawnPosition.position, pointData._name);
@@ -63,6 +69,23 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         _doneSetup = true;
         // Alberto.UpdateQuestData(_questInfoSo, this, questData._conversationForQuest);
     }
+
+    private void OnConversationFinished(SpecialCharacters speakerName)
+    {
+
+        switch (speakerName)
+        {
+            case SpecialCharacters.HAZMAT_BILL:
+                // Debug.Log("Done Speaking with " + speakerName + " Update quest now");
+                billQuestData._conversationForQuest.OnDialogueFinishedEvent -= OnConversationFinished;
+                DomeManager.Instance.SetupMissionDisplay(billQuestData._mission);
+                break;
+            default:
+                break;
+        }
+    }
+
+
 
     void SetupAlberto()
     {
@@ -149,22 +172,7 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
     }
 
 
-    private T SphereCastForComponent<T>(Vector3 position, float radius, Vector3 dir) where T : Component
-    {
-        RaycastHit[] hits = new RaycastHit[10];
-        int hitCount = Physics.SphereCastNonAlloc(new Ray(position, dir), radius, hits, 10f);
 
-        for (int i = 0; i < hitCount; i++)
-        {
-            Debug.Log("Hit: " + hits[i].transform.name);
-            T component = hits[i].transform.GetComponent<T>();
-            if (component != null)
-            {
-                return component;
-            }
-        }
-        return null;
-    }
 
     public Task OnLoadTask()
     {

@@ -44,28 +44,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c7fb9dec6163054593c7e23613ba533, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _questInfoSo: {fileID: 11400000, guid: f2ecee9b3979f8c468951d869e5757c6, type: 2}
+  _questInfoSo: {fileID: 11400000, guid: 833872137d4b17443a6cb2cd9d9ffc21, type: 2}
   _questPointPrefab: {fileID: 5783401725927670678, guid: 89b4cd5bfe195334180a364f101c0279, type: 3}
   _tutorialTriggerPrefab: {fileID: 7435705475112992583, guid: 96542d181ccb8344fa496633bc07a1d8, type: 3}
   _tiedCharactersQuestData:
-  - _characterID: 1
+  - _characterID: 3
     _conversationForQuest: {fileID: 967415334066115386, guid: 0236e1cf245c2a246ade3ee0b34e4ab7, type: 3}
-    _npcSO: {fileID: 11400000, guid: 8e1207fec0d97e64d83df4d84ee192e9, type: 2}
+    _npcSO: {fileID: 11400000, guid: e7643c4cd3609c8489350d05bd6382e5, type: 2}
     _specialPosition:
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 90, z: 0}
-  - _characterID: 2
+    _mission:
+      _title: 
+      _missionStartPoint: {x: 0, y: 0, z: 0}
+      _objectives: []
+  - _characterID: 1
     _conversationForQuest: {fileID: 2315960693268669948, guid: 09ef9fa2e08d53d428fa0d847acf9a29, type: 3}
-    _npcSO: {fileID: 11400000, guid: 5537c39891b084941ae504d329e7d0fd, type: 2}
+    _npcSO: {fileID: 11400000, guid: 3158f4934826ce1499778b3e3e23fba5, type: 2}
     _specialPosition:
-      position: {x: -9.91, y: -5.67, z: 3.8862844}
-      rotation: {x: 0, y: 90, z: 0}
-  - _characterID: 3
+      position: {x: 19.27, y: -39.23, z: -107.96384}
+      rotation: {x: -0, y: 270, z: 0}
+    _mission:
+      _title: Find Alberto
+      _missionStartPoint: {x: 0, y: 0, z: 0}
+      _objectives:
+      - _title: Exit Bunker
+        _objectiveStartPosition: {x: 0, y: 0, z: 0}
+        _isCompleted: 0
+      - _title: Get to officers mess
+        _objectiveStartPosition: {x: 0, y: 0, z: 0}
+        _isCompleted: 0
+  - _characterID: 2
     _conversationForQuest: {fileID: 5174738624814373698, guid: c094ed537bcede64f8b6b44392071894, type: 3}
-    _npcSO: {fileID: 11400000, guid: 957f48fe0b2bd3a42926e0f13dd3cd60, type: 2}
+    _npcSO: {fileID: 11400000, guid: 7237f024f4fcc9a4598fee80b0bf8a26, type: 2}
     _specialPosition:
-      position: {x: -6.28, y: -2.73, z: 4.11}
-      rotation: {x: 0, y: 90, z: 0}
+      position: {x: 25.643404, y: -36.197502, z: -108.66204}
+      rotation: {x: -0, y: 90, z: 0}
+    _mission:
+      _title: 
+      _missionStartPoint: {x: 0, y: 0, z: 0}
+      _objectives: []
   _questPointsData:
   - _spawnPosition:
       position: {x: -1.75, y: -2.72, z: 2.6962843}
@@ -74,8 +92,8 @@ MonoBehaviour:
   _questCutScenes:
   - _name: INTRO_TO_HAZMAT_BILL
     _spawnPosition:
-      position: {x: -4.94, y: -4.32, z: 2.6962843}
-      rotation: {x: 0, y: 0, z: 0}
+      position: {x: 23.69, y: -36.73, z: -107.96384}
+      rotation: {x: -0, y: 0, z: 0}
     _cutScenePlayer: {fileID: 7038046814094832206, guid: f1d798197feb0694dab2f20afd7eeff2, type: 3}
   _eventClips:
   - _name: Wing is Getting Detached

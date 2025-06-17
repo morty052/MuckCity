@@ -365,10 +365,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 3
   _name: 
-  _npcSO: {fileID: 11400000, guid: 957f48fe0b2bd3a42926e0f13dd3cd60, type: 2}
+  _npcSO: {fileID: 11400000, guid: 7237f024f4fcc9a4598fee80b0bf8a26, type: 2}
   _activeConversation: {fileID: 0}
   _canInteract: 1
   _roles: 02000000
+  _aiController: {fileID: 0}
+  _fsmController: {fileID: 0}
 --- !u!114 &2094426540288189841
 MonoBehaviour:
   m_ObjectHideFlags: 0

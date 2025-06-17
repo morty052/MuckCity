@@ -39,9 +39,10 @@ public class SpecialNPC : NpcCharacter
     {
         if (IsQuestGiver && _questGiver.HasQuest)
         {
-            OnScreenDebugger.Instance.Log("Interacted with quest giver");
+            // OnScreenDebugger.Instance.Log("Interacted with quest giver");
             if (_questGiver.HasConvoForQuest)
             {
+                _activeConversation._speakerName = _npcSO._id;
                 StartConversation(_activeConversation);
                 OnInteractedWithQuestGiver?.Invoke();
             }

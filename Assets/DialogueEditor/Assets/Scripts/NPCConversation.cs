@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using System;
 
 namespace DialogueEditor
 {
@@ -12,7 +13,7 @@ namespace DialogueEditor
         V1_03 = 103,    // Initial save data
         V1_10 = 110,    // Parameters
     }
-    
+
 
     //--------------------------------------
     // Conversation Monobehaviour (Serialized)
@@ -46,7 +47,14 @@ namespace DialogueEditor
         public UnityEngine.Events.UnityEvent Event;
         public List<EditableParameter> ParameterList; // Serialized into the json string
 
-        
+        public SpecialCharacters _speakerName;
+        public event Action<SpecialCharacters> OnDialogueFinishedEvent;
+
+
+        public void OnDialogueFinished()
+        {
+            OnDialogueFinishedEvent?.Invoke(_speakerName);
+        }
 
 
         //--------------------------------------
@@ -136,7 +144,7 @@ namespace DialogueEditor
         {
             // Dejsonify 
             EditableConversation conversation = Dejsonify();
-            
+
             if (conversation != null)
             {
                 // Copy the param list
@@ -561,5 +569,8 @@ namespace DialogueEditor
                 }
             }
         }
+
+
+
     }
 }

@@ -293,7 +293,7 @@ public class Player : MonoBehaviour
 
     private void OnEnterConversation(NPCConversation conversation)
     {
-        OnScreenDebugger.Instance.Log("Conversation started with " + conversation);
+        // OnScreenDebugger.Instance.Log("Conversation started with " + conversation);
         _vThirdPersonInput.lockMoveInput = true;
         _isInDialogue = true;
         _activeConversation = conversation;
