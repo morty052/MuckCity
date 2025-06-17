@@ -1,7 +1,7 @@
 using DialogueEditor;
 using UnityEngine;
 using Invector.vCharacterController.AI;
-using Sirenix.OdinInspector;
+
 
 
 [CreateAssetMenu(fileName = "Npc", menuName = "ScriptableObjects/NewNpc/GuardNpc", order = 1)]

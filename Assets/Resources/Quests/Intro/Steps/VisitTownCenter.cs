@@ -104,7 +104,7 @@ public class VisitTownCenter : QuestStep
         {
             Debug.Log("Quest should end now");
 
-            GameEventsManager.Instance.OnObjectiveUpdatedEvent(DomeManager.Instance._activeObjective, DomeManager.ObjectiveState.COMPLETED);
+            GameEventsManager.Instance.OnObjectiveUpdatedEvent(DomeManager.Instance._activeObjective, ObjectiveState.COMPLETED);
             FinishQuestStep();
         }
     }

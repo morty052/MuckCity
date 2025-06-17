@@ -313,7 +313,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openCloseEvents: 0
   openCloseWindow: 1
-  selectedToolbar: 9
+  selectedToolbar: 8
   _isDead: 1
   _currentHealth: 0
   isImmortal: 0
@@ -416,9 +416,9 @@ MonoBehaviour:
   isJumping: 0
   doingCustomAction: 0
   customAction: 0
-  disableAgentOnStart: 1
+  disableAgentOnStart: 0
   useNavMeshAgent: 1
-  updatePathQuality: 2
+  updatePathQuality: 4
   aceleration: 8
   _stopingDistance: 0.2
   _walkingStopingDistance: 0

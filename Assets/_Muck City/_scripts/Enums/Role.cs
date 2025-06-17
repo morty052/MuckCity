@@ -2,7 +2,7 @@
 
 public enum Role
 {
-    NONE,
+    NONE = 0,
     CIVILIAN,
     QUEST_GIVER,
     SHOP_OWNER,

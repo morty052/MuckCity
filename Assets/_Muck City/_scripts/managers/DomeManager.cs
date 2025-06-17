@@ -35,60 +35,98 @@ public struct LocationData
     }
 
 }
+
 [System.Serializable]
 public struct Objective
 {
-    public string _text;
-    public Vector3 _objectiveTriggerPosition;
-    public readonly bool HasMarker => _objectiveTriggerPosition != Vector3.zero;
+    public string _title;
+    public Vector3 _objectiveStartPosition;
 
+    public bool _isCompleted;
+    public readonly bool HasWayPoint => _objectiveStartPosition != Vector3.zero;
 
-    public Objective(string text, Vector3 objectiveTriggerPosition)
+    public Objective(string title, Vector3 objectiveStartPosition, bool isCompleted = false)
     {
-        _text = text;
-        _objectiveTriggerPosition = objectiveTriggerPosition;
+        _title = title;
+        _objectiveStartPosition = objectiveStartPosition;
+        _isCompleted = isCompleted;
+    }
+}
+
+[System.Serializable]
+public struct Mission
+{
+    public string _title;
+    public Vector3 _missionStartPoint;
+
+    public List<Objective> _objectives;
+    public readonly bool HasMarker => _missionStartPoint != Vector3.zero;
+
+
+    public Mission(string text, List<Objective> objectives, Vector3 missionTriggerPosition)
+    {
+        _title = text;
+        _missionStartPoint = missionTriggerPosition;
+        _objectives = objectives;
     }
 
+}
+
+public enum ObjectiveState
+{
+    STARTED,
+    COMPLETED
 }
 
 
 public class DomeManager : MonoBehaviour
 {
     public static DomeManager Instance { get; private set; }
-    public enum ObjectiveState
-    {
-        STARTED,
-        COMPLETED
-    }
 
-    [Header("Locations")]
+    [TabGroup("Objective Management")]
+    public ObjectiveRenderer _objectiveRenderer;
+
+
+    [TabGroup("Locations")]
     public LocationData _othroBunkerLocationData;
+    [TabGroup("Locations")]
     [SerializeField] List<LocationData> _shops = new();
+    [TabGroup("Locations")]
     [SerializeField] List<LocationData> _districts = new();
 
+    [TabGroup("Day Management")]
     [SerializeField] GameObject _skyDome;
+    [TabGroup("Day Management")]
     [SerializeField] Material _skyTexture;
+    [TabGroup("Day Management")]
     [SerializeField] GameObject _sun;
+    [TabGroup("Day Management")]
     [SerializeField] GameObject _moon;
 
 
-    [Header("Day Management")]
+    [TabGroup("Day Management")]
     CountdownTimer _inGameHoursTimer;
+    [TabGroup("Day Management")]
     [SerializeField] float _inGameHoursInterval = 10f;
-
+    [TabGroup("Day Management")]
     [SerializeField] float _nightTime = 0.4f;
+    [TabGroup("Day Management")]
     [SerializeField] float _dayTime = 0.1f;
+    [TabGroup("Day Management")]
     [SerializeField] float _timeOfDay = 0.1f;
+    [TabGroup("Day Management")]
     [SerializeField] float _offsetInterval = 0.1f;
-
+    [TabGroup("Day Management")]
     [SerializeField] int _inGameHours = 0;
-
+    [TabGroup("Day Management")]
     [SerializeField] Light _mainDirectionalLight;
+    [TabGroup("Day Management")]
     [SerializeField] Color _nightColor = new(0.1f, 0.1f, 0.1f, 1f);
+    [TabGroup("Day Management")]
     [SerializeField] Color _dayColor;
 
     [HideInInspector]
-    public Objective _activeObjective;
+    public Mission _activeObjective;
 
     [SerializeField] Waypoint _questMarker;
 
@@ -112,8 +150,6 @@ public class DomeManager : MonoBehaviour
 
     void OnEnable()
     {
-        // GameEventsManager.OnPurchaseItem += DeliverItem;
-        GameEventsManager.OnAcquireWeapon += NotifyPlayer;
         GameEventsManager.OnExitDistrictEvent += HandleDistrictExit;
         GameEventsManager.OnEnterDistrictEvent += HandleDistrictEntry;
         GameEventsManager.OnSunDownEvent += HandleSunDown;
@@ -122,8 +158,6 @@ public class DomeManager : MonoBehaviour
 
     void OnDisable()
     {
-        // GameEventsManager.OnPurchaseItem -= DeliverItem;
-        GameEventsManager.OnAcquireWeapon -= NotifyPlayer;
         GameEventsManager.OnExitDistrictEvent -= HandleDistrictExit;
         GameEventsManager.OnEnterDistrictEvent -= HandleDistrictEntry;
         GameEventsManager.OnSunDownEvent -= HandleSunDown;
@@ -215,30 +249,11 @@ public class DomeManager : MonoBehaviour
         // Debug.Log($"In game hours {_inGameHours}");
     }
 
-    // private void OnObjectiveUpdated(Objective objective, ObjectiveState state)
-    // {
-    //     switch (state)
-    //     {
-    //         case ObjectiveState.STARTED:
-    //             HandleNewObjective(objective);
-    //             break;
-    //         case ObjectiveState.COMPLETED:
-    //             HandleEndObjective();
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
-
-    // private void DeliverItem(ShopItemSO sO)
-    // {
-    //     Debug.Log("Scheduling delivery for item");
-    // }
-
-    private void NotifyPlayer(WeaponSO sO)
+    public void SetupMissionDisplay(Mission objective)
     {
-        Debug.Log("Player Acquired gun");
+        _objectiveRenderer.SetupMission(objective);
     }
+
 
     public LocationData GetRandomLocation()
     {
@@ -277,16 +292,9 @@ public class DomeManager : MonoBehaviour
         _questMarker.Init(position);
     }
 
-    // void HandleNewObjective(Objective objective)
-    // {
-    //     _objectiveText.text = objective._text;
-    //     _objectiveCanvas.SetActive(true);
-    //     _activeObjective = objective;
-    //     if (objective.HasMarker)
-    //     {
-    //         InstantiateQuestMarker(objective._objectiveTriggerPosition, objective._text);
-    //     }
-    // }
+
+
+
     // void HandleEndObjective()
     // {
     //     _objectiveCanvas.SetActive(false);

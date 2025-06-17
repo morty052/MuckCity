@@ -25,80 +25,48 @@ public class OnScreenDebugger : MonoBehaviour
 {
     public static OnScreenDebugger Instance { get; private set; }
 
-    [FoldoutGroup("Console Debugging")]
+    [TabGroup("Console"), OnValueChanged("ToggleHud")]
+    public bool _showConsoleLogs = true;
+    [TabGroup("Console")]
     [SerializeField] GameObject _hud;
-    [FoldoutGroup("Console Debugging")]
+    [TabGroup("Console")]
     [SerializeField] TextMeshProUGUI _consoleText;
-    [FoldoutGroup("Console Debugging")]
+    [TabGroup("Console")]
     [SerializeField] TextMeshProUGUI _warningCountText;
-    [FoldoutGroup("Console Debugging")]
+    [TabGroup("Console")]
     [SerializeField] TextMeshProUGUI _errorCountText;
-    [FoldoutGroup("Console Debugging")]
+    [TabGroup("Console")]
     [SerializeField] TextMeshProUGUI _activeIndexText;
-    [FoldoutGroup("Console Debugging")]
+    [TabGroup("Console")]
     [SerializeField] TextMeshProUGUI _logsCountText;
 
-    [FoldoutGroup("Console Debugging")]
+    [TabGroup("Console")]
     public int _index = 0;
 
-    [FoldoutGroup("Crafting Helpers")]
+    [TabGroup("Crafting")]
     public CraftingArea _debugCraftingArea;
 
-    [FoldoutGroup("Crafting Helpers")]
-    [Title("Storage")]
+    [TabGroup("Crafting")]
     public Storage _activeStorage;
-    [Title("Spawn Position")]
+    [Tooltip("Spawn Position")]
     public Pos _debugSpawnPos;
 
-    [FoldoutGroup("Crafting Helpers")]
-    [Title("Spawn Items list")]
+    [TabGroup("Crafting")]
     [SerializeField] List<RawMaterialContainer> _debugItems = new();
 
     // [VerticalGroup]
 
-    [Title("Crafting Buttons")]
-    [FoldoutGroup("Crafting Helpers")]
-    [BoxGroup("Crafting Helpers/Crafting Buttons")]
-    [Button]
-    public void SetActiveStorage()
-    {
-        GameObject storage = Instantiate(_activeStorage.gameObject, transform.position, Quaternion.identity);
-        Player.Instance.EquipBackPack(storage.transform);
-    }
-    [FoldoutGroup("Crafting Helpers")]
-    [BoxGroup("Crafting Helpers/Crafting Buttons")]
-    [Button]
-    public void AddDebugItems()
-    {
-        foreach (RawMaterialContainer item in _debugItems)
-        {
-            Player.Instance.AddItemToInventory(item._reference);
-        }
-    }
-    [FoldoutGroup("Crafting Helpers")]
-    [BoxGroup("Crafting Helpers/Crafting Buttons")]
-    [Button]
-    public void SpawnCraftingArea()
-    {
-        Instantiate(_debugCraftingArea, _debugSpawnPos.position, _debugSpawnPos.rotation == Vector3.zero ? Quaternion.identity : Quaternion.Euler(_debugSpawnPos.rotation));
-    }
-    [FoldoutGroup("Crafting Helpers")]
-    [BoxGroup("Crafting Helpers/Crafting Buttons")]
-    [Button]
-    public void ConvertMaterial()
-    {
-        Instantiate(_debugCraftingArea, _debugSpawnPos.position, _debugSpawnPos.rotation == Vector3.zero ? Quaternion.identity : Quaternion.Euler(_debugSpawnPos.rotation));
-    }
 
+    [SerializeField, TabGroup("ATTACK")] NpcCharacter _enemyPrefab;
 
-    [FoldoutGroup("ATTACK HELPERS")]
-    [SerializeField] NpcCharacter _enemyPrefab;
-    [FoldoutGroup("ATTACK HELPERS")]
-    [SerializeField] int _spawnCount;
-    [FoldoutGroup("ATTACK HELPERS")]
-    [SerializeField] int _spawnSpread;
+    [SerializeField, TabGroup("ATTACK")] int _spawnCount;
 
-    [SerializeField] List<NpcCharacter> _spawnedEnemies;
+    [SerializeField, TabGroup("ATTACK")] int _spawnSpread;
+
+    [SerializeField, TabGroup("ATTACK")] List<NpcCharacter> _spawnedEnemies;
+
+    [SerializeField, TabGroup("Quest")]
+    Mission _mission = new();
 
 
     int _errorCount = 0;
@@ -181,12 +149,15 @@ public class OnScreenDebugger : MonoBehaviour
         }
     }
 
+
+
     [Button("Reload Scene")]
     void ReloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    #region Console
     void LogMessage(string condition, string stackTrace, LogType type)
     {
         switch (type)
@@ -262,6 +233,7 @@ public class OnScreenDebugger : MonoBehaviour
         Debug.Log(log);
     }
 
+
     void ToggleHud()
     {
         _hud.SetActive(!_hud.activeSelf);
@@ -271,4 +243,43 @@ public class OnScreenDebugger : MonoBehaviour
     {
         _consoleText.text = "";
     }
+
+    #endregion
+
+    #region Crafting
+    [Button, TabGroup("Crafting")]
+    public void SetActiveStorage()
+    {
+        GameObject storage = Instantiate(_activeStorage.gameObject, transform.position, Quaternion.identity);
+        Player.Instance.EquipBackPack(storage.transform);
+    }
+    [Button, TabGroup("Crafting")]
+    public void AddDebugItems()
+    {
+        foreach (RawMaterialContainer item in _debugItems)
+        {
+            Player.Instance.AddItemToInventory(item._reference);
+        }
+    }
+    [Button, TabGroup("Crafting")]
+    public void SpawnCraftingArea()
+    {
+        Instantiate(_debugCraftingArea, _debugSpawnPos.position, _debugSpawnPos.rotation == Vector3.zero ? Quaternion.identity : Quaternion.Euler(_debugSpawnPos.rotation));
+    }
+    [Button, TabGroup("Crafting")]
+    public void ConvertMaterial()
+    {
+        Instantiate(_debugCraftingArea, _debugSpawnPos.position, _debugSpawnPos.rotation == Vector3.zero ? Quaternion.identity : Quaternion.Euler(_debugSpawnPos.rotation));
+    }
+    #endregion
+
+
+    #region Quests
+    [Button, TabGroup("Quest")]
+    void SetObjective()
+    {
+        DomeManager.Instance.SetupMissionDisplay(_mission);
+    }
+    #endregion
+
 }

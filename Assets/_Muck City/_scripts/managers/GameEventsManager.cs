@@ -67,7 +67,7 @@ public class GameEventsManager : MonoBehaviour
     public static Action OnExitBrowseMode;
 
     public static Action<WeaponSO> OnAcquireWeapon;
-    public static Action<Objective, DomeManager.ObjectiveState> OnObjectiveUpdated;
+    public static Action<Mission, ObjectiveState> OnObjectiveUpdated;
 
     // private void OnEnable()
     // {
@@ -292,7 +292,7 @@ public class GameEventsManager : MonoBehaviour
         OnExitBrowseMode?.Invoke();
     }
 
-    public void OnObjectiveUpdatedEvent(Objective item, DomeManager.ObjectiveState status)
+    public void OnObjectiveUpdatedEvent(Mission item, ObjectiveState status)
     {
         OnObjectiveUpdated?.Invoke(item, status);
     }
