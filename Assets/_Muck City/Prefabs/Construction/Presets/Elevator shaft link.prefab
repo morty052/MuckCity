@@ -1,0 +1,293 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7708403554967415446
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2182392527677561587}
+  m_Layer: 0
+  m_Name: Elevator shaft link
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2182392527677561587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708403554967415446}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.785002, y: -3.37, z: -114.29499}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3270529085123495470}
+  - {fileID: 4367179956997519182}
+  - {fileID: 135221030508628041}
+  - {fileID: 1647306348998470165}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &139732218783388081
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2182392527677561587}
+    m_Modifications:
+    - target: {fileID: 1841320199456860, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_Name
+      value: SM_Bld_Bunker_Wall_Concrete_x2_01 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841320199456860, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.27499104
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00000011920929
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5.1249924
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+--- !u!4 &135221030508628041 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+  m_PrefabInstance: {fileID: 139732218783388081}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1642796937766728685
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2182392527677561587}
+    m_Modifications:
+    - target: {fileID: 1841320199456860, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_Name
+      value: SM_Bld_Bunker_Wall_Concrete_x2_01 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841320199456860, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+--- !u!4 &1647306348998470165 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+  m_PrefabInstance: {fileID: 1642796937766728685}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3275044530830532566
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2182392527677561587}
+    m_Modifications:
+    - target: {fileID: 1841320199456860, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_Name
+      value: SM_Bld_Bunker_Wall_Concrete_x2_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.124997
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.375
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+--- !u!4 &3270529085123495470 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+  m_PrefabInstance: {fileID: 3275044530830532566}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4362682307508252342
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2182392527677561587}
+    m_Modifications:
+    - target: {fileID: 1841320199456860, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_Name
+      value: SM_Bld_Bunker_Wall_Concrete_x2_01 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.850007
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 4.9999847
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+--- !u!4 &4367179956997519182 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4516217736124920, guid: ec2a27f3d025009419d833762d3255c9, type: 3}
+  m_PrefabInstance: {fileID: 4362682307508252342}
+  m_PrefabAsset: {fileID: 0}

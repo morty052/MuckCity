@@ -33,4 +33,6 @@ public class LiftSwitch : MonoBehaviour, IInteractable
     {
         HudManager.Instance.ShowInteractPrompt(_interactionPrompt);
     }
+
+
 }

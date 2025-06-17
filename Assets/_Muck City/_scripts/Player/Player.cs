@@ -400,108 +400,49 @@ public class Player : MonoBehaviour
         _currentVehicle = null;
     }
 
-    // private void ShowPhone()
+
+
+    // public void EnvironmentInteraction()
     // {
-    //     GameEventsManager.Instance.DisplayPhoneEvent();
-    //     _playerInput.SwitchCurrentActionMap("Phone");
-    // }
 
+    //     Collider closestCollider = null;
+    //     float closestDistance = _interactionRange + 10f;
 
-
-
-    // private void SelectOptionOne()
-    // {
-    //     // Debug.Log("se one");
-    //     GameEventsManager.Instance.OnBranchDecisionSelected(BranchDecisionManager.BranchDecisionType.OPTION_ONE);
-    // }
-    // private void SelectOptionTwo()
-    // {
-    //     // Debug.Log("se two");
-    //     GameEventsManager.Instance.OnBranchDecisionSelected(BranchDecisionManager.BranchDecisionType.OPTION_TWO);
-    // }
-
-
-    // private void OnPlayerOverride(Vector3 vector)
-    // {
-    //     transform.position = vector;
-    //     StartCoroutine(WatchForDestinationReached());
-    // }
-
-    // IEnumerator WatchForDestinationReached()
-    // {
-    //     yield return new WaitForSeconds(1f);
-    //     GameEventsManager.Instance.OnPlayerOverrideComplete(transform.position);
-    // }
-
-
-
-
-    // public void HandleNpcInteraction()
-    // {
-    //     float interactRange = 2f;
-
-    //     Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactRange, _npcLayerMask);
+    //     Collider[] hitColliders = Physics.OverlapSphere(transform.position + Vector3.up, _interactionRange, _interactionLayerMask);
 
     //     foreach (Collider hitCollider in hitColliders)
     //     {
-    //         if (hitCollider.gameObject.GetComponent<Interactable>() != null)
+    //         float distance = Vector3.Distance(transform.position, hitCollider.transform.position);
+    //         if (distance < closestDistance)
     //         {
-    //             Debug.Log(hitCollider.name + " is interactable");
+    //             // Debug.Log(hitCollider.name);
+    //             closestDistance = distance;
+    //             closestCollider = hitCollider;
     //         }
-
-    //         else
-    //         {
-    //             Debug.Log(hitCollider.name + " is a citizen");
-    //         }
-
     //     }
+
+    //     if (closestCollider != null)
+    //     {
+    //         if (closestCollider.gameObject.GetComponent<IInteractable>() != null)
+    //         {
+    //             // Debug.Log(closestCollider.name + " is interactable");
+    //             _lastInteractable = closestCollider.gameObject.GetComponent<IInteractable>();
+    //             if (_lastInteractable != null && _lastInteractable.CanInteract)
+    //             {
+    //                 _lastInteractable.PrepareInteraction();
+    //             }
+    //         }
+    //     }
+
+    //     if (hitColliders.Length == 0)
+    //     {
+    //         // HudManager.Instance.HideInteractPrompt();
+    //         _lastInteractable = null;
+    //     }
+
     // }
 
-    public void EnvironmentInteraction()
-    {
 
-        Collider closestCollider = null;
-        float closestDistance = _interactionRange + 10f;
-
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position + Vector3.up, _interactionRange, _interactionLayerMask);
-
-        foreach (Collider hitCollider in hitColliders)
-        {
-            float distance = Vector3.Distance(transform.position, hitCollider.transform.position);
-            if (distance < closestDistance)
-            {
-                // Debug.Log(hitCollider.name);
-                closestDistance = distance;
-                closestCollider = hitCollider;
-            }
-        }
-
-        if (closestCollider != null)
-        {
-            if (closestCollider.gameObject.GetComponent<IInteractable>() != null)
-            {
-                // Debug.Log(closestCollider.name + " is interactable");
-                _lastInteractable = closestCollider.gameObject.GetComponent<IInteractable>();
-                if (_lastInteractable != null && _lastInteractable.CanInteract)
-                {
-                    _lastInteractable.PrepareInteraction();
-                }
-            }
-        }
-
-        if (hitColliders.Length == 0)
-        {
-            // HudManager.Instance.HideInteractPrompt();
-            _lastInteractable = null;
-        }
-
-    }
-
-    public void CheckIfItemInInventory()
-    {
-        // _inventory.ContainItem();
-
-    }
     // void OnDrawGizmos()
     // {
     //     Gizmos.color = Color.green;
@@ -527,6 +468,12 @@ public class Player : MonoBehaviour
 
 
     #region Inventory Usage
+
+    public void CheckIfItemInInventory()
+    {
+        // _inventory.ContainItem();
+
+    }
     public void UseItem(vItem item)
     {
 

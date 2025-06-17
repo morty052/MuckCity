@@ -126,7 +126,7 @@ public class District : MonoBehaviour, ILoadDataOnStart
 
     GuardNPC SpawnGuard(Pos spawnPos)
     {
-        GuardNPC guard = Instantiate(_guardNpc._npcPrefab, spawnPos.position, Quaternion.Euler(spawnPos.rotation)).GetComponent<GuardNPC>();
+        GuardNPC guard = Instantiate(_guardNpc._npcPrefab, spawnPos.position, Quaternion.Euler(spawnPos.rotation), transform).GetComponent<GuardNPC>();
         return guard;
     }
 }
