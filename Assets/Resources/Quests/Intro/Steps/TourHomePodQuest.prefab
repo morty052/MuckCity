@@ -47,6 +47,22 @@ MonoBehaviour:
   _questInfoSo: {fileID: 11400000, guid: 833872137d4b17443a6cb2cd9d9ffc21, type: 2}
   _questPointPrefab: {fileID: 5783401725927670678, guid: 89b4cd5bfe195334180a364f101c0279, type: 3}
   _tutorialTriggerPrefab: {fileID: 7435705475112992583, guid: 96542d181ccb8344fa496633bc07a1d8, type: 3}
+  _mission:
+    _title: Find Alberto
+    _missionStartPoint: {x: 0, y: 0, z: 0}
+    _objectives:
+    - _title: Exit Bunker
+      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _isCompleted: 0
+      _index: 0
+    - _title: Find Officers Mess
+      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _isCompleted: 0
+      _index: 1
+    - _title: Talk To Alberto
+      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _isCompleted: 0
+      _index: 2
   _tiedCharactersQuestData:
   - _characterID: 3
     _conversationForQuest: {fileID: 967415334066115386, guid: 0236e1cf245c2a246ade3ee0b34e4ab7, type: 3}
@@ -71,9 +87,11 @@ MonoBehaviour:
       - _title: Exit Bunker
         _objectiveStartPosition: {x: 0, y: 0, z: 0}
         _isCompleted: 0
+        _index: 0
       - _title: Get to officers mess
         _objectiveStartPosition: {x: 0, y: 0, z: 0}
         _isCompleted: 0
+        _index: 1
   - _characterID: 2
     _conversationForQuest: {fileID: 5174738624814373698, guid: c094ed537bcede64f8b6b44392071894, type: 3}
     _npcSO: {fileID: 11400000, guid: 7237f024f4fcc9a4598fee80b0bf8a26, type: 2}
@@ -85,10 +103,26 @@ MonoBehaviour:
       _missionStartPoint: {x: 0, y: 0, z: 0}
       _objectives: []
   _questPointsData:
-  - _spawnPosition:
+  - _name: INTRO_TO_HAZMAT_BILL
+    _completesObjective: 0
+    _spawnPosition:
       position: {x: -1.75, y: -2.72, z: 2.6962843}
       rotation: {x: 0, y: 0, z: 0}
-    _name: INTRO_TO_HAZMAT_BILL
+  - _name: LOAD_MUCK_CITY
+    _completesObjective: 1
+    _spawnPosition:
+      position: {x: 12.2, y: -2.06, z: -111.23}
+      rotation: {x: -0, y: 0, z: 0}
+  - _name: Exit Bunker
+    _completesObjective: 1
+    _spawnPosition:
+      position: {x: 12.44, y: -7.5, z: -112.2}
+      rotation: {x: -0, y: 0, z: 0}
+  - _name: Find Officers Mess
+    _completesObjective: 1
+    _spawnPosition:
+      position: {x: -12.277799, y: 1.55, z: -64.6}
+      rotation: {x: -0, y: 0, z: 0}
   _questCutScenes:
   - _name: INTRO_TO_HAZMAT_BILL
     _spawnPosition:

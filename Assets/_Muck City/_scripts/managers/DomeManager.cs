@@ -43,13 +43,18 @@ public struct Objective
     public Vector3 _objectiveStartPosition;
 
     public bool _isCompleted;
+
+    public int _index;
+
     public readonly bool HasWayPoint => _objectiveStartPosition != Vector3.zero;
 
-    public Objective(string title, Vector3 objectiveStartPosition, bool isCompleted = false)
+    public Objective(string title, Vector3 objectiveStartPosition, int index, bool isCompleted = false)
     {
         _title = title;
         _objectiveStartPosition = objectiveStartPosition;
         _isCompleted = isCompleted;
+        _index = index;
+
     }
 }
 
@@ -61,6 +66,9 @@ public struct Mission
 
     public List<Objective> _objectives;
     public readonly bool HasMarker => _missionStartPoint != Vector3.zero;
+
+
+
 
 
     public Mission(string text, List<Objective> objectives, Vector3 missionTriggerPosition)
@@ -249,9 +257,22 @@ public class DomeManager : MonoBehaviour
         // Debug.Log($"In game hours {_inGameHours}");
     }
 
-    public void SetupMissionDisplay(Mission objective)
+    public void SetupMissionDisplay(Mission mission)
     {
-        _objectiveRenderer.SetupMission(objective);
+        _objectiveRenderer.SetupMission(mission);
+    }
+    public void SetupMissionDisplay(Mission mission, int objectivesToDisplayOnStart)
+    {
+        _objectiveRenderer.SetupMission(mission, objectivesToDisplayOnStart);
+    }
+    public void UpdateMissionDisplay(int objectivesToAdd)
+    {
+        _objectiveRenderer.UpdateMissionDisplay(objectivesToAdd);
+    }
+
+    public void CompleteObjective(int index)
+    {
+        _objectiveRenderer.CompleteObjective(index);
     }
 
 

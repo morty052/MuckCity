@@ -48,3 +48,4 @@ MonoBehaviour:
   - _location: 3
     _npcList:
     - {fileID: 11400000, guid: 3dc1897638a179844856db23cd6c23a0, type: 2}
+    - {fileID: 11400000, guid: e7643c4cd3609c8489350d05bd6382e5, type: 2}

@@ -19,6 +19,6 @@ public class QuestGiver : MonoBehaviour
         {
             _activeQuestHasConvo = true;
         }
-        OnScreenDebugger.Instance.Log(name + " updated quest data with id " + _questInfoSo._id + " quest step " + _questStep);
+        // OnScreenDebugger.Instance.Log(name + " updated quest data with id " + _questInfoSo._id + " quest step " + _questStep);
     }
 }

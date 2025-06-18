@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -64,13 +66,17 @@ public struct EventTutorial
 [Serializable]
 public struct QuestPointData
 {
-    public Pos _spawnPosition;
     public string _name;
+    public bool _completesObjective;
 
-    public QuestPointData(Pos spawnPosition, string name)
+
+    public Pos _spawnPosition;
+
+    public QuestPointData(Pos spawnPosition, string name, bool completes)
     {
         _spawnPosition = spawnPosition;
         _name = name;
+        _completesObjective = completes;
     }
 }
 
@@ -87,6 +93,7 @@ public abstract class QuestStep : MonoBehaviour
     [SerializeField] GameObject _questPointPrefab;
     [SerializeField] TutorialTrigger _tutorialTriggerPrefab;
 
+    [SerializeField] Mission _mission = new();
     [SerializeField] List<NpcQuestData> _tiedCharactersQuestData = new();
 
     [SerializeField] List<QuestPointData> _questPointsData = new();
@@ -106,18 +113,36 @@ public abstract class QuestStep : MonoBehaviour
     }
 
 
+    protected QuestPoint _activeQuestPoint;
+
+
     public void InitializeQuest(string questId)
     {
         this._questId = questId;
     }
 
 
-    public void InstantiateQuestPoint(Vector3 position, string name)
+    public QuestPoint InstantiateQuestPoint(string name)
     {
-        GameObject questPoint = Instantiate(_questPointPrefab, position, Quaternion.identity);
+        QuestPointData pointData = FindQuestPointDataByName(name);
+        GameObject questPoint = Instantiate(_questPointPrefab, pointData._spawnPosition.position, Quaternion.identity);
+        questPoint.name = name;
         QuestPoint point = questPoint.GetComponent<QuestPoint>();
         point._tiedQuestStep = this;
         point._questItemData = new QuestItemData(name);
+        point._completesObjective = pointData._completesObjective;
+
+        _activeQuestPoint = point;
+
+        _activeQuestPoint.OnEnterQuestPoint += OnEnterQuestPoint;
+
+        return point;
+    }
+
+    protected virtual void OnEnterQuestPoint(string questPointName, bool completesObjective)
+    {
+        _activeQuestPoint.OnEnterQuestPoint -= OnEnterQuestPoint;
+        _activeQuestPoint = null;
     }
     public (CutSceneData, TimelinePlayer) InstantiateCutSceneAtPoint(string name)
     {
@@ -143,10 +168,36 @@ public abstract class QuestStep : MonoBehaviour
         return data;
     }
 
-    public virtual void OnQuestDialogFinished()
+    #region Mission Control
+    public virtual void ActivateMission(int objectivesToDisplayOnstart = 0)
     {
-
+        if (objectivesToDisplayOnstart > 0)
+        {
+            DomeManager.Instance.SetupMissionDisplay(_mission, objectivesToDisplayOnstart);
+        }
+        else
+        {
+            DomeManager.Instance.SetupMissionDisplay(_mission);
+        }
     }
+
+    public virtual void UpdateMissionObjectives(int index)
+    {
+        DomeManager.Instance.UpdateMissionDisplay(index);
+    }
+
+    public virtual void CompleteObjective(string objectiveTitle)
+    {
+        Objective objective = _mission._objectives.Find(x => x._title == objectiveTitle);
+        DomeManager.Instance.CompleteObjective(objective._index);
+        if (objective.IsUnityNull())
+        {
+            Debug.LogError("Could not find objective");
+            return;
+        }
+    }
+
+    #endregion
     protected void UseClip(string name)
     {
         EventClip clip = FindClipByName(name);

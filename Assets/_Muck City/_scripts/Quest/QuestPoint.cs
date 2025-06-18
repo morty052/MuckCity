@@ -7,13 +7,17 @@ public class QuestPoint : MonoBehaviour
     public QuestStep _tiedQuestStep;
     public QuestItemData _questItemData;
 
-    private string _questId;
+    [SerializeField] private string _questId;
 
-    private QuestState _currentQuestState;
+    public bool _completesObjective;
+
+    public int _objectiveIndex = 0;
 
     [SerializeField] private bool _startPoint;
 
     [SerializeField] private bool _endPoint;
+
+    public Action<string, bool> OnEnterQuestPoint;
 
     private void Awake()
     {
@@ -35,7 +39,8 @@ public class QuestPoint : MonoBehaviour
 
             else
             {
-                _tiedQuestStep.OnQuestItemInteracted(_questItemData._name);
+                // _tiedQuestStep.OnQuestItemInteracted(_questItemData._name);
+                OnEnterQuestPoint?.Invoke(_questItemData._name, _completesObjective);
             }
             Destroy(gameObject);
         }

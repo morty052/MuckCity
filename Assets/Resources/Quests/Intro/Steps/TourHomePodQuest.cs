@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using DialogueEditor;
 using UnityEngine;
 
 
@@ -13,12 +11,12 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
     SpecialNPC _alberto;
 
     SpecialNPC _hazmatBill;
-    SpecialNPC _hazmatBob;
 
     TimelinePlayer _activeCutScenePlayer;
 
+
     NpcQuestData billQuestData;
-    NpcQuestData bobQuestData;
+    NpcQuestData _albertoQuestData;
 
     bool _doneSetup;
 
@@ -38,13 +36,15 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
     void Start()
     {
         SetupQuest();
+        // ActivateMission(1);
+        // InstantiateQuestPoint("Find Officers Mess");
         // StartCoroutine(PlayClipAfterDelay(2f, "Wing is Getting Detached", OnComplete: () => ShowTutorialPrompt("Basic Locomotion")));
     }
 
     void SetupQuest()
     {
         if (_doneSetup) return;
-        Debug.Log("Started Quest: " + _questInfoSo._id);
+        // Debug.Log("Started Quest: " + _questInfoSo._id);
         billQuestData = FindNpcQuestDataByName(SpecialCharacters.HAZMAT_BILL);
         // bobQuestData = FindNpcQuestDataByName(SpecialCharacters.HAZMAT_BOB);
 
@@ -68,6 +68,8 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         _activeCutScenePlayer.OnCutSceneStarted += OnCutSceneStarted;
         _doneSetup = true;
         // Alberto.UpdateQuestData(_questInfoSo, this, questData._conversationForQuest);
+
+
     }
 
     private void OnConversationFinished(SpecialCharacters speakerName)
@@ -76,23 +78,72 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         switch (speakerName)
         {
             case SpecialCharacters.HAZMAT_BILL:
-                // Debug.Log("Done Speaking with " + speakerName + " Update quest now");
                 billQuestData._conversationForQuest.OnDialogueFinishedEvent -= OnConversationFinished;
-                DomeManager.Instance.SetupMissionDisplay(billQuestData._mission);
+
+                ActivateMission(1);
+
+                //* Set up quest point in elevator to complete exit bunker objective
+                InstantiateQuestPoint("Exit Bunker");
+                //* Set up quest point in elevator to load muck city 
+                // InstantiateQuestPoint("LOAD_MUCK_CITY");
+                break;
+            case SpecialCharacters.ALBERTO:
+                // Debug.Log("Done Speaking with " + speakerName + " Update quest now");
+                _albertoQuestData._conversationForQuest.OnDialogueFinishedEvent -= OnConversationFinished;
                 break;
             default:
                 break;
         }
     }
 
+    protected override void OnEnterQuestPoint(string questPointName, bool completesObjective)
+    {
+        switch (questPointName)
+        {
+            case "Exit Bunker":
+                CompleteObjective(questPointName);
+                UpdateMissionObjectives(1);
+                InitBunkerHeights();
+                StartCoroutine(InstantiateQuestPointAfterDelay(1f, "Find Officers Mess"));
+                break;
+            case "Find Officers Mess":
+                CompleteObjective(questPointName);
+                UpdateMissionObjectives(2);
+                break;
+            default:
+                break;
+        }
+        Debug.Log("Quest point Entered: " + questPointName + " can complete " + completesObjective);
+        _activeQuestPoint.OnEnterQuestPoint -= OnEnterQuestPoint;
+        _activeQuestPoint = null;
+    }
 
+
+    public override void OnQuestItemInteracted(string questItemName)
+    {
+
+    }
+
+    IEnumerator InstantiateQuestPointAfterDelay(float delay, string pointName)
+    {
+        yield return new WaitForSeconds(delay);
+        InstantiateQuestPoint(pointName);
+    }
+
+    async void InitBunkerHeights()
+    {
+        await NpcManager.Instance.LoadNpcInArea(Locations.BUNKER_HEIGHTS);
+        SetupAlberto();
+        Debug.Log("Loaded Bunker Heights");
+    }
 
     void SetupAlberto()
     {
-        NpcQuestData questData = FindNpcQuestDataByName(SpecialCharacters.ALBERTO);
-        _alberto = NpcManager.Instance.GetSpecialCharacterByID(questData._characterID);
-        _alberto.UpdateQuestData(_questInfoSo, this, questData._conversationForQuest);
+        _albertoQuestData = FindNpcQuestDataByName(SpecialCharacters.ALBERTO);
+        _alberto = NpcManager.Instance.GetSpecialCharacterByID(_albertoQuestData._characterID);
+        _alberto.UpdateQuestData(_questInfoSo, this, _albertoQuestData._conversationForQuest);
         _alberto.OnInteractedWithQuestGiver += SendMessageToPhone;
+        _albertoQuestData._conversationForQuest.OnDialogueFinishedEvent += OnConversationFinished;
 
         // _hazmatBill.gameObject.SetActive(false);
         // _hazmatBob.gameObject.SetActive(false);
@@ -108,42 +159,9 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
 
 
 
-    public override void OnQuestItemInteracted(string questItemName)
-    {
-        switch (questItemName)
-        {
-            case "Door to Rover":
-                // Rover.Instance._hasAccessToPlayer = true;
-                QuestPointData pointData = FindQuestPointDataByName("First Energy Transfer");
-                InstantiateQuestPoint(pointData._spawnPosition.position, pointData._name);
-                break;
-            case "First Weapon":
-                ShowTutorialPrompt("Shooting");
-                EventTutorial tutorial = FindTutorialByName("Aim");
-                InstantiateTutorialPoint(tutorial, tutorial._spawnPoint);
-                InstantiateCreature("WAVE_ONE");
-                break;
-            case "First Energy Transfer":
-                ShowTutorialPrompt("First Energy Transfer");
-                break;
-            case "First Rover Interaction":
-                ShowTutorialPrompt("First Energy Transfer");
-                // Rover.Instance._hasAccessToPlayer = true;
-                // Rover.Instance._activeInterface.DisconnectCable();
-                break;
-            case "SECTOR_16_EXIT":
-                Debug.Log("Exiting Sector 16");
-                break;
-            default:
-                break;
-        }
-        Debug.Log("Quest item interacted with: " + questItemName);
-    }
-
-
     void OnCutSceneEnded(string cutSceneName)
     {
-        Debug.Log("Cut scene ended: " + cutSceneName);
+        // Debug.Log("Cut scene ended: " + cutSceneName);
         switch (cutSceneName)
         {
             case "INTRO_TO_HAZMAT_BILL":
@@ -158,7 +176,7 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
     }
     void OnCutSceneStarted(string cutSceneName)
     {
-        Debug.Log("Cut scene started: " + cutSceneName);
+        // Debug.Log("Cut scene started: " + cutSceneName);
         switch (cutSceneName)
         {
             case "INTRO_TO_HAZMAT_BILL":

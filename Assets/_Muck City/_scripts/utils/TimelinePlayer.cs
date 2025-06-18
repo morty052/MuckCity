@@ -99,7 +99,7 @@ public class TimelinePlayer : MonoBehaviour
     {
         if (_playableDirector != null)
         {
-            Debug.Log("Timeline length: " + _playableDirector.duration);
+            // Debug.Log("Timeline length: " + _playableDirector.duration);
             return _playableDirector.duration;
         }
         else

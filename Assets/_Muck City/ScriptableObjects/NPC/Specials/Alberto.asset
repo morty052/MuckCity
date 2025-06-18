@@ -18,5 +18,5 @@ MonoBehaviour:
   _roles: 0200000003000000
   _primaryLocation: 3
   _defaultConversation: {fileID: 0}
-  _spawnPosition: {x: 0, y: 0, z: 0}
-  _spawnRotation: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: -7.89, y: 3.7924244, z: -59.613735}
+  _spawnRotation: {x: 0, y: 270, z: 0}

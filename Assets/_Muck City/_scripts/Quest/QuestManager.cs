@@ -69,7 +69,7 @@ public class QuestManager : MonoBehaviour
 
     private void QuestStateChanged(Quest quest)
     {
-        OnScreenDebugger.Instance.Log("Quest State Changed: " + quest.questInfoSo._id);
+        // OnScreenDebugger.Instance.Log("Quest State Changed: " + quest.questInfoSo._id);
     }
 
     private Dictionary<string, Quest> CreateQuestMap()

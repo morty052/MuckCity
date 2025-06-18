@@ -173,6 +173,15 @@ public class NpcManager : MonoBehaviour, ILoadDataOnStart
         Destroy(npcLoader.gameObject);
     }
 
+    public async Task LoadNpcInArea(Locations location)
+    {
+        NpcLoader npcLoader = Instantiate(_npcLoaderPrefabDirty, Vector3.zero, Quaternion.identity).GetComponent<NpcLoader>();
+        _activeSpawnParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
+        await npcLoader.SpawnNpcList(location, _activeSpawnParent, true);
+        GameEventsManager.Instance.OnAllNpcLoaded();
+        Destroy(npcLoader.gameObject);
+    }
+
     void LoadAddressable()
     {
         _npcLoaderPrefab.InstantiateAsync().Completed += OnAddressableLoaded;
@@ -180,7 +189,19 @@ public class NpcManager : MonoBehaviour, ILoadDataOnStart
 
     public SpecialNPC SpawnAndMoveToPosition(NpcSO npc, Pos position)
     {
+        float executionStartTime = Time.time;
+        // Debug.Log("Execution started at" + executionStartTime);
         Transform spawnParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
+        SpecialNPC specialNPC = Instantiate(npc._npcPrefab, spawnParent).GetComponent<SpecialNPC>();
+        specialNPC.transform.SetPositionAndRotation(position.position, Quaternion.Euler(position.rotation.x, position.rotation.y, position.rotation.z));
+        // Debug.Log("Execution took" + (Time.time - executionStartTime));
+        return specialNPC;
+    }
+    public SpecialNPC SpawnAndMoveToPosition(NpcSO npc, Pos position, string spawnParentName)
+    {
+
+        Transform spawnParent = GameObject.Find(spawnParentName).transform;
+
         SpecialNPC specialNPC = Instantiate(npc._npcPrefab, spawnParent).GetComponent<SpecialNPC>();
         specialNPC.transform.SetPositionAndRotation(position.position, Quaternion.Euler(position.rotation.x, position.rotation.y, position.rotation.z));
         return specialNPC;

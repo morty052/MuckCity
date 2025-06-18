@@ -171,14 +171,14 @@ public class Player : MonoBehaviour
 
             if (_dialogueOneInput.GetButtonDown())
             {
-                Debug.Log("One");
+                // Debug.Log("One");
                 ConversationManager.Instance.m_currentSelectedIndex = 0;
                 ConversationManager.Instance.PressSelectedOption();
 
             }
             else if (_dialogueTwoInput.GetButtonDown())
             {
-                Debug.Log("Two");
+                // Debug.Log("Two");
                 ConversationManager.Instance.m_currentSelectedIndex = 1;
                 ConversationManager.Instance.PressSelectedOption();
             }
