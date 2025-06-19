@@ -18,7 +18,7 @@ public class DoorTrigger : MonoBehaviour, IInteractable
 
     public string InteractionPrompt => "Open";
 
-
+    public GameObject GameObject => gameObject;
 
     void OnTriggerEnter(Collider other)
     {

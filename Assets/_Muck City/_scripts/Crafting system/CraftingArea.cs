@@ -45,6 +45,8 @@ public class CraftingArea : MonoBehaviour, IInteractable
 
     public string InteractionPrompt => "Craft";
 
+    public GameObject GameObject => gameObject;
+
     Action<int> _onShopItemButtonPressed;
 
     int _activeItemIndex = 0;

@@ -25,6 +25,11 @@ public class OnScreenDebugger : MonoBehaviour
 {
     public static OnScreenDebugger Instance { get; private set; }
 
+    [TabGroup("Detect")]
+    public ObjectDetector _detector;
+    [TabGroup("Detect")]
+    public LayerMask _detectLayer = new();
+
     [TabGroup("Console"), OnValueChanged("ToggleHud")]
     public bool _showConsoleLogs = true;
     [TabGroup("Console")]
@@ -96,7 +101,7 @@ public class OnScreenDebugger : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             DeleteLogs();
-
+            _detector = new(_detectLayer);
         }
 
         else
@@ -149,7 +154,12 @@ public class OnScreenDebugger : MonoBehaviour
         }
     }
 
-
+    [Button("Detect"), TabGroup("Detect")]
+    void DetectObject()
+    {
+        DoorTrigger door = _detector.DetectObject<DoorTrigger>();
+        Debug.Log("Detected" + door.name);
+    }
 
     [Button("Reload Scene")]
     void ReloadScene()
@@ -281,5 +291,9 @@ public class OnScreenDebugger : MonoBehaviour
         DomeManager.Instance.SetupMissionDisplay(_mission);
     }
     #endregion
-
+    void OnDrawGizmosSelected()
+    {
+        if (_detector == null) return;
+        Gizmos.DrawSphere(_detector._position, _detector._radius);
+    }
 }

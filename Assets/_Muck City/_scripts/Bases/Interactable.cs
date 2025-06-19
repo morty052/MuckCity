@@ -1,9 +1,13 @@
 
 
+using UnityEngine;
+
 public interface IInteractable
 {
 
     bool CanInteract { get; }
+
+    public GameObject GameObject { get; }
     string InteractionPrompt { get; }
     // float InteractionDistance { get; }
 

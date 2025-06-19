@@ -14,6 +14,13 @@ public enum Creature
     VELOCIRAPTOR
 }
 
+public enum EventClipType
+{
+    ANNOUNCEMENT,
+    ASSESMENT,
+    MYSTERYGUY,
+}
+
 [Serializable]
 public struct EventClip
 {
@@ -22,11 +29,11 @@ public struct EventClip
 
     public AudioClip _clip;
 
-    public QuestStep.EventClipType _clipType;
+    public EventClipType _clipType;
 
     public Vector3 _position;
 
-    public EventClip(string name, AudioClip clip, QuestStep.EventClipType clipType, Vector3 position)
+    public EventClip(string name, AudioClip clip, EventClipType clipType, Vector3 position)
     {
         _name = name;
         _clip = clip;
@@ -84,33 +91,47 @@ public struct QuestPointData
 
 public abstract class QuestStep : MonoBehaviour
 {
-    private bool _isFinished = false;
 
-    private string _questId;
-
+    [TabGroup("Details")]
     [SerializeField] protected QuestInfoSo _questInfoSo;
+    [TabGroup("Details")]
+    [SerializeField] bool _isFinished = false;
+    [TabGroup("Details")]
+    [SerializeField] string _questId;
 
+    [TabGroup("Quest Points")]
     [SerializeField] GameObject _questPointPrefab;
-    [SerializeField] TutorialTrigger _tutorialTriggerPrefab;
 
-    [SerializeField] Mission _mission = new();
+    [TabGroup("Quest Points")]
+    [SerializeField] List<QuestPointData> _questPointsData = new();
+
+    [TabGroup("NPC's")]
     [SerializeField] List<NpcQuestData> _tiedCharactersQuestData = new();
 
-    [SerializeField] List<QuestPointData> _questPointsData = new();
-    [SerializeField] List<CutSceneData> _questCutScenes = new();
-    [SerializeField] List<EventClip> _eventClips = new();
+
+    [TabGroup("Tutorials")]
+    [SerializeField] TutorialTrigger _tutorialTriggerPrefab;
+
     [SerializeField] List<EventTutorial> _tutorials = new();
 
-    [SerializeField] List<CreatureData> _spawnableCreatures = new();
+    [TabGroup("Mission")]
+    [SerializeField] Mission _mission = new();
 
+
+    [TabGroup("Audio")]
+    [SerializeField] List<EventClip> _eventClips = new();
+
+    [TabGroup("Audio")]
     [SerializeField] GameObject _currentClipObject;
 
-    public enum EventClipType
-    {
-        ANNOUNCEMENT,
-        ASSESMENT,
-        MYSTERYGUY,
-    }
+    [TabGroup("CutScene's")]
+    [SerializeField] List<CutSceneData> _questCutScenes = new();
+
+
+    [TabGroup("Spawning")]
+    [SerializeField] List<CreatureData> _spawnableCreatures = new();
+
+
 
 
     protected QuestPoint _activeQuestPoint;

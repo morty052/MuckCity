@@ -23,6 +23,7 @@ public class Shop : MonoBehaviour, IInteractable
 
     public string InteractionPrompt => "Shop ";
 
+    public GameObject GameObject => gameObject;
 
     void OnEnable()
     {

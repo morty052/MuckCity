@@ -29,6 +29,8 @@ public class NpcCharacter : MonoBehaviour, IInteractable
 
     public NpcSO Data { get => _npcSO; }
 
+    public GameObject GameObject => gameObject;
+
     protected StateMachine _stateMachine;
 
     Animator _animator;

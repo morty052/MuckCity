@@ -10,6 +10,8 @@ public class DistrictNoticeBoard : MonoBehaviour, IInteractable
 
     public string InteractionPrompt => "Place Marker";
 
+    public GameObject GameObject => gameObject;
+
     public void HideInteractionPrompt()
     {
         HudManager.Instance.HideInteractPrompt();

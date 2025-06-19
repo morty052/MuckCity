@@ -10,6 +10,8 @@ public class LiftSwitch : MonoBehaviour, IInteractable
 
     public string InteractionPrompt => _interactionPrompt;
 
+    public GameObject GameObject => gameObject;
+
     public void HideInteractionPrompt()
     {
         HudManager.Instance.HideInteractPrompt();

@@ -95,11 +95,11 @@ MonoBehaviour:
   type: 2
   icon: {fileID: 21300000, guid: 09867a516d66b7d42bbe651bb2204313, type: 3}
   stackable: 0
-  createNewItem: 0
+  createNewItem: 1
   maxStack: 1
   amount: 0
   originalObject: {fileID: 4081735178676650567, guid: 2f9eddfd6a1cb6f4a9a0945f4367ae60, type: 3}
-  dropObject: {fileID: 4081735178676650567, guid: 2f9eddfd6a1cb6f4a9a0945f4367ae60, type: 3}
+  dropObject: {fileID: 3898181138249707788, guid: 3f234dca9d171c5448d6576dbdc96d81, type: 3}
   attributes:
   - name: 2
     value: 36
@@ -217,7 +217,7 @@ MonoBehaviour:
   - {fileID: 2996892630323490028}
   - {fileID: -2268978445196880274}
   - {fileID: 377454851857368432}
-  inEdition: 0
+  inEdition: 1
   itemsHidden: 0
 --- !u!114 &11427962
 MonoBehaviour:
@@ -1066,7 +1066,7 @@ MonoBehaviour:
   DisableAnim: LowBack
   enableDelayTime: 0.5
   disableDelayTime: 0.5
-  customHandler: 
+  customHandler: meleeHandler
   twoHandWeapon: 0
   onDestroy:
     m_PersistentCalls:
@@ -1146,7 +1146,7 @@ MonoBehaviour:
   createNewItem: 1
   maxStack: 10
   amount: 0
-  originalObject: {fileID: 0}
+  originalObject: {fileID: 1000013743731710, guid: 8bbf808ac1be0f84ab505cfdb9eb83b4, type: 3}
   dropObject: {fileID: 1000013743731710, guid: 8bbf808ac1be0f84ab505cfdb9eb83b4, type: 3}
   attributes:
   - name: 0

@@ -376,6 +376,8 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     async Task WatchForDestinationReached(Vector3 targetPosition)
     {
+
+        gameObject.GetComponent<IInteractable>();
         while (_isRunning && (targetPosition - transform.position).magnitude > 0.5f)
         {
             if (cts.IsCancellationRequested)
@@ -386,6 +388,8 @@ public class Player : MonoBehaviour, IHavePersistentData
             await Task.Yield();
         }
     }
+
+
 
 
     public void EnterVehicleMode(Vehicle vehicle)
@@ -484,10 +488,6 @@ public class Player : MonoBehaviour, IHavePersistentData
     }
     public void UseItem(vItem item)
     {
-
-    }
-    public void EquipItem(vEquipArea equipArea, vItem item)
-    {
         switch (item.type)
         {
             case vItemType.Consumable:
@@ -495,12 +495,26 @@ public class Player : MonoBehaviour, IHavePersistentData
                 Instantiate(item.dropObject, transform.position, Quaternion.identity);
                 break;
             case vItemType.ShooterWeapon:
-                Instantiate(item.dropObject, transform.position, Quaternion.identity);
                 break;
             default:
                 Debug.LogWarning("Item type not handled: " + item.type);
                 break;
         }
+    }
+    public void EquipItem(vEquipArea equipArea, vItem item)
+    {
+        // switch (item.type)
+        // {
+        //     case vItemType.Consumable:
+        //         Debug.Log("Consumable item: " + item.name);
+        //         Instantiate(item.dropObject, transform.position, Quaternion.identity);
+        //         break;
+        //     case vItemType.ShooterWeapon:
+        //         break;
+        //     default:
+        //         Debug.LogWarning("Item type not handled: " + item.type);
+        //         break;
+        // }
     }
 
     public void EquipBackPack(Transform backPack)

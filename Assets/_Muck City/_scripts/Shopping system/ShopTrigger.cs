@@ -10,6 +10,7 @@ public class ShopTrigger : MonoBehaviour, IInteractable
 
     public string InteractionPrompt => throw new System.NotImplementedException();
 
+    public GameObject GameObject => gameObject;
 
     void Awake()
     {
