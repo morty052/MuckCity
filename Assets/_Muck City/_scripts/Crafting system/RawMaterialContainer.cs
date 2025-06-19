@@ -11,6 +11,8 @@ public class RawMaterialContainer : Tradeable, IInteractable, IPoolable
 
     public bool CanInteract => _canInteract;
 
+    public bool IsHighlighted { get; }
+
     public string InteractionPrompt => _interactionPrompt;
 
     public int ID => _reference.id;
@@ -60,5 +62,10 @@ public class RawMaterialContainer : Tradeable, IInteractable, IPoolable
             Data = data;
         }
         _reference = Data._ref;
+    }
+
+    public void ToggleDrawAttention()
+    {
+        throw new System.NotImplementedException();
     }
 }

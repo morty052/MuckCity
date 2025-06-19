@@ -48,6 +48,28 @@ public class ObjectDetector
     }
 
 
+    public T? DetectObject<T>(Vector3 position) where T : IInteractable
+    {
+
+        T? component = default;
+        Collider[] hitColliders = Physics.OverlapSphere(position, _radius, _interactionLayerMask);
+
+        if (hitColliders.Length == 0)
+        {
+            Debug.Log($"<color=red>No colliders found for {typeof(T)}</color>");
+            return component;
+        }
+
+        else
+        {
+            component = hitColliders[0].GetComponent<T>();
+            Debug.Log($"<color=green> found  {typeof(T)}</color>");
+            return component;
+        }
+
+    }
+
+
 #nullable disable
 
 

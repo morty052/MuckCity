@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 
 public enum Creature
@@ -88,6 +91,42 @@ public struct QuestPointData
 }
 
 
+[System.Serializable]
+public struct QuestItemData
+{
+
+    public string _name;
+
+
+    public QuestItemData(string name)
+    {
+        _name = name;
+    }
+}
+
+[System.Serializable]
+public struct QuestItemStruct
+{
+
+    public string _name;
+
+    public Vector3 _position;
+
+#if UNITY_EDITOR
+    [Button]
+    public void SetFromScene()
+    {
+        _position = Selection.activeGameObject.transform.position;
+    }
+#endif
+
+    public QuestItemStruct(string name, Vector3 pos)
+    {
+        _name = name;
+        _position = pos;
+    }
+}
+
 
 public abstract class QuestStep : MonoBehaviour
 {
@@ -105,6 +144,14 @@ public abstract class QuestStep : MonoBehaviour
     [TabGroup("Quest Points")]
     [SerializeField] List<QuestPointData> _questPointsData = new();
 
+    [TabGroup("Quest Items")]
+    [SerializeField] List<QuestItemStruct> _questItemsData = new();
+
+    [TabGroup("Quest Items")]
+    public ObjectDetector _objectDetector;
+    [TabGroup("Quest Items")]
+    public LayerMask _detectionLayerMask;
+
     [TabGroup("NPC's")]
     [SerializeField] List<NpcQuestData> _tiedCharactersQuestData = new();
 
@@ -112,6 +159,7 @@ public abstract class QuestStep : MonoBehaviour
     [TabGroup("Tutorials")]
     [SerializeField] TutorialTrigger _tutorialTriggerPrefab;
 
+    [TabGroup("Tutorials")]
     [SerializeField] List<EventTutorial> _tutorials = new();
 
     [TabGroup("Mission")]
@@ -135,6 +183,12 @@ public abstract class QuestStep : MonoBehaviour
 
 
     protected QuestPoint _activeQuestPoint;
+
+
+    public virtual void Awake()
+    {
+        _objectDetector = new(_detectionLayerMask);
+    }
 
 
     public void InitializeQuest(string questId)
@@ -176,6 +230,19 @@ public abstract class QuestStep : MonoBehaviour
     {
         NpcQuestData data = _tiedCharactersQuestData.Find(x => x._characterID == name);
         return data;
+    }
+    public QuestItemStruct FindQuestItemByName(string name)
+    {
+        QuestItemStruct data = _questItemsData.Find(x => x._name == name);
+        return data;
+    }
+
+    public T GetQuestItem<T>(string name) where T : IInteractable
+    {
+        QuestItemStruct itemData = FindQuestItemByName(name);
+        T item = _objectDetector.DetectObject<T>(itemData._position);
+
+        return item;
     }
 
     public QuestPointData FindQuestPointDataByName(string name)

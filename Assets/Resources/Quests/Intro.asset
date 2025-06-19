@@ -17,6 +17,7 @@ MonoBehaviour:
   dayRequirement: 0
   questPrerequisites: []
   questStepPrefabs:
+  - {fileID: 1190053266911692912, guid: 05675d43f2e6eb54a997738e5cc878b5, type: 3}
   - {fileID: 519952148645942609, guid: 60ddcce0c000ca8499acf57f1d925f41, type: 3}
   goldReward: 0
   experienceReward: 0

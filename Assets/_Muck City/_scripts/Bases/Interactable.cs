@@ -9,11 +9,14 @@ public interface IInteractable
 
     public GameObject GameObject { get; }
     string InteractionPrompt { get; }
-    // float InteractionDistance { get; }
+    public bool IsHighlighted { get; }
 
+    public void ToggleDrawAttention();
     public void PrepareInteraction();
 
     public void Interact();
 
     public void HideInteractionPrompt();
+
+
 }

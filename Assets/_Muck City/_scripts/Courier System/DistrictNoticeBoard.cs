@@ -12,6 +12,8 @@ public class DistrictNoticeBoard : MonoBehaviour, IInteractable
 
     public GameObject GameObject => gameObject;
 
+    public bool IsHighlighted { get; }
+
     public void HideInteractionPrompt()
     {
         HudManager.Instance.HideInteractPrompt();
@@ -36,5 +38,10 @@ public class DistrictNoticeBoard : MonoBehaviour, IInteractable
     {
         if (!CanInteract) return;
         HudManager.Instance.ShowInteractPrompt(InteractionPrompt);
+    }
+
+    public void ToggleDrawAttention()
+    {
+        throw new System.NotImplementedException();
     }
 }

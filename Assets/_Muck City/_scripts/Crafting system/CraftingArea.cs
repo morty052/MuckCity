@@ -51,6 +51,8 @@ public class CraftingArea : MonoBehaviour, IInteractable
 
     int _activeItemIndex = 0;
 
+    public bool IsHighlighted { get; }
+
 
     void OnEnable()
     {
@@ -214,5 +216,8 @@ public class CraftingArea : MonoBehaviour, IInteractable
         HudManager.Instance.ShowInteractPrompt(InteractionPrompt);
     }
 
-
+    public void ToggleDrawAttention()
+    {
+        throw new NotImplementedException();
+    }
 }

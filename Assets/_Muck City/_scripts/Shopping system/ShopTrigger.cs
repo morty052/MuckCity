@@ -12,6 +12,8 @@ public class ShopTrigger : MonoBehaviour, IInteractable
 
     public GameObject GameObject => gameObject;
 
+    public bool IsHighlighted { get; }
+
     void Awake()
     {
         _parent = GetComponentInParent<Shop>();
@@ -32,4 +34,8 @@ public class ShopTrigger : MonoBehaviour, IInteractable
         _parent.PrepareInteraction();
     }
 
+    public void ToggleDrawAttention()
+    {
+        throw new System.NotImplementedException();
+    }
 }

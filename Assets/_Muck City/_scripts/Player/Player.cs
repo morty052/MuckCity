@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DialogueEditor;
+using ImprovedTimers;
 using Invector;
 using Invector.vCamera;
 using Invector.vCharacterController;
@@ -74,6 +76,12 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     private PlayerSaveData _playerSaveData;
 
+    [SerializeField] List<IInteractable> _closestInteractables = new();
+
+    CountdownTimer _detectionTimer;
+
+    float _detectionRate = 0.2f;
+
 
 
     void OnEnable()
@@ -140,6 +148,15 @@ public class Player : MonoBehaviour, IHavePersistentData
         _vThirdPersonInput.onUpdate += CheckForTriggerAction;
 
         transform.SetPositionAndRotation(_playerSaveData._position.position, Quaternion.Euler(_playerSaveData._position.rotation));
+
+        _detectionTimer = new(_detectionRate);
+        _detectionTimer.OnTimerStop += () =>
+        {
+            EnvironmentInteraction();
+            _detectionTimer.Start();
+        };
+
+        _detectionTimer.Start();
     }
 
     private void CheckForTriggerAction()
@@ -437,11 +454,11 @@ public class Player : MonoBehaviour, IHavePersistentData
     //     {
     //         if (closestCollider.gameObject.GetComponent<IInteractable>() != null)
     //         {
-    //             // Debug.Log(closestCollider.name + " is interactable");
+    //             Debug.Log(closestCollider.name + " is interactable");
     //             _lastInteractable = closestCollider.gameObject.GetComponent<IInteractable>();
     //             if (_lastInteractable != null && _lastInteractable.CanInteract)
     //             {
-    //                 _lastInteractable.PrepareInteraction();
+    //                 _lastInteractable.DrawAttention();
     //             }
     //         }
     //     }
@@ -453,6 +470,73 @@ public class Player : MonoBehaviour, IHavePersistentData
     //     }
 
     // }
+    public void EnvironmentInteraction()
+    {
+
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position + Vector3.up, _interactionRange, _interactionLayerMask);
+        if (hitColliders.Length > 0)
+        {
+            foreach (Collider hitCollider in hitColliders)
+            {
+                IInteractable interactable = hitCollider.GetComponent<IInteractable>();
+                if (!interactable.IsHighlighted)
+                {
+                    interactable.ToggleDrawAttention();
+                    _closestInteractables.Add(interactable);
+                    Debug.Log("added interactable: " + interactable.GameObject.name);
+                }
+            }
+
+            // if (hitColliders.Length < _closestInteractables.Count)
+            // {
+            //     for (int i = _closestInteractables.Count - 1; i >= 0; i--)
+            //     {
+            //         IInteractable interactable = _closestInteractables[i];
+            //         if (Vector3.Distance(transform.position, interactable.GameObject.transform.position) > _interactionRange)
+            //         {
+            //             interactable.ToggleDrawAttention();
+            //             _closestInteractables.RemoveAt(i);
+            //         }
+            //     }
+            // }
+        }
+
+        if (_closestInteractables.Count > 0)
+        {
+            for (int i = _closestInteractables.Count - 1; i >= 0; i--)
+            {
+                IInteractable interactable = _closestInteractables[i];
+                if (Vector3.Distance(interactable.GameObject.transform.position, transform.position) > _interactionRange)
+                {
+                    interactable.ToggleDrawAttention();
+                    _closestInteractables.RemoveAt(i);
+                }
+            }
+        }
+
+        if (hitColliders.Length == 0)
+        {
+            if (_closestInteractables.Count > 0)
+            {
+                for (int i = _closestInteractables.Count - 1; i >= 0; i--)
+                {
+                    IInteractable interactable = _closestInteractables[i];
+                    interactable.ToggleDrawAttention();
+                    _closestInteractables.RemoveAt(i);
+                }
+            }
+        }
+
+    }
+
+    IEnumerator ClearInteractablesAfterDelay(IInteractable interactable)
+    {
+        Debug.Log("Deactivating Item" + interactable.GameObject.name);
+        yield return new WaitForSeconds(1f);
+        interactable.ToggleDrawAttention();
+        _closestInteractables.Remove(interactable);
+        yield return null;
+    }
 
 
     // void OnDrawGizmos()
@@ -555,4 +639,9 @@ public class Player : MonoBehaviour, IHavePersistentData
 
 
     #endregion
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawSphere(transform.position + Vector3.up, _interactionRange);
+    }
 }

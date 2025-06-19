@@ -5,6 +5,9 @@ using UnityEngine;
 
 
 
+
+
+
 public class TourHomePodQuest : QuestStep, ILoadDataOnStart
 {
 
@@ -155,9 +158,6 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
     {
         Debug.Log("Phone Should Ring Now");
     }
-
-
-
 
     void OnCutSceneEnded(string cutSceneName)
     {

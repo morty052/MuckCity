@@ -7,6 +7,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
     string _interactionPrompt => "Use Lift";
     public bool CanInteract => _canInteract;
 
+    public bool IsHighlighted { get; }
 
     public string InteractionPrompt => _interactionPrompt;
 
@@ -36,5 +37,8 @@ public class LiftSwitch : MonoBehaviour, IInteractable
         HudManager.Instance.ShowInteractPrompt(_interactionPrompt);
     }
 
-
+    public void ToggleDrawAttention()
+    {
+        throw new System.NotImplementedException();
+    }
 }

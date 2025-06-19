@@ -7,6 +7,8 @@ using UnityEngine;
 public class NpcCharacter : MonoBehaviour, IInteractable
 {
     [SerializeField] protected SpecialCharacters _id;
+
+    public bool IsHighlighted { get; }
     [SerializeField] protected string _name;
 
     [SerializeField] protected NpcSO _npcSO;
@@ -131,4 +133,9 @@ public class NpcCharacter : MonoBehaviour, IInteractable
 
     protected virtual void At(IState from, IState to, IPredicate condition) => _stateMachine.AddTransition(from, to, condition);
     protected virtual void Any(IState to, IPredicate condition) => _stateMachine.AddAnyTransition(to, condition);
+
+    public void ToggleDrawAttention()
+    {
+        throw new System.NotImplementedException();
+    }
 }

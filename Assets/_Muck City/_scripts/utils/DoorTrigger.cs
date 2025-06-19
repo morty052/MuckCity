@@ -20,6 +20,8 @@ public class DoorTrigger : MonoBehaviour, IInteractable
 
     public GameObject GameObject => gameObject;
 
+    public bool IsHighlighted { get; }
+
     void OnTriggerEnter(Collider other)
     {
 
@@ -28,6 +30,8 @@ public class DoorTrigger : MonoBehaviour, IInteractable
         Player.Instance.SetInteractableObject(this);
         PrepareInteraction();
     }
+
+
     void OnTriggerExit(Collider other)
     {
         Player.Instance.SetInteractableObject(null);
@@ -66,6 +70,11 @@ public class DoorTrigger : MonoBehaviour, IInteractable
     public void PrepareInteraction()
     {
         HudManager.Instance.ShowInteractPrompt(InteractionPrompt);
+    }
+
+    public void ToggleDrawAttention()
+    {
+
     }
 
     public void Interact()

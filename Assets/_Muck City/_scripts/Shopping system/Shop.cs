@@ -14,6 +14,8 @@ public class Shop : MonoBehaviour, IInteractable
 
     [SerializeField] GameObject _shopUi;
 
+    public bool IsHighlighted { get; }
+
     Action<int> _onShopItemButtonPressed;
 
 
@@ -112,5 +114,8 @@ public class Shop : MonoBehaviour, IInteractable
         HudManager.Instance.HideInteractPrompt();
     }
 
-
+    public void ToggleDrawAttention()
+    {
+        throw new NotImplementedException();
+    }
 }

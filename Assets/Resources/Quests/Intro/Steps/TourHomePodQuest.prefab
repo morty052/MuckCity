@@ -45,24 +45,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _questInfoSo: {fileID: 11400000, guid: 833872137d4b17443a6cb2cd9d9ffc21, type: 2}
+  _isFinished: 0
+  _questId: 
   _questPointPrefab: {fileID: 5783401725927670678, guid: 89b4cd5bfe195334180a364f101c0279, type: 3}
-  _tutorialTriggerPrefab: {fileID: 7435705475112992583, guid: 96542d181ccb8344fa496633bc07a1d8, type: 3}
-  _mission:
-    _title: Find Alberto
-    _missionStartPoint: {x: 0, y: 0, z: 0}
-    _objectives:
-    - _title: Exit Bunker
-      _objectiveStartPosition: {x: 0, y: 0, z: 0}
-      _isCompleted: 0
-      _index: 0
-    - _title: Find Officers Mess
-      _objectiveStartPosition: {x: 0, y: 0, z: 0}
-      _isCompleted: 0
-      _index: 1
-    - _title: Talk To Alberto
-      _objectiveStartPosition: {x: 0, y: 0, z: 0}
-      _isCompleted: 0
-      _index: 2
+  _questPointsData:
+  - _name: INTRO_TO_HAZMAT_BILL
+    _completesObjective: 0
+    _spawnPosition:
+      position: {x: -1.75, y: -2.72, z: 2.6962843}
+      rotation: {x: 0, y: 0, z: 0}
+  - _name: LOAD_MUCK_CITY
+    _completesObjective: 1
+    _spawnPosition:
+      position: {x: 12.2, y: -2.06, z: -111.23}
+      rotation: {x: -0, y: 0, z: 0}
+  - _name: Exit Bunker
+    _completesObjective: 1
+    _spawnPosition:
+      position: {x: 12.44, y: -7.5, z: -112.2}
+      rotation: {x: -0, y: 0, z: 0}
+  - _name: Find Officers Mess
+    _completesObjective: 1
+    _spawnPosition:
+      position: {x: -12.277799, y: 1.55, z: -64.6}
+      rotation: {x: -0, y: 0, z: 0}
+  _questItemsData:
+  - _name: Generator
+    _position: {x: 1.46, y: 1.432, z: -90.766}
+  _objectDetector:
+    _radius: 0
+    _position: {x: 0, y: 0, z: 0}
+  _detectionLayerMask:
+    serializedVersion: 2
+    m_Bits: 1048576
   _tiedCharactersQuestData:
   - _characterID: 3
     _conversationForQuest: {fileID: 967415334066115386, guid: 0236e1cf245c2a246ade3ee0b34e4ab7, type: 3}
@@ -102,38 +117,7 @@ MonoBehaviour:
       _title: 
       _missionStartPoint: {x: 0, y: 0, z: 0}
       _objectives: []
-  _questPointsData:
-  - _name: INTRO_TO_HAZMAT_BILL
-    _completesObjective: 0
-    _spawnPosition:
-      position: {x: -1.75, y: -2.72, z: 2.6962843}
-      rotation: {x: 0, y: 0, z: 0}
-  - _name: LOAD_MUCK_CITY
-    _completesObjective: 1
-    _spawnPosition:
-      position: {x: 12.2, y: -2.06, z: -111.23}
-      rotation: {x: -0, y: 0, z: 0}
-  - _name: Exit Bunker
-    _completesObjective: 1
-    _spawnPosition:
-      position: {x: 12.44, y: -7.5, z: -112.2}
-      rotation: {x: -0, y: 0, z: 0}
-  - _name: Find Officers Mess
-    _completesObjective: 1
-    _spawnPosition:
-      position: {x: -12.277799, y: 1.55, z: -64.6}
-      rotation: {x: -0, y: 0, z: 0}
-  _questCutScenes:
-  - _name: INTRO_TO_HAZMAT_BILL
-    _spawnPosition:
-      position: {x: 23.69, y: -36.73, z: -107.96384}
-      rotation: {x: -0, y: 0, z: 0}
-    _cutScenePlayer: {fileID: 7038046814094832206, guid: f1d798197feb0694dab2f20afd7eeff2, type: 3}
-  _eventClips:
-  - _name: Wing is Getting Detached
-    _clip: {fileID: 8300000, guid: 689d5a07a2c018e4690d71f242356428, type: 3}
-    _clipType: 0
-    _position: {x: -108.21, y: 1.762411, z: 29.01}
+  _tutorialTriggerPrefab: {fileID: 7435705475112992583, guid: 96542d181ccb8344fa496633bc07a1d8, type: 3}
   _tutorials:
   - _image: {fileID: 21300000, guid: 0db456daf88f3fe438a4943fc64eff49, type: 3}
     _pcTitle: Basic Locomotion
@@ -160,10 +144,37 @@ MonoBehaviour:
     _xboxDescription: Press and hold <sprite name=lt> to aim your weapon
     _playstationDescription: Press and hold <sprite name=lt> to aim your weapon
     _spawnPoint: {x: -83.55, y: -0.15999994, z: 40.58}
+  _mission:
+    _title: Find Alberto
+    _missionStartPoint: {x: 0, y: 0, z: 0}
+    _objectives:
+    - _title: Exit Bunker
+      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _isCompleted: 0
+      _index: 0
+    - _title: Find Officers Mess
+      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _isCompleted: 0
+      _index: 1
+    - _title: Talk To Alberto
+      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _isCompleted: 0
+      _index: 2
+  _eventClips:
+  - _name: Wing is Getting Detached
+    _clip: {fileID: 8300000, guid: 689d5a07a2c018e4690d71f242356428, type: 3}
+    _clipType: 0
+    _position: {x: -108.21, y: 1.762411, z: 29.01}
+  _currentClipObject: {fileID: 0}
+  _questCutScenes:
+  - _name: INTRO_TO_HAZMAT_BILL
+    _spawnPosition:
+      position: {x: 23.69, y: -36.73, z: -107.96384}
+      rotation: {x: -0, y: 0, z: 0}
+    _cutScenePlayer: {fileID: 7038046814094832206, guid: f1d798197feb0694dab2f20afd7eeff2, type: 3}
   _spawnableCreatures:
   - _spawnPositions:
     - {x: -87.65, y: -2.2, z: 26.439999}
     _creaturePrefab: {fileID: 3519536000938682549, guid: c335dc62e4832014fa348e67604c9ed9, type: 3}
     _name: 0
     _tag: WAVE_ONE
-  _currentClipObject: {fileID: 0}
