@@ -13,36 +13,9 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityUtils;
 
-[System.Serializable]
-public struct GenericInputStruct
-{
-    public string _name;
-    // public string _gamePadInput;
-    // public string _mobileInput;
-    public List<GenericInput> _interactionInput;
-
-    public GenericInputStruct(string name, string input2, string input3)
-    {
-        // _desktopInput = input;
-        // _gamePadInput = input2;
-        _name = name;
-        _interactionInput = new();
-    }
-}
-
-[Serializable, ShowInInspector]
-public class InputsGroup
-{
-    string _inputName;
-
-    public virtual void Update()
-    {
-
-    }
-}
 
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IHavePersistentData
 {
     public static Player Instance { get; private set; }
     public GenericInput _interactionInput = new("E", "Y", "Y");
@@ -52,7 +25,6 @@ public class Player : MonoBehaviour
     public GenericInput _dialogueOneInput = new("C", "Y", "Y");
     public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
 
-    public bool _shouldAutoSave = false;
     public float _interactionRange = 1f;
 
     [SerializeField] bool _isInDialogue;
@@ -84,14 +56,23 @@ public class Player : MonoBehaviour
     [SerializeField] CraftingArea _activeCraftingArea;
     [SerializeField] Shop _activeShop;
 
-    [SerializeField] BackPack _hotStorage;
+    public BackPack _hotStorage;
     public Storage _activeStorage;
 
     public bool IsInVehicle => _currentVehicle != null;
+
+
+
     public Observer<bool> _isPhoneShowing = new(false);
 
 
     CancellationTokenSource cts = new();
+
+    public bool ShouldAutoSave { get => AutoSaveManager.ShouldAutoSave(SaveAble.PLAYER); }
+
+    public SaveAble SAVE_ID => SaveAble.PLAYER;
+
+    private PlayerSaveData _playerSaveData;
 
 
 
@@ -102,9 +83,10 @@ public class Player : MonoBehaviour
         GameEventsManager.OnCutSceneStartEvent += OnCutSceneStart;
         GameEventsManager.OnCutSceneEndEvent += OnCutSceneEnd;
         GameEventsManager.OnCraftItemEvent += AddItemToInventory;
-
-
+        AutoSaveManager.OnShouldAutoSave += AutoSave;
     }
+
+
 
     void OnDisable()
     {
@@ -113,6 +95,11 @@ public class Player : MonoBehaviour
         GameEventsManager.OnCutSceneStartEvent -= OnCutSceneStart;
         GameEventsManager.OnCutSceneEndEvent += OnCutSceneEnd;
         GameEventsManager.OnCraftItemEvent -= AddItemToInventory;
+        AutoSaveManager.OnShouldAutoSave -= AutoSave;
+
+        AutoSave();
+
+
         _isRunning = false;
         cts.Cancel();
         _vThirdPersonInput.onUpdate -= CheckForTriggerAction;
@@ -132,6 +119,7 @@ public class Player : MonoBehaviour
             _vThirdPersonInput = GetComponent<vThirdPersonInput>();
             _inventory = GetComponent<vItemManager>();
 
+            LoadPersistentData();
             // DontDestroyOnLoad(gameObject);
         }
 
@@ -150,6 +138,8 @@ public class Player : MonoBehaviour
         UniversalAdditionalCameraData universalAdditionalCameraData = _defaultCamera.GetComponent<UniversalAdditionalCameraData>();
         universalAdditionalCameraData.cameraStack.Add(_phoneCamera);
         _vThirdPersonInput.onUpdate += CheckForTriggerAction;
+
+        transform.SetPositionAndRotation(_playerSaveData._position.position, Quaternion.Euler(_playerSaveData._position.rotation));
     }
 
     private void CheckForTriggerAction()
@@ -210,6 +200,24 @@ public class Player : MonoBehaviour
     //     EnvironmentInteraction();
     // }
 
+
+    #region SAVE/LOAD
+    public void AutoSave()
+    {
+        AutoSaveManager.Autosave(SaveAble.PLAYER, new PlayerSaveData(this));
+    }
+
+    public void LoadPersistentData()
+    {
+        PlayerSaveData data = (PlayerSaveData)AutoSaveManager.Load(SAVE_ID);
+        _playerSaveData = data;
+    }
+
+    public void TriggerAutoSave()
+    {
+        throw new NotImplementedException();
+    }
+    #endregion
 
 
     void Interact()
@@ -483,6 +491,10 @@ public class Player : MonoBehaviour
         switch (item.type)
         {
             case vItemType.Consumable:
+                Debug.Log("Consumable item: " + item.name);
+                Instantiate(item.dropObject, transform.position, Quaternion.identity);
+                break;
+            case vItemType.ShooterWeapon:
                 Instantiate(item.dropObject, transform.position, Quaternion.identity);
                 break;
             default:

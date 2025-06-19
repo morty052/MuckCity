@@ -39,7 +39,7 @@ public class NpcLoader : MonoBehaviour
         {
             NpcCharacter npcCharacter = Instantiate(npc._npcPrefab, npc._spawnPosition, Quaternion.Euler(npc._spawnRotation), spawnParent);
             NpcManager.Instance.AddNPC(npcCharacter);
-            npcCharacter.PingAndSelect();
+            // npcCharacter.PingAndSelect();
             // OnScreenDebugger.Instance.Log($"Spawned {npcCharacter.name}");
         }
 

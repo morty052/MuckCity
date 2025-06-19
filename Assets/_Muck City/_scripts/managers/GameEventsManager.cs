@@ -50,10 +50,12 @@ public class GameEventsManager : MonoBehaviour
     public static Action<ItemReference> OnCraftItemEvent;
     public static Action OnSunDownEvent;
     public static Action OnSunUpEvent;
+
+
     public static Action<float, bool> OnContaminationUpdate;
     public static Action OnContaminationMaxedOut;
 
-    public static Action OnShouldAutoSave;
+
     public static Action<Vector3> PlayerOverride;
     public static Action<Vector3> PlayerOverrideComplete;
 
@@ -243,10 +245,7 @@ public class GameEventsManager : MonoBehaviour
 
 
 
-    public void AutoSaveEvent()
-    {
-        OnShouldAutoSave?.Invoke();
-    }
+
     public void OnPlayerOverride(Vector3 position)
     {
         PlayerOverride?.Invoke(position);

@@ -114,7 +114,7 @@ public class District : MonoBehaviour, ILoadDataOnStart
             // guardNPC.UpdateWayPoint(_patrolPoints);
             // guardNPC.GetComponent<vFSMBehaviourController>().StopFSM();
             _guards.Add(guardNPC);
-            Debug.Log("Spawned guard " + " in district " + _districtID);
+            // Debug.Log("Spawned guard " + " in district " + _districtID);
         }
         return Task.CompletedTask;
     }

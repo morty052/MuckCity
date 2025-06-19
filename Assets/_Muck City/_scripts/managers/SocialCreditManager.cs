@@ -1,20 +1,9 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public struct PersistentSocialCreditData
-{
-    public int _socialCredit;
-    public string _socialCreditTextValue;
 
-
-    public PersistentSocialCreditData(int socialCredit, string socialCreditTextValue)
-    {
-        _socialCredit = socialCredit;
-        _socialCreditTextValue = socialCreditTextValue;
-    }
-
-}
 
 public class SocialCreditManager : MonoBehaviour, IHavePersistentData
 {
@@ -25,8 +14,11 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
 
 
     public static SocialCreditManager Instance { get; private set; }
-    public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
-    public string SAVE_FILE_NAME { get => "SOCIALCREDIT"; set => SAVE_FILE_NAME = value; }
+    public bool ShouldAutoSave { get => AutoSaveManager.ShouldAutoSave(SaveAble.CREDITS); }
+
+    public SaveAble SAVE_ID => SaveAble.CREDITS;
+
+    private SocialCreditData _socialCreditData;
 
     private void Awake()
     {
@@ -43,7 +35,8 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
 
     void Start()
     {
-        SocialCredit = _lastSavedCredit;
+        if (_socialCreditData.Equals(null)) return;
+        SocialCredit = _socialCreditData._socialCredit;
         _socialCreditText.text = SocialCredit.ToString();
 
     }
@@ -82,15 +75,7 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
 
     public void TriggerAutoSave()
     {
-        _lastSavedCredit = SocialCredit;
-        PersistentSocialCreditData data = new()
-        {
-            _socialCredit = _lastSavedCredit,
-            _socialCreditTextValue = _lastSavedCredit.ToString()
-        };
 
-        ES3.Save(SAVE_FILE_NAME, data);
-        Debug.Log("saved social credit data: " + _lastSavedCredit);
     }
 
     // private void OnPurchase(ShopItemSO sO)
@@ -118,8 +103,26 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
 
     public void LoadPersistentData()
     {
-        // PersistentSocialCreditData data = ES3.Load<PersistentSocialCreditData>(SAVE_FILE_NAME);
-        // _lastSavedCredit = data._socialCredit;
-        // Debug.Log("Loaded social credit data: " + _lastSavedCredit);
+        object data = AutoSaveManager.Load(SAVE_ID);
+        if (data.IsUnityNull())
+        {
+            Debug.Log("Social credit not loaded" + _lastSavedCredit);
+            return;
+        }
+        _socialCreditData = (SocialCreditData)data;
+        Debug.Log("Loaded social credit data: " + _lastSavedCredit);
+    }
+
+    public void AutoSave()
+    {
+        _lastSavedCredit = SocialCredit;
+        SocialCreditData data = new()
+        {
+            _socialCredit = _lastSavedCredit,
+            _socialCreditTextValue = _lastSavedCredit.ToString()
+        };
+
+        AutoSaveManager.Autosave(SAVE_ID, data);
+        Debug.Log("saved social credit data: " + _lastSavedCredit);
     }
 }

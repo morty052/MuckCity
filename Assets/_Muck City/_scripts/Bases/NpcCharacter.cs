@@ -46,18 +46,14 @@ public class NpcCharacter : MonoBehaviour, IInteractable
             _aiController = GetComponent<vControlAI>();
             _fsmController = GetComponent<vFSMBehaviourController>();
             SetupData();
-            SetupTransitions();
+            // SetupTransitions();
         }
     }
 
-
-
-
-
-    void Update()
-    {
-        _stateMachine?.Update();
-    }
+    // void Update()
+    // {
+    //     _stateMachine?.Update();
+    // }
 
 
     protected virtual void SetupData()
