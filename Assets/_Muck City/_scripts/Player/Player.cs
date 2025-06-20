@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DialogueEditor;
@@ -13,21 +11,33 @@ using Invector.vItemManager;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using UnityUtils;
+
 
 
 
 public class Player : MonoBehaviour, IHavePersistentData
 {
     public static Player Instance { get; private set; }
+
+    [TabGroup("Inputs")]
     public GenericInput _interactionInput = new("E", "Y", "Y");
+    [TabGroup("Inputs")]
+
     public GenericInput _showPhoneInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")]
+
     public GenericInput _endConvoInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")]
+
     public GenericInput _exitInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")]
+
     public GenericInput _dialogueOneInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")]
+
     public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
 
-    public float _interactionRange = 1f;
+
 
     [SerializeField] bool _isInDialogue;
 
@@ -37,7 +47,26 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     public vThirdPersonCameraListData CameraStateList;
 
+    [TabGroup("Interaction")]
+    public float _interactionRange = 1f;
+
+    [TabGroup("Interaction")]
     [SerializeField] LayerMask _interactionLayerMask = new();
+
+    [TabGroup("Interaction")]
+
+    [SerializeField] List<IInteractable> _closestInteractables = new();
+
+    CountdownTimer _detectionTimer;
+
+    [TabGroup("Interaction")]
+    [SerializeField] float _detectionRate = 0.2f;
+
+    [TabGroup("Interaction")]
+    [SerializeField] IInteractable _lastInteractable;
+
+    [TabGroup("Interaction")]
+    [SerializeField] InteractionSystem _interactionSystem;
 
     [SerializeField] NPCConversation _activeConversation;
 
@@ -54,7 +83,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     [SerializeField] GameObject _phoneModel;
     [SerializeField] Camera _phoneCamera;
     [SerializeField] Camera _defaultCamera;
-    [SerializeField] IInteractable _lastInteractable;
+
     [SerializeField] CraftingArea _activeCraftingArea;
     [SerializeField] Shop _activeShop;
 
@@ -76,11 +105,9 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     private PlayerSaveData _playerSaveData;
 
-    [SerializeField] List<IInteractable> _closestInteractables = new();
 
-    CountdownTimer _detectionTimer;
 
-    float _detectionRate = 0.2f;
+    [SerializeField] bool _useLastSavedPosition = false;
 
 
 
@@ -116,6 +143,8 @@ public class Player : MonoBehaviour, IHavePersistentData
         {
             CameraStateList.tpCameraStates.Remove(CameraStateList.tpCameraStates.Find(state => state.Name == _lastBlendedState));
         }
+
+        _interactionSystem.Dispose();
     }
 
     void Awake()
@@ -128,6 +157,7 @@ public class Player : MonoBehaviour, IHavePersistentData
             _inventory = GetComponent<vItemManager>();
 
             LoadPersistentData();
+            _interactionSystem = new InteractionSystem(_interactionRange, _detectionRate, transform, _interactionLayerMask);
             // DontDestroyOnLoad(gameObject);
         }
 
@@ -147,16 +177,21 @@ public class Player : MonoBehaviour, IHavePersistentData
         universalAdditionalCameraData.cameraStack.Add(_phoneCamera);
         _vThirdPersonInput.onUpdate += CheckForTriggerAction;
 
-        transform.SetPositionAndRotation(_playerSaveData._position.position, Quaternion.Euler(_playerSaveData._position.rotation));
 
-        _detectionTimer = new(_detectionRate);
-        _detectionTimer.OnTimerStop += () =>
+        if (_useLastSavedPosition)
         {
-            EnvironmentInteraction();
-            _detectionTimer.Start();
-        };
 
-        _detectionTimer.Start();
+            transform.SetPositionAndRotation(_playerSaveData._position.position, Quaternion.Euler(_playerSaveData._position.rotation));
+        }
+
+        // _detectionTimer = new(_detectionRate);
+        // _detectionTimer.OnTimerStop += () =>
+        // {
+        //     EnvironmentInteraction();
+        //     _detectionTimer.Start();
+        // };
+
+        // _detectionTimer.Start();
     }
 
     private void CheckForTriggerAction()
@@ -470,73 +505,66 @@ public class Player : MonoBehaviour, IHavePersistentData
     //     }
 
     // }
-    public void EnvironmentInteraction()
-    {
+    // public void EnvironmentInteraction()
+    // {
 
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position + Vector3.up, _interactionRange, _interactionLayerMask);
-        if (hitColliders.Length > 0)
-        {
-            foreach (Collider hitCollider in hitColliders)
-            {
-                IInteractable interactable = hitCollider.GetComponent<IInteractable>();
-                if (!interactable.IsHighlighted)
-                {
-                    interactable.ToggleDrawAttention();
-                    _closestInteractables.Add(interactable);
-                    Debug.Log("added interactable: " + interactable.GameObject.name);
-                }
-            }
+    //     Collider[] hitColliders = Physics.OverlapSphere(transform.position + Vector3.up, _interactionRange, _interactionLayerMask);
+    //     if (hitColliders.Length > 0)
+    //     {
+    //         foreach (Collider hitCollider in hitColliders)
+    //         {
+    //             IInteractable interactable = hitCollider.GetComponent<IInteractable>();
+    //             if (!interactable.IsHighlighted)
+    //             {
+    //                 interactable.ToggleDrawAttention();
+    //                 _closestInteractables.Add(interactable);
+    //                 Debug.Log("added interactable: " + interactable.GameObject.name);
+    //             }
+    //         }
 
-            // if (hitColliders.Length < _closestInteractables.Count)
-            // {
-            //     for (int i = _closestInteractables.Count - 1; i >= 0; i--)
-            //     {
-            //         IInteractable interactable = _closestInteractables[i];
-            //         if (Vector3.Distance(transform.position, interactable.GameObject.transform.position) > _interactionRange)
-            //         {
-            //             interactable.ToggleDrawAttention();
-            //             _closestInteractables.RemoveAt(i);
-            //         }
-            //     }
-            // }
-        }
+    //         // if (hitColliders.Length < _closestInteractables.Count)
+    //         // {
+    //         //     for (int i = _closestInteractables.Count - 1; i >= 0; i--)
+    //         //     {
+    //         //         IInteractable interactable = _closestInteractables[i];
+    //         //         if (Vector3.Distance(transform.position, interactable.GameObject.transform.position) > _interactionRange)
+    //         //         {
+    //         //             interactable.ToggleDrawAttention();
+    //         //             _closestInteractables.RemoveAt(i);
+    //         //         }
+    //         //     }
+    //         // }
+    //     }
 
-        if (_closestInteractables.Count > 0)
-        {
-            for (int i = _closestInteractables.Count - 1; i >= 0; i--)
-            {
-                IInteractable interactable = _closestInteractables[i];
-                if (Vector3.Distance(interactable.GameObject.transform.position, transform.position) > _interactionRange)
-                {
-                    interactable.ToggleDrawAttention();
-                    _closestInteractables.RemoveAt(i);
-                }
-            }
-        }
+    //     if (_closestInteractables.Count > 0)
+    //     {
+    //         for (int i = _closestInteractables.Count - 1; i >= 0; i--)
+    //         {
+    //             IInteractable interactable = _closestInteractables[i];
+    //             if (Vector3.Distance(interactable.GameObject.transform.position, transform.position) > _interactionRange)
+    //             {
+    //                 interactable.ToggleDrawAttention();
+    //                 _closestInteractables.RemoveAt(i);
+    //             }
+    //         }
+    //     }
 
-        if (hitColliders.Length == 0)
-        {
-            if (_closestInteractables.Count > 0)
-            {
-                for (int i = _closestInteractables.Count - 1; i >= 0; i--)
-                {
-                    IInteractable interactable = _closestInteractables[i];
-                    interactable.ToggleDrawAttention();
-                    _closestInteractables.RemoveAt(i);
-                }
-            }
-        }
+    //     if (hitColliders.Length == 0)
+    //     {
+    //         if (_closestInteractables.Count > 0)
+    //         {
+    //             for (int i = _closestInteractables.Count - 1; i >= 0; i--)
+    //             {
+    //                 IInteractable interactable = _closestInteractables[i];
+    //                 interactable.ToggleDrawAttention();
+    //                 _closestInteractables.RemoveAt(i);
+    //             }
+    //         }
+    //     }
 
-    }
+    // }
 
-    IEnumerator ClearInteractablesAfterDelay(IInteractable interactable)
-    {
-        Debug.Log("Deactivating Item" + interactable.GameObject.name);
-        yield return new WaitForSeconds(1f);
-        interactable.ToggleDrawAttention();
-        _closestInteractables.Remove(interactable);
-        yield return null;
-    }
+
 
 
     // void OnDrawGizmos()

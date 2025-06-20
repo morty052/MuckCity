@@ -35,17 +35,19 @@ public class DoorSwitch : MonoBehaviour, IInteractable
         {
             CloseDoor();
         }
+
+        Invoke(nameof(HideInteractionPrompt), 0.1f);
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        PrepareInteraction();
-    }
+    // void OnTriggerEnter(Collider other)
+    // {
+    //     PrepareInteraction();
+    // }
 
-    void OnTriggerExit(Collider other)
-    {
-        HideInteractionPrompt();
-    }
+    // void OnTriggerExit(Collider other)
+    // {
+    //     HideInteractionPrompt();
+    // }
 
     public void PrepareInteraction()
     {
@@ -55,7 +57,6 @@ public class DoorSwitch : MonoBehaviour, IInteractable
 
     public void ToggleDrawAttention()
     {
-        Debug.Log("Drawn Attention");
         _actionText.ToggleWhiteDot();
     }
 

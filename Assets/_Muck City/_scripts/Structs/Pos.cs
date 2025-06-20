@@ -1,5 +1,7 @@
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 [System.Serializable]
@@ -15,6 +17,7 @@ public struct Pos
         this.rotation = rotation;
     }
 
+#if UNITY_EDITOR
     [Button("Copy Transform")]
     public void CopyTransform()
     {
@@ -26,4 +29,5 @@ public struct Pos
         position = Selection.activeGameObject.transform.position;
         rotation = Selection.activeGameObject.transform.rotation.eulerAngles;
     }
+#endif
 }
