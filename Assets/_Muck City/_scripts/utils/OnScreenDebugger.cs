@@ -92,6 +92,10 @@ public class OnScreenDebugger : MonoBehaviour
     void OnDisable()
     {
         Application.logMessageReceived -= LogMessage;
+        if (_detector != null)
+        {
+            _detector = null;
+        }
     }
 
     void Awake()
@@ -157,7 +161,7 @@ public class OnScreenDebugger : MonoBehaviour
     [Button("Detect"), TabGroup("Detect")]
     void DetectObject()
     {
-        DoorTrigger door = _detector.DetectObject<DoorTrigger>();
+        DoorTrigger door = _detector.DetectObject<DoorTrigger>(_detector._position);
         Debug.Log("Detected" + door.name);
     }
 
@@ -289,6 +293,11 @@ public class OnScreenDebugger : MonoBehaviour
     void SetObjective()
     {
         DomeManager.Instance.SetupMissionDisplay(_mission);
+    }
+    [Button, TabGroup("Detect")]
+    void CreateDetector()
+    {
+        _detector = new(_detectLayer);
     }
     #endregion
     void OnDrawGizmosSelected()

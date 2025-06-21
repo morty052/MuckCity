@@ -9,8 +9,9 @@ public class Generator : Equipment
         Debug.Log("Interacting with " + gameObject.name);
         _actionText.SetText("Turn Off");
 
-        if (TryGetComponent(out QuestItem questItem))
+        if (IsQuestItem)
         {
+            QuestItem questItem = GetComponent<QuestItem>();
             OnInteracted?.Invoke(questItem._questItemData._name);
         }
     }

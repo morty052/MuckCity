@@ -22,6 +22,8 @@ public class DoorSwitch : MonoBehaviour, IInteractable
 
     public bool IsQuestItem { get; set; }
 
+    [SerializeField] Direction _direction;
+
     public void HideInteractionPrompt()
     {
         _actionText.HideInteractionPrompt();
@@ -39,11 +41,6 @@ public class DoorSwitch : MonoBehaviour, IInteractable
         {
             CloseDoor();
         }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        Debug.Log(other.name + " Entered trigger");
     }
 
     void OnTriggerExit(Collider other)
@@ -73,7 +70,7 @@ public class DoorSwitch : MonoBehaviour, IInteractable
 
     void OpenDoor()
     {
-        if (IsPlayerAheadOfPos())
+        if (_direction == Direction.FRONT)
         {
             _door.transform.DOLocalRotate(new Vector3(0, -90, 0), 1f).OnComplete(() => _isOpen = true);
 

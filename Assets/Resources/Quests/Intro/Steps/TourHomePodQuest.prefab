@@ -77,13 +77,18 @@ MonoBehaviour:
   _questItemsData:
   - _name: Generator
     _tag: Get Power Back On
-    _position: {x: 30.477402, y: -36.183655, z: -111.245995}
+    _position: {x: 30.450401, y: -35.703655, z: -111.20999}
+    _radius: 0
+  - _name: Main Room Door
+    _tag: Enter Main Room
+    _position: {x: 24.86, y: -43.196213, z: -111.319}
+    _radius: 1
   _objectDetector:
     _radius: 0
     _position: {x: 0, y: 0, z: 0}
   _detectionLayerMask:
     serializedVersion: 2
-    m_Bits: 1048576
+    m_Bits: 1050624
   _tiedCharactersQuestData:
   - _characterID: 3
     _conversationForQuest: {fileID: 967415334066115386, guid: 0236e1cf245c2a246ade3ee0b34e4ab7, type: 3}

@@ -44,7 +44,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
 
     public void ToggleDrawAttention()
     {
-        Debug.Log("Toggle Draw Attention");
+        // Debug.Log("Toggle Draw Attention");
         isHighlighted = !isHighlighted;
     }
 }

@@ -68,8 +68,13 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         _activeCutScenePlayer.OnCutSceneStarted += OnCutSceneStarted;
 
         Generator gen = GetQuestItem<Generator>("Generator", true);
+        DoorTrigger mainDoorTrigger = GetQuestItem<DoorTrigger>("Main Room Door", true);
+
+        mainDoorTrigger.ToggleCanInteract();
         gen.ToggleCanInteract();
         gen.OnInteracted += OnQuestItemInteracted;
+
+
 
 
         _doneSetup = true;

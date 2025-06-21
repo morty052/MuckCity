@@ -114,6 +114,8 @@ public struct QuestItemStruct
 
     public Vector3 _position;
 
+    public float _radius;
+
 #if UNITY_EDITOR
     [Button]
     public void SetFromScene()
@@ -122,11 +124,12 @@ public struct QuestItemStruct
     }
 #endif
 
-    public QuestItemStruct(string name, string tag, Vector3 pos)
+    public QuestItemStruct(string name, string tag, Vector3 pos, float radius = 0)
     {
         _name = name;
         _tag = tag;
         _position = pos;
+        _radius = radius;
     }
 }
 
@@ -245,8 +248,9 @@ public abstract class QuestStep : MonoBehaviour
     public T GetQuestItem<T>(string name, bool setupListener = false) where T : IInteractable
     {
         QuestItemStruct itemData = FindQuestItemByName(name);
-        T item = _objectDetector.DetectObject<T>(itemData._position);
+        T item = _objectDetector.DetectObject<T>(itemData._position, itemData._radius);
 
+        Debug.Log("item is " + item.GameObject.name);
         if (setupListener)
         {
             AddQuestItemToObject(item, itemData);

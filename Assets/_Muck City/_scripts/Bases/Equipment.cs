@@ -42,7 +42,7 @@ public class Equipment : MonoBehaviour, IInteractable
     public virtual void PrepareInteraction()
     {
         if (!_canInteract) return;
-        _actionText.ToggleInteractionPrompt();
+        _actionText.ShowInteractionPrompt();
         // Player.Instance.SetInteractableObject(this);
     }
 

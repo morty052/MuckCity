@@ -40,19 +40,20 @@ public class ObjectDetector
 
         else
         {
+
             component = hitColliders[0].GetComponent<T>();
-            Debug.Log($"<color=green> found  {typeof(T)}</color>");
+            Debug.Log($"<color=green> found  {typeof(T)} {hitColliders.Length}</color>");
             return component;
         }
 
     }
 
 
-    public T? DetectObject<T>(Vector3 position) where T : IInteractable
+    public T? DetectObject<T>(Vector3 position, float radius = 0) where T : IInteractable
     {
 
         T? component = default;
-        Collider[] hitColliders = Physics.OverlapSphere(position, _radius, _interactionLayerMask);
+        Collider[] hitColliders = Physics.OverlapSphere(position, radius == 0 ? _radius : radius, _interactionLayerMask);
 
         if (hitColliders.Length == 0)
         {
@@ -63,7 +64,11 @@ public class ObjectDetector
         else
         {
             component = hitColliders[0].GetComponent<T>();
-            Debug.Log($"<color=green> found  {typeof(T)}</color>");
+            foreach (var item in hitColliders)
+            {
+                Debug.Log($" {item.name}");
+            }
+            Debug.Log($"<color=green> found  {typeof(T)} {component.GameObject.name}</color>");
             return component;
         }
 

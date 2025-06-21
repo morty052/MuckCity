@@ -33,6 +33,7 @@ public class DoorTrigger : MonoBehaviour, IInteractable
     void OnTriggerEnter(Collider other)
     {
 
+        if (!_canInteract) return;
         Debug.Log(other.name + "entered trigger");
         Player.Instance.SetInteractableObject(this);
         PrepareInteraction();
@@ -115,6 +116,11 @@ public class DoorTrigger : MonoBehaviour, IInteractable
         }
     }
 
+
+    public virtual void ToggleCanInteract()
+    {
+        _canInteract = !_canInteract;
+    }
 
     public void HideInteractionPrompt()
     {
