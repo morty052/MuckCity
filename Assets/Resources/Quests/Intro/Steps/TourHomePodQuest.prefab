@@ -69,9 +69,15 @@ MonoBehaviour:
     _spawnPosition:
       position: {x: -12.277799, y: 1.55, z: -64.6}
       rotation: {x: -0, y: 0, z: 0}
+  - _name: Get Power Back On
+    _completesObjective: 0
+    _spawnPosition:
+      position: {x: 12.14, y: -20.3, z: -111.73}
+      rotation: {x: -0, y: 270.00003, z: 0}
   _questItemsData:
   - _name: Generator
-    _position: {x: 1.46, y: 1.432, z: -90.766}
+    _tag: Get Power Back On
+    _position: {x: 30.477402, y: -36.183655, z: -111.245995}
   _objectDetector:
     _radius: 0
     _position: {x: 0, y: 0, z: 0}
@@ -160,6 +166,10 @@ MonoBehaviour:
       _objectiveStartPosition: {x: 0, y: 0, z: 0}
       _isCompleted: 0
       _index: 2
+    - _title: Get Power Back On
+      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _isCompleted: 0
+      _index: 3
   _eventClips:
   - _name: Wing is Getting Detached
     _clip: {fileID: 8300000, guid: 689d5a07a2c018e4690d71f242356428, type: 3}

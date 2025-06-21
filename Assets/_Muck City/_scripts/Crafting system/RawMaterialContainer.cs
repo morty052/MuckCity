@@ -15,6 +15,10 @@ public class RawMaterialContainer : Tradeable, IInteractable, IPoolable
 
     public string InteractionPrompt => _interactionPrompt;
 
+    bool _isQuestItem;
+
+    public bool IsQuestItem { get; set; }
+
     public int ID => _reference.id;
 
     public GameObject GameObject => gameObject;

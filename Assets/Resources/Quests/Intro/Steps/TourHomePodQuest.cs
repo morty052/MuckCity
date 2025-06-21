@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
-
-
-
-
 
 
 public class TourHomePodQuest : QuestStep, ILoadDataOnStart
@@ -69,6 +66,12 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         _activeCutScenePlayer = cutScene;
         _activeCutScenePlayer.OnCutSceneEnded += OnCutSceneEnded;
         _activeCutScenePlayer.OnCutSceneStarted += OnCutSceneStarted;
+
+        Generator gen = GetQuestItem<Generator>("Generator", true);
+        gen.ToggleCanInteract();
+        gen.OnInteracted += OnQuestItemInteracted;
+
+
         _doneSetup = true;
         // Alberto.UpdateQuestData(_questInfoSo, this, questData._conversationForQuest);
 
@@ -83,7 +86,7 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
             case SpecialCharacters.HAZMAT_BILL:
                 billQuestData._conversationForQuest.OnDialogueFinishedEvent -= OnConversationFinished;
 
-                ActivateMission(1);
+                ActivateMission(2);
 
                 //* Set up quest point in elevator to complete exit bunker objective
                 InstantiateQuestPoint("Exit Bunker");
@@ -91,7 +94,9 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
                 // InstantiateQuestPoint("LOAD_MUCK_CITY");
                 break;
             case SpecialCharacters.ALBERTO:
-                // Debug.Log("Done Speaking with " + speakerName + " Update quest now");
+                CompleteObjective("Talk To Alberto");
+                InstantiateQuestPoint("Get Power Back On");
+                UpdateMissionObjectives(3);
                 _albertoQuestData._conversationForQuest.OnDialogueFinishedEvent -= OnConversationFinished;
                 break;
             default:
@@ -105,13 +110,19 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         {
             case "Exit Bunker":
                 CompleteObjective(questPointName);
-                UpdateMissionObjectives(1);
+                // UpdateMissionObjectives(1);
                 InitBunkerHeights();
+                //* SETUP QUESTPOINT TO FIGURE OUT WHEN PLAYER IS ON RIGHT TRACK TO ALBERTO
                 StartCoroutine(InstantiateQuestPointAfterDelay(1f, "Find Officers Mess"));
                 break;
             case "Find Officers Mess":
                 CompleteObjective(questPointName);
                 UpdateMissionObjectives(2);
+                break;
+            case "Get Power Back On":
+                //* REACTIVATE GENERATOR IN BUNKER
+                Generator gen = GetQuestItem<Generator>("Generator");
+                gen.ToggleCanInteract();
                 break;
             default:
                 break;
@@ -122,9 +133,17 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
     }
 
 
-    public override void OnQuestItemInteracted(string questItemName)
+    public override void OnQuestItemInteracted(string questItemTag)
     {
-
+        switch (questItemTag)
+        {
+            case "Get Power Back On":
+                CompleteObjective("Get Power Back On");
+                UpdateMissionObjectives(3);
+                break;
+            default:
+                break;
+        }
     }
 
     IEnumerator InstantiateQuestPointAfterDelay(float delay, string pointName)

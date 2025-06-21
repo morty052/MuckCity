@@ -7,11 +7,16 @@ public class LiftSwitch : MonoBehaviour, IInteractable
     string _interactionPrompt => "Use Lift";
     public bool CanInteract => _canInteract;
 
-    public bool IsHighlighted { get; }
+    bool isHighlighted = false;
+    public bool IsHighlighted { get => isHighlighted; set => isHighlighted = value; }
 
     public string InteractionPrompt => _interactionPrompt;
 
     public GameObject GameObject => gameObject;
+
+    bool _isQuestItem;
+
+    public bool IsQuestItem { get; set; }
 
     public void HideInteractionPrompt()
     {
@@ -39,6 +44,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
 
     public void ToggleDrawAttention()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Toggle Draw Attention");
+        isHighlighted = !isHighlighted;
     }
 }

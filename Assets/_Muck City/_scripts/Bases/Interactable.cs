@@ -1,5 +1,6 @@
 
 
+using System;
 using UnityEngine;
 
 public interface IInteractable
@@ -10,6 +11,8 @@ public interface IInteractable
     public GameObject GameObject { get; }
     string InteractionPrompt { get; }
     public bool IsHighlighted { get; }
+    public bool IsQuestItem { get; set; }
+
 
     public void ToggleDrawAttention();
     public void PrepareInteraction();

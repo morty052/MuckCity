@@ -14,6 +14,10 @@ public class ShopTrigger : MonoBehaviour, IInteractable
 
     public bool IsHighlighted { get; }
 
+    bool _isQuestItem;
+
+    public bool IsQuestItem { get; set; }
+
     void Awake()
     {
         _parent = GetComponentInParent<Shop>();

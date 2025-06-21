@@ -23,7 +23,7 @@ public class RequirementIcon
         _id = id;
     }
 }
-public class CraftingArea : MonoBehaviour, IInteractable
+public class CraftingArea : Equipment
 {
 
     public Invector.vCharacterController.GenericInput _craftItemInput = new("E", "Y", "Y");
@@ -40,18 +40,13 @@ public class CraftingArea : MonoBehaviour, IInteractable
     [SerializeField] Transform _itemsParent;
     [SerializeField] RecipeitemButton _recipeItemButtonPrefab;
     [SerializeField] List<RecipeSO> _discoveredRecipes = new();
-    bool _canInteract = true;
-    public bool CanInteract => _canInteract;
 
-    public string InteractionPrompt => "Craft";
-
-    public GameObject GameObject => gameObject;
 
     Action<int> _onShopItemButtonPressed;
 
     int _activeItemIndex = 0;
 
-    public bool IsHighlighted { get; }
+
 
 
     void OnEnable()
@@ -193,12 +188,12 @@ public class CraftingArea : MonoBehaviour, IInteractable
 
     }
 
-    public void HideInteractionPrompt()
+    public override void HideInteractionPrompt()
     {
         HudManager.Instance.HideInteractPrompt();
     }
 
-    public void Interact()
+    public override void Interact()
     {
         _craftingUi.SetActive(true);
         Player.Instance.EnterCraftingArea(this);
@@ -210,13 +205,13 @@ public class CraftingArea : MonoBehaviour, IInteractable
     }
 
 
-    public void PrepareInteraction()
+    public override void PrepareInteraction()
     {
         if (_craftingUi.activeSelf) return;
         HudManager.Instance.ShowInteractPrompt(InteractionPrompt);
     }
 
-    public void ToggleDrawAttention()
+    public override void ToggleDrawAttention()
     {
         throw new NotImplementedException();
     }

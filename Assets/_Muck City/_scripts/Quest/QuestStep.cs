@@ -107,8 +107,10 @@ public struct QuestItemData
 [System.Serializable]
 public struct QuestItemStruct
 {
-
     public string _name;
+
+    [Tooltip("USED TO FIND OBJECTIVE OR ACTION TO PERFORM")]
+    public string _tag;
 
     public Vector3 _position;
 
@@ -120,9 +122,10 @@ public struct QuestItemStruct
     }
 #endif
 
-    public QuestItemStruct(string name, Vector3 pos)
+    public QuestItemStruct(string name, string tag, Vector3 pos)
     {
         _name = name;
+        _tag = tag;
         _position = pos;
     }
 }
@@ -204,7 +207,7 @@ public abstract class QuestStep : MonoBehaviour
         questPoint.name = name;
         QuestPoint point = questPoint.GetComponent<QuestPoint>();
         point._tiedQuestStep = this;
-        point._questItemData = new QuestItemData(name);
+        point._questItemData = pointData;
         point._completesObjective = pointData._completesObjective;
 
         _activeQuestPoint = point;
@@ -231,20 +234,33 @@ public abstract class QuestStep : MonoBehaviour
         NpcQuestData data = _tiedCharactersQuestData.Find(x => x._characterID == name);
         return data;
     }
+
+    #region Quest Item
     public QuestItemStruct FindQuestItemByName(string name)
     {
         QuestItemStruct data = _questItemsData.Find(x => x._name == name);
         return data;
     }
 
-    public T GetQuestItem<T>(string name) where T : IInteractable
+    public T GetQuestItem<T>(string name, bool setupListener = false) where T : IInteractable
     {
         QuestItemStruct itemData = FindQuestItemByName(name);
         T item = _objectDetector.DetectObject<T>(itemData._position);
 
+        if (setupListener)
+        {
+            AddQuestItemToObject(item, itemData);
+        }
+
         return item;
     }
 
+    protected void AddQuestItemToObject(IInteractable obj, QuestItemStruct itemData)
+    {
+        QuestItem powerBackOnQuest = obj.GameObject.AddComponent<QuestItem>();
+        powerBackOnQuest._questItemData = itemData;
+    }
+    #endregion
     public QuestPointData FindQuestPointDataByName(string name)
     {
         QuestPointData data = _questPointsData.Find(x => x._name == name);

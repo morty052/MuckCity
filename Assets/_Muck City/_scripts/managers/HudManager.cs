@@ -21,7 +21,7 @@ public class HudManager : MonoBehaviour
 
     [SerializeField] private GameObject _overlay;
 
-    [SerializeField] private GameObject _interactionPrompt;
+    [SerializeField] public GameObject _interactionPrompt;
     [SerializeField] private GameObject _loadingScreen;
     [SerializeField] private TextMeshProUGUI _interactionPromptText;
 

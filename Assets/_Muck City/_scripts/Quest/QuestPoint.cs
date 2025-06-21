@@ -5,7 +5,7 @@ public class QuestPoint : MonoBehaviour
 {
     [SerializeField] private QuestInfoSo _questInfoForPoint;
     public QuestStep _tiedQuestStep;
-    public QuestItemData _questItemData;
+    public QuestPointData _questItemData;
 
     [SerializeField] private string _questId;
 

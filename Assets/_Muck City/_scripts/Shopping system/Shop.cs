@@ -16,6 +16,10 @@ public class Shop : MonoBehaviour, IInteractable
 
     public bool IsHighlighted { get; }
 
+    bool _isQuestItem;
+
+    public bool IsQuestItem { get; set; }
+
     Action<int> _onShopItemButtonPressed;
 
 

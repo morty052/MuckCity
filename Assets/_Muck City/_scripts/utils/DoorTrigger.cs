@@ -1,11 +1,13 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using DG.Tweening;
-// using StarterAssets;
 using System.Collections;
-using UnityUtils;
-using Invector.vCharacterController;
 using Sirenix.OdinInspector;
+
+public enum Direction
+{
+    BACK,
+    FRONT
+}
 
 public class DoorTrigger : MonoBehaviour, IInteractable
 {
@@ -22,10 +24,15 @@ public class DoorTrigger : MonoBehaviour, IInteractable
 
     public bool IsHighlighted { get; }
 
+    bool _isQuestItem;
+
+    public bool IsQuestItem { get; set; }
+
+    [SerializeField] Direction _direction;
+
     void OnTriggerEnter(Collider other)
     {
 
-        if (!other.CompareTag("InteractionHelper")) return;
         Debug.Log(other.name + "entered trigger");
         Player.Instance.SetInteractableObject(this);
         PrepareInteraction();
@@ -45,14 +52,16 @@ public class DoorTrigger : MonoBehaviour, IInteractable
     }
     void OpenDoor()
     {
-        if (IsPlayerAheadOfPos())
+        if (_direction == Direction.FRONT)
         {
+            Debug.Log("Player is ahead of pos");
             _door.transform.DOLocalRotate(new Vector3(0, -90, 0), 1f).OnComplete(() => _isOpen = true);
 
         }
 
         else
         {
+            Debug.Log("Player is behind of pos");
             _door.transform.DOLocalRotate(new Vector3(0, 90, 0), 1f).OnComplete(() => _isOpen = true);
         }
 
@@ -60,10 +69,9 @@ public class DoorTrigger : MonoBehaviour, IInteractable
 
     bool IsPlayerAheadOfPos()
     {
-        Vector3 playerDirection = (Player.Instance.transform.position - transform.position).normalized;
-        Vector3 playerForward = Player.Instance.transform.forward;
-        float dot = Vector3.Dot(playerDirection, transform.forward);
-
+        Vector3 playerDirection = (Player.Instance.transform.position - _door.transform.position).normalized;
+        float dot = Vector3.Dot(playerDirection, _door.transform.forward);
+        Debug.Log("Dot is " + dot);
         return dot > 0;
     }
 

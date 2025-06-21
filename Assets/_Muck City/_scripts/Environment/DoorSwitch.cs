@@ -18,9 +18,13 @@ public class DoorSwitch : MonoBehaviour, IInteractable
 
     [SerializeField] bool _isOpen = false;
 
+    bool _isQuestItem;
+
+    public bool IsQuestItem { get; set; }
+
     public void HideInteractionPrompt()
     {
-        _actionText.ToggleInteractionPrompt();
+        _actionText.HideInteractionPrompt();
         Player.Instance.SetInteractableObject(null);
     }
 
@@ -35,23 +39,22 @@ public class DoorSwitch : MonoBehaviour, IInteractable
         {
             CloseDoor();
         }
-
-        Invoke(nameof(HideInteractionPrompt), 0.1f);
     }
 
-    // void OnTriggerEnter(Collider other)
-    // {
-    //     PrepareInteraction();
-    // }
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.name + " Entered trigger");
+    }
 
-    // void OnTriggerExit(Collider other)
-    // {
-    //     HideInteractionPrompt();
-    // }
+    void OnTriggerExit(Collider other)
+    {
+        Debug.Log("Exited trigger");
+        HideInteractionPrompt();
+    }
 
     public void PrepareInteraction()
     {
-        _actionText.ToggleInteractionPrompt();
+        _actionText.ShowInteractionPrompt();
         Player.Instance.SetInteractableObject(this);
     }
 
@@ -62,9 +65,8 @@ public class DoorSwitch : MonoBehaviour, IInteractable
 
     bool IsPlayerAheadOfPos()
     {
-        Vector3 playerDirection = (Player.Instance.transform.position - transform.position).normalized;
-        Vector3 playerForward = Player.Instance.transform.forward;
-        float dot = Vector3.Dot(playerDirection, transform.forward);
+        Vector3 playerDirection = (Player.Instance.transform.position - _door.transform.position).normalized;
+        float dot = Vector3.Dot(playerDirection, _door.transform.forward);
 
         return dot > 0;
     }

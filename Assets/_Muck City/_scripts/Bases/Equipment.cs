@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Equipment : MonoBehaviour, IInteractable
@@ -14,6 +15,12 @@ public class Equipment : MonoBehaviour, IInteractable
     public bool IsHighlighted => _actionText.IsHighlighted;
 
     public ActionText _actionText;
+
+    public Action<string> OnInteracted;
+
+    bool _isQuestItem;
+
+    public bool IsQuestItem { get; set; }
 
 
     public virtual void Interact()
@@ -32,16 +39,22 @@ public class Equipment : MonoBehaviour, IInteractable
         Player.Instance.SetInteractableObject(null);
     }
 
-    public void PrepareInteraction()
+    public virtual void PrepareInteraction()
     {
         if (!_canInteract) return;
         _actionText.ToggleInteractionPrompt();
         // Player.Instance.SetInteractableObject(this);
     }
 
-    public void ToggleDrawAttention()
+    public virtual void ToggleDrawAttention()
     {
+        if (!_canInteract) return;
         _actionText.ToggleWhiteDot();
+    }
+
+    public virtual void ToggleCanInteract()
+    {
+        _canInteract = !_canInteract;
     }
 
 }

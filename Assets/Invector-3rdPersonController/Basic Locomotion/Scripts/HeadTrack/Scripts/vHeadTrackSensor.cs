@@ -26,6 +26,9 @@ namespace Invector.vCharacterController
             _rigidB.isKinematic = true;
             _rigidB.constraints = RigidbodyConstraints.FreezeAll;
             if (headTrack) sphere.radius = headTrack.distanceToDetect;
+            int layerToExclude = LayerMask.GetMask("Interactable");
+            sphere.excludeLayers = layerToExclude;
+
         }
 
         void OnTriggerEnter(Collider other)

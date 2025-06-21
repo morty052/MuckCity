@@ -5,19 +5,19 @@ public class Generator : Equipment
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Interact()
     {
-        CanInteract = false;
+        if (!_canInteract) return;
         Debug.Log("Interacting with " + gameObject.name);
         _actionText.SetText("Turn Off");
-        // _actionText.HideInteractionPrompt();
-        CanInteract = true;
+
+        if (TryGetComponent(out QuestItem questItem))
+        {
+            OnInteracted?.Invoke(questItem._questItemData._name);
+        }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            _actionText.HideInteractionPrompt();
-        }
+        _actionText.HideInteractionPrompt();
     }
 
 

@@ -14,6 +14,10 @@ public class DistrictNoticeBoard : MonoBehaviour, IInteractable
 
     public bool IsHighlighted { get; }
 
+    bool _isQuestItem;
+
+    public bool IsQuestItem { get; set; }
+
     public void HideInteractionPrompt()
     {
         HudManager.Instance.HideInteractPrompt();

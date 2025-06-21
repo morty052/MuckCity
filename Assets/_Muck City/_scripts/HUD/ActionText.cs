@@ -28,6 +28,11 @@ public class ActionText : MonoBehaviour
     public void HideInteractionPrompt()
     {
         _TextUi.SetActive(false);
+        _whiteDotImage.SetActive(true);
+    }
+    public void ShowInteractionPrompt()
+    {
+        _TextUi.SetActive(true);
     }
 
     public void ToggleWhiteDot()

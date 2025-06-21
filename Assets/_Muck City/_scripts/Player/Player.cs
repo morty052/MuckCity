@@ -52,6 +52,8 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     [TabGroup("Interaction")]
     [SerializeField] LayerMask _interactionLayerMask = new();
+    [TabGroup("Interaction")]
+    [SerializeField] LayerMask _defaultLayerMask = new();
 
     [TabGroup("Interaction")]
 
@@ -157,7 +159,7 @@ public class Player : MonoBehaviour, IHavePersistentData
             _inventory = GetComponent<vItemManager>();
 
             LoadPersistentData();
-            _interactionSystem = new InteractionSystem(_interactionRange, _detectionRate, transform, _interactionLayerMask);
+            _interactionSystem = new InteractionSystem(_interactionRange, _detectionRate, transform, _interactionLayerMask, _defaultLayerMask);
             // DontDestroyOnLoad(gameObject);
         }
 

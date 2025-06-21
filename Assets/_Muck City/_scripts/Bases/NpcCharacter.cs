@@ -40,6 +40,10 @@ public class NpcCharacter : MonoBehaviour, IInteractable
     public vControlAI _aiController;
     public vFSMBehaviourController _fsmController;
 
+    bool _isQuestItem;
+
+    public bool IsQuestItem { get; set; }
+
 
 
     void Awake()
