@@ -106,7 +106,6 @@ public class LiftSwitch : MonoBehaviour, IInteractable
             default:
                 break;
         }
-        Debug.Log("Selected Floor");
         if (_floorText != null)
         {
             _floorText.text = _selectedFloor.ToString();
@@ -149,6 +148,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
             OpenBarriers(_selectedFloor);
             _occupiedFloor = _selectedFloor;
             _isMoving = false;
+            _floorText.text = _selectedFloor.ToString();
         });
     }
 
@@ -187,6 +187,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
                   _isInteracting = false;
                   OpenBarriers(floor);
                   _occupiedFloor = _selectedFloor;
+                  _floorText.text = _selectedFloor.ToString();
               });
     }
 
