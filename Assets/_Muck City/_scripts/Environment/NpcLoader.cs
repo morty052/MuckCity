@@ -27,7 +27,7 @@ public class NpcLoader : MonoBehaviour
         GameObject locationObject = GameObject.Find(location.ToString());
         if (locationObject == null || locationObject.activeSelf == false)
         {
-            Debug.Log($"Location {location} is not active");
+            // Debug.Log($"Location {location} is not active");
             if (!force)
             {
                 return Task.CompletedTask;

@@ -45,7 +45,7 @@ public class DoorSwitch : MonoBehaviour, IInteractable
 
     void OnTriggerExit(Collider other)
     {
-        Debug.Log("Exited trigger");
+        // Debug.Log("Exited trigger");
         HideInteractionPrompt();
     }
 

@@ -1,8 +1,11 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Generator : Equipment
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [TabGroup("Lights")]
+    [SerializeField] GameObject[] lights;
+    [SerializeField] bool _debug;
     public override void Interact()
     {
         if (!_canInteract) return;
@@ -20,7 +23,5 @@ public class Generator : Equipment
         _actionText.HideInteractionPrompt();
     }
 
-
-    public bool PlayerInRange() => Vector3.Distance(transform.position, Player.Instance.transform.position) < 0.5f;
 
 }

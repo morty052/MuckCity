@@ -14,6 +14,7 @@ public class TimelinePlayer : MonoBehaviour
     public bool _enablePlayOnAwake = false;
     [SerializeField] string _cutsceneName;
     public float _delay = 1f;
+    public bool _destroyOnEnd = true;
     readonly CancellationTokenSource cts = new();
     public event Action<string> OnCutSceneEnded;
     public event Action<string> OnCutSceneStarted;
@@ -76,7 +77,11 @@ public class TimelinePlayer : MonoBehaviour
             _playableDirector.Play();
             double timelineLength = GetTimeLineLength();
             await DelayedInvoke((float)timelineLength, EndCutScene);
-            Destroy(gameObject);
+
+            if (_destroyOnEnd)
+            {
+                Destroy(gameObject);
+            }
         }
         else
         {
