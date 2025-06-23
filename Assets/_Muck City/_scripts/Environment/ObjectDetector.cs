@@ -1,6 +1,8 @@
 
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 
@@ -18,12 +20,13 @@ public class ObjectDetector
         _interactionLayerMask = layerMask;
     }
 
+#if UNITY_EDITOR
     [Button("Snap")]
     void Snap()
     {
         _position = Selection.activeGameObject.transform.position;
     }
-
+#endif
 
 #nullable enable
     public T? DetectObject<T>() where T : IInteractable
@@ -66,7 +69,7 @@ public class ObjectDetector
             component = hitColliders[0].GetComponent<T>();
             foreach (var item in hitColliders)
             {
-                Debug.Log($" {item.name}");
+                // Debug.Log($" {item.name}");
             }
             Debug.Log($"<color=green> found  {typeof(T)} {component.GameObject.name}</color>");
             return component;

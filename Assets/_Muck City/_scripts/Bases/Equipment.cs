@@ -18,9 +18,9 @@ public class Equipment : MonoBehaviour, IInteractable
 
     public Action<string> OnInteracted;
 
-    bool _isQuestItem;
+    [SerializeField]bool _isQuestItem;
 
-    public bool IsQuestItem { get; set; }
+    public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
 
 
     public virtual void Interact()

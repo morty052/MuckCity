@@ -15,12 +15,15 @@ public enum SaveAble
 public struct PlayerSaveData
 {
     public BackPack _hotStorage;
+
+    public List<SpecialEquipmentID> _specialEquipments;
     public Pos _position;
 
     public PlayerSaveData(Player player)
     {
         _hotStorage = player._hotStorage;
         _position = new(player.transform.position, player.transform.rotation.eulerAngles);
+        _specialEquipments = player._specialEquipmentManager.specialEquipments;
     }
 }
 

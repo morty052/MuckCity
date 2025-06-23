@@ -56,10 +56,10 @@ public class Waypoint : MonoBehaviour
             _isWayPointing = false;
             OnMarkerReached?.Invoke(_eventTitle);
         }
-        else
-        {
-            Debug.Log(Vector3.Distance(_target, Player.Instance.transform.position));
-        }
+        // else
+        // {
+        //     Debug.Log(Vector3.Distance(_target, Player.Instance.transform.position));
+        // }
 
     }
 

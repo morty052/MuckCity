@@ -11,12 +11,14 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
     SpecialNPC _alberto;
 
     SpecialNPC _hazmatBill;
+    SpecialNPC _hazmatBob;
 
     TimelinePlayer _activeCutScenePlayer;
 
 
     NpcQuestData billQuestData;
     NpcQuestData _albertoQuestData;
+    NpcQuestData _bobQuestData;
 
     bool _doneSetup;
 
@@ -37,6 +39,7 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
     {
         SetupQuest();
         // ActivateMission(1);
+        // UpdateMissionObjectives(4, true);
         // InstantiateQuestPoint("Find Officers Mess");
         // StartCoroutine(PlayClipAfterDelay(2f, "Wing is Getting Detached", OnComplete: () => ShowTutorialPrompt("Basic Locomotion")));
     }
@@ -69,10 +72,15 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
 
         Generator gen = GetQuestItem<Generator>("Generator", true);
         DoorTrigger mainDoorTrigger = GetQuestItem<DoorTrigger>("Main Room Door", true);
+        ItemPickUpContainer phonePickUp =  GetQuestItem<ItemPickUpContainer>("Phone", true);
 
-        mainDoorTrigger.ToggleCanInteract();
+        // mainDoorTrigger.ToggleCanInteract();
+
         gen.ToggleCanInteract();
+
         gen.OnInteracted += OnQuestItemInteracted;
+        mainDoorTrigger.OnInteracted += OnQuestItemInteracted;
+        phonePickUp.OnInteracted += OnQuestItemInteracted;
 
 
 
@@ -144,11 +152,23 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         {
             case "Get Power Back On":
                 CompleteObjective("Get Power Back On");
-                UpdateMissionObjectives(3);
+                Debug.Log("Player Has turned on Gen");
+                UpdateMissionObjectives(4, true);
+                break;
+            case "Enter Main Room":
+                Debug.Log("Player has entered main room");
+                break;
+            case "Phone Pickup":
+                Debug.Log("Player has entered main room");
+                CompleteObjective("Search Bunker");
+                DomeManager.Instance.ClearMissionDisplay();
+                FinishQuestStep();
                 break;
             default:
                 break;
         }
+
+        Debug.Log("Interacting with " + questItemTag);
     }
 
     IEnumerator InstantiateQuestPointAfterDelay(float delay, string pointName)
@@ -164,6 +184,8 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         Debug.Log("Loaded Bunker Heights");
     }
 
+
+
     void SetupAlberto()
     {
         _albertoQuestData = FindNpcQuestDataByName(SpecialCharacters.ALBERTO);
@@ -175,6 +197,17 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         // _hazmatBill.gameObject.SetActive(false);
         // _hazmatBob.gameObject.SetActive(false);
         Debug.Log("Setup Alberto");
+    }
+
+    void SetupBob()
+    {
+        _bobQuestData = FindNpcQuestDataByName(SpecialCharacters.HAZMAT_BOB);
+        _hazmatBob = NpcManager.Instance.SpawnAndMoveToPosition(_bobQuestData._npcSO, _bobQuestData._specialPosition);
+        _hazmatBob.UpdateQuestData(_questInfoSo, this, _bobQuestData._conversationForQuest);
+        _hazmatBob.OnInteractedWithQuestGiver += SendMessageToPhone;
+        _bobQuestData._conversationForQuest.OnDialogueFinishedEvent += OnConversationFinished;
+
+        Debug.Log($"<color=orange>Setup Bob </color>");
     }
 
 
@@ -212,9 +245,6 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         }
         _activeCutScenePlayer.OnCutSceneStarted -= OnCutSceneStarted;
     }
-
-
-
 
     public Task OnLoadTask()
     {

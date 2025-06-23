@@ -213,6 +213,6 @@ public class CraftingArea : Equipment
 
     public override void ToggleDrawAttention()
     {
-        throw new NotImplementedException();
+
     }
 }

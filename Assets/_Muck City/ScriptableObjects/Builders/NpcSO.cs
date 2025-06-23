@@ -28,6 +28,8 @@ public class NpcSO : ScriptableObject
 #endif
     }
 
+
+#if UNITY_EDITOR
     [Button("Copy Transform")]
     public void CopyTransform()
     {
@@ -39,4 +41,5 @@ public class NpcSO : ScriptableObject
         _spawnPosition = Selection.activeGameObject.transform.position;
         _spawnRotation = Selection.activeGameObject.transform.rotation.eulerAngles;
     }
+#endif
 }

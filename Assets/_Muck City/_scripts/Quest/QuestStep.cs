@@ -250,7 +250,7 @@ public abstract class QuestStep : MonoBehaviour
         QuestItemStruct itemData = FindQuestItemByName(name);
         T item = _objectDetector.DetectObject<T>(itemData._position, itemData._radius);
 
-        Debug.Log("item is " + item.GameObject.name);
+        // Debug.Log("item is " + item.GameObject.name);
         if (setupListener)
         {
             AddQuestItemToObject(item, itemData);
@@ -263,6 +263,7 @@ public abstract class QuestStep : MonoBehaviour
     {
         QuestItem powerBackOnQuest = obj.GameObject.AddComponent<QuestItem>();
         powerBackOnQuest._questItemData = itemData;
+        obj.IsQuestItem = true;
     }
     #endregion
     public QuestPointData FindQuestPointDataByName(string name)
@@ -289,9 +290,14 @@ public abstract class QuestStep : MonoBehaviour
         }
     }
 
-    public virtual void UpdateMissionObjectives(int index)
+    public virtual void UpdateMissionObjectives(int index, bool initWaypoint = false)
     {
         DomeManager.Instance.UpdateMissionDisplay(index);
+        if (initWaypoint)
+        {
+            Objective objective = _mission._objectives[index];
+            Waypoint.Instance.Init(objective._wayPoint);
+        }
     }
 
     public virtual void CompleteObjective(string objectiveTitle)

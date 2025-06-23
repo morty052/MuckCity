@@ -7,7 +7,7 @@ public class Lift : MonoBehaviour
 
     [Header("Points **WARNING ORDER FROM LOW TO HIGH**")]
     [Tooltip("Points lift will move to **WARNING ORDER FROM LOW TO HIGH**")]
-    [SerializeField] private Transform[] _points;
+    public  Transform[] _points;
     [SerializeField] private bool _togglesAreas;
     [SerializeField] private Transform _toggleAreaOff;
     [SerializeField] private Transform _toggleAreaOn;
@@ -25,6 +25,18 @@ public class Lift : MonoBehaviour
         int pointToMoveTo = (_activePointIndex + 1) % _points.Length;
         _activePointIndex = pointToMoveTo;
         transform.DOMove(_points[pointToMoveTo].transform.position, _speed)
+        .SetEase(Ease.Linear)
+        .OnComplete(() => OnComplete?.Invoke());
+
+        if (_togglesAreas)
+        {
+            Invoke(nameof(ToggleAreaOff), _timeToToggleAreaOff);
+        }
+    }
+    public void Move(int floor, System.Action OnComplete = null)
+    {
+        
+        transform.DOMove(_points[floor].transform.position, _speed)
         .SetEase(Ease.Linear)
         .OnComplete(() => OnComplete?.Invoke());
 

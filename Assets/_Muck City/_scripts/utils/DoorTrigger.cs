@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using System.Collections;
 using Sirenix.OdinInspector;
+using System;
 
 public enum Direction
 {
@@ -26,9 +27,11 @@ public class DoorTrigger : MonoBehaviour, IInteractable
 
     bool _isQuestItem;
 
-    public bool IsQuestItem { get; set; }
+    public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
 
     [SerializeField] Direction _direction;
+
+    public Action<string> OnInteracted;
 
     void OnTriggerEnter(Collider other)
     {
@@ -96,6 +99,12 @@ public class DoorTrigger : MonoBehaviour, IInteractable
         else
         {
             CloseDoor();
+        }
+
+        if (IsQuestItem)
+        {
+            QuestItem questItem = GetComponent<QuestItem>();
+            OnInteracted?.Invoke(questItem._questItemData._tag);
         }
     }
 

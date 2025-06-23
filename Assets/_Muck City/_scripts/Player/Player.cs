@@ -38,11 +38,12 @@ public class Player : MonoBehaviour, IHavePersistentData
     public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
 
 
-
+    [TabGroup("State")]
     [SerializeField] bool _isInDialogue;
 
     [SerializeField] Vehicle _currentVehicle;
 
+    [TabGroup("State")]
     [SerializeField] private bool _isRunning = true;
 
     public vThirdPersonCameraListData CameraStateList;
@@ -70,9 +71,20 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Interaction")]
     [SerializeField] InteractionSystem _interactionSystem;
 
+    [TabGroup("Equipments")]
+    public SpecialEquipmentManager _specialEquipmentManager;
+
+    [TabGroup("Equipments")]
+    [SerializeField] Transform _backPackHolder;
+
+    [TabGroup("State")]
     [SerializeField] NPCConversation _activeConversation;
 
-    [SerializeField] Transform _backPackHolder;
+    [TabGroup("State")]
+    [SerializeField] CraftingArea _activeCraftingArea;
+    [TabGroup("State")]
+    [SerializeField] Shop _activeShop;
+
 
     vThirdPersonController _vThirdPersonController;
     vThirdPersonInput _vThirdPersonInput;
@@ -82,22 +94,21 @@ public class Player : MonoBehaviour, IHavePersistentData
     vItemManager _inventory;
     string _lastBlendedState;
 
+    [TabGroup("Phone")]
     [SerializeField] GameObject _phoneModel;
+    [TabGroup("Phone")]
     [SerializeField] Camera _phoneCamera;
-    [SerializeField] Camera _defaultCamera;
 
-    [SerializeField] CraftingArea _activeCraftingArea;
-    [SerializeField] Shop _activeShop;
+    [TabGroup("Phone")]
+    public Observer<bool> _isPhoneShowing = new(false);
+
+
+    [SerializeField] Camera _defaultCamera;
 
     public BackPack _hotStorage;
     public Storage _activeStorage;
 
     public bool IsInVehicle => _currentVehicle != null;
-
-
-
-    public Observer<bool> _isPhoneShowing = new(false);
-
 
     CancellationTokenSource cts = new();
 
@@ -160,6 +171,7 @@ public class Player : MonoBehaviour, IHavePersistentData
 
             LoadPersistentData();
             _interactionSystem = new InteractionSystem(_interactionRange, _detectionRate, transform, _interactionLayerMask, _defaultLayerMask);
+            _specialEquipmentManager = new SpecialEquipmentManager();
             // DontDestroyOnLoad(gameObject);
         }
 
@@ -174,17 +186,16 @@ public class Player : MonoBehaviour, IHavePersistentData
     void Start()
     {
         _vThirdPersonCamera = FindFirstObjectByType<vThirdPersonCamera>();
-        _defaultCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        UniversalAdditionalCameraData universalAdditionalCameraData = _defaultCamera.GetComponent<UniversalAdditionalCameraData>();
-        universalAdditionalCameraData.cameraStack.Add(_phoneCamera);
         _vThirdPersonInput.onUpdate += CheckForTriggerAction;
 
-
+        Debug.Log($" Special Equipments : {_playerSaveData._specialEquipments.Count}");
         if (_useLastSavedPosition)
         {
 
             transform.SetPositionAndRotation(_playerSaveData._position.position, Quaternion.Euler(_playerSaveData._position.rotation));
         }
+
+        _specialEquipmentManager.SetSpecialEquipments(_playerSaveData._specialEquipments);
 
         // _detectionTimer = new(_detectionRate);
         // _detectionTimer.OnTimerStop += () =>
@@ -427,6 +438,10 @@ public class Player : MonoBehaviour, IHavePersistentData
     {
         _vThirdPersonInput.lockMoveInput = !_vThirdPersonInput.lockMoveInput;
     }
+    public void LockAllInput(bool value)
+    {
+        _vThirdPersonInput.SetLockAllInput(value);
+    }
 
     async Task WatchForDestinationReached(Vector3 targetPosition)
     {
@@ -651,10 +666,11 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     }
 
-    public void SetInteractableObject(IInteractable interactable)
+    public void AddSpecialEquipment(SpecialEquipmentID specialEquipment)
     {
-        _lastInteractable = interactable;
+        _specialEquipmentManager.AddSpecialEquipment(specialEquipment);
     }
+
 
     public bool IsItemInInventory(int id)
     {
@@ -669,6 +685,20 @@ public class Player : MonoBehaviour, IHavePersistentData
 
 
     #endregion
+
+    public void SetInteractableObject(IInteractable interactable)
+    {
+        _lastInteractable = interactable;
+    }
+
+    public void UpdatePhone(Phone phone)
+    {
+        _phoneCamera = phone._phoneCamera;
+        _phoneModel = phone._phoneModel;
+        _defaultCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        UniversalAdditionalCameraData universalAdditionalCameraData = _defaultCamera.GetComponent<UniversalAdditionalCameraData>();
+        universalAdditionalCameraData.cameraStack.Add(_phoneCamera);
+    }
 
     void OnDrawGizmosSelected()
     {

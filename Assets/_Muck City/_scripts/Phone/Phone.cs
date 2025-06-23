@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 
 
-public class Phone : MonoBehaviour
+public class Phone : SpecialEquipment
 {
     public static Phone Instance { get; private set; }
 
@@ -21,6 +21,9 @@ public class Phone : MonoBehaviour
     [SerializeField] Transform _appScreensParent;
 
     [SerializeField] Image _appIconPrefab;
+
+    public GameObject _phoneModel;
+    public Camera _phoneCamera;
 
     [SerializeField] private GameObject _newOrderAlert;
     [SerializeField] private TextMeshProUGUI _newOrderDeliveryFeeText;
@@ -105,6 +108,13 @@ public class Phone : MonoBehaviour
 
             }
         }
+    }
+
+    public override void Init()
+    {
+        transform.SetParent(Player.Instance.transform, false);
+        transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        Player.Instance.UpdatePhone(this);
     }
 
     public void ToggleUseInput()

@@ -6,6 +6,9 @@ using TMPro;
 using UnityEngine;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public enum LocationType
 {
@@ -40,18 +43,26 @@ public struct LocationData
 public struct Objective
 {
     public string _title;
-    public Vector3 _objectiveStartPosition;
+    public Vector3 _wayPoint;
 
     public bool _isCompleted;
 
     public int _index;
 
-    public readonly bool HasWayPoint => _objectiveStartPosition != Vector3.zero;
+    public readonly bool HasWayPoint => _wayPoint != Vector3.zero;
+
+    #if UNITY_EDITOR
+    [Button("Snap")]
+    void Snap()
+    {
+        _wayPoint = Selection.activeGameObject.transform.position;
+    }
+#endif
 
     public Objective(string title, Vector3 objectiveStartPosition, int index, bool isCompleted = false)
     {
         _title = title;
-        _objectiveStartPosition = objectiveStartPosition;
+        _wayPoint = objectiveStartPosition;
         _isCompleted = isCompleted;
         _index = index;
 
@@ -268,6 +279,10 @@ public class DomeManager : MonoBehaviour
     public void UpdateMissionDisplay(int objectivesToAdd)
     {
         _objectiveRenderer.UpdateMissionDisplay(objectivesToAdd);
+    }
+    public void ClearMissionDisplay()
+    {
+        _objectiveRenderer.ClearMissionDisplay();
     }
 
     public void CompleteObjective(int index)

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -213,6 +215,7 @@ public class PoolManager : MonoBehaviour
         _cursorBox.transform.position = new Vector3(_spawnPosition.x, _spawnPosition.y, _spawnPosition.z);
     }
 
+#if UNITY_EDITOR
     [Button, LabelText("Select All Spawned By ID"), ButtonGroup("Generic")]
     public void SelectAllSpawnedByIDInInspector()
     {
@@ -226,6 +229,7 @@ public class PoolManager : MonoBehaviour
         }
         Selection.objects = poolables.ToArray();
     }
+#endif
     void SetSpawnPositionToPlayer()
     {
         _spawnPosition = Player.Instance.transform.position;

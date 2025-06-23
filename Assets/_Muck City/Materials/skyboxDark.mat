@@ -12,7 +12,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _SUNDISK_HIGH_QUALITY
+  - _SUNDISK_NONE
   m_InvalidKeywords:
   - ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 5
@@ -29,7 +29,7 @@ Material:
     m_Floats:
     - _AtmosphereThickness: 0.26
     - _Exposure: 0.95
-    - _SunDisk: 2
+    - _SunDisk: 0
     - _SunSize: 0.037
     - _SunSizeConvergence: 5
     m_Colors:

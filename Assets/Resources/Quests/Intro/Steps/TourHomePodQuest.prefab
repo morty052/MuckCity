@@ -83,6 +83,10 @@ MonoBehaviour:
     _tag: Enter Main Room
     _position: {x: 24.86, y: -43.196213, z: -111.319}
     _radius: 1
+  - _name: Phone
+    _tag: Phone Pickup
+    _position: {x: 26.708, y: -42.4, z: -128.234}
+    _radius: 0
   _objectDetector:
     _radius: 0
     _position: {x: 0, y: 0, z: 0}
@@ -111,11 +115,11 @@ MonoBehaviour:
       _missionStartPoint: {x: 0, y: 0, z: 0}
       _objectives:
       - _title: Exit Bunker
-        _objectiveStartPosition: {x: 0, y: 0, z: 0}
+        _wayPoint: {x: 0, y: 0, z: 0}
         _isCompleted: 0
         _index: 0
       - _title: Get to officers mess
-        _objectiveStartPosition: {x: 0, y: 0, z: 0}
+        _wayPoint: {x: 0, y: 0, z: 0}
         _isCompleted: 0
         _index: 1
   - _characterID: 2
@@ -160,21 +164,25 @@ MonoBehaviour:
     _missionStartPoint: {x: 0, y: 0, z: 0}
     _objectives:
     - _title: Exit Bunker
-      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _wayPoint: {x: 0, y: 0, z: 0}
       _isCompleted: 0
       _index: 0
     - _title: Find Officers Mess
-      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _wayPoint: {x: 0, y: 0, z: 0}
       _isCompleted: 0
       _index: 1
     - _title: Talk To Alberto
-      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _wayPoint: {x: 0, y: 0, z: 0}
       _isCompleted: 0
       _index: 2
     - _title: Get Power Back On
-      _objectiveStartPosition: {x: 0, y: 0, z: 0}
+      _wayPoint: {x: 0, y: 0, z: 0}
       _isCompleted: 0
       _index: 3
+    - _title: Search Bunker
+      _wayPoint: {x: 26.708, y: -42.4, z: -128.234}
+      _isCompleted: 0
+      _index: 4
   _eventClips:
   - _name: Wing is Getting Detached
     _clip: {fileID: 8300000, guid: 689d5a07a2c018e4690d71f242356428, type: 3}

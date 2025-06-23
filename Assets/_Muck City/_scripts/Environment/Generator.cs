@@ -6,13 +6,12 @@ public class Generator : Equipment
     public override void Interact()
     {
         if (!_canInteract) return;
-        Debug.Log("Interacting with " + gameObject.name);
         _actionText.SetText("Turn Off");
 
         if (IsQuestItem)
         {
             QuestItem questItem = GetComponent<QuestItem>();
-            OnInteracted?.Invoke(questItem._questItemData._name);
+            OnInteracted?.Invoke(questItem._questItemData._tag);
         }
     }
 

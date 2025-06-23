@@ -57,7 +57,7 @@ public class ObjectiveRenderer : MonoBehaviour
 
         if (_objectiveListParent.childCount == 1)
         {
-            Debug.LogError("only one objective to complete");
+            Debug.Log($"<color=orange>only one objective to complete</color>");
             ObjectiveItem item = _objectiveListParent.GetChild(0).GetComponent<ObjectiveItem>();
             item.CompleteObjective();
             return;
@@ -71,5 +71,11 @@ public class ObjectiveRenderer : MonoBehaviour
     {
         ObjectiveItem objectiveItem = Instantiate(_objectiveItemPrefab, _objectiveListParent);
         objectiveItem.SetupObjective(_activeMission._objectives[objectivesToAdd]);
+    }
+
+    public void ClearMissionDisplay()
+    {
+        // _activeMission = null;
+        _container.SetActive(false);
     }
 }
