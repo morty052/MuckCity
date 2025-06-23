@@ -62,8 +62,8 @@ MonoBehaviour:
   - _name: Exit Bunker
     _completesObjective: 1
     _spawnPosition:
-      position: {x: 12.44, y: -7.5, z: -112.2}
-      rotation: {x: -0, y: 0, z: 0}
+      position: {x: 6.44, y: -4.83, z: -111.73}
+      rotation: {x: -0, y: 270.00003, z: 0}
   - _name: Find Officers Mess
     _completesObjective: 1
     _spawnPosition:
@@ -72,20 +72,20 @@ MonoBehaviour:
   - _name: Get Power Back On
     _completesObjective: 0
     _spawnPosition:
-      position: {x: 12.14, y: -20.3, z: -111.73}
+      position: {x: 8.94, y: -14.27, z: -111.73}
       rotation: {x: -0, y: 270.00003, z: 0}
   _questItemsData:
   - _name: Generator
     _tag: Get Power Back On
-    _position: {x: 30.450401, y: -35.703655, z: -111.20999}
+    _position: {x: 20.140953, y: -24.228474, z: -111.30984}
     _radius: 0
   - _name: Main Room Door
     _tag: Enter Main Room
-    _position: {x: 24.86, y: -43.196213, z: -111.319}
+    _position: {x: 14.591953, y: -30.13957, z: -111.319}
     _radius: 1
   - _name: Phone
     _tag: Phone Pickup
-    _position: {x: 26.708, y: -42.4, z: -128.234}
+    _position: {x: 13.165, y: -29.345, z: -119.312}
     _radius: 0
   _objectDetector:
     _radius: 0
@@ -192,7 +192,7 @@ MonoBehaviour:
   _questCutScenes:
   - _name: INTRO_TO_HAZMAT_BILL
     _spawnPosition:
-      position: {x: 23.69, y: -36.73, z: -107.96384}
+      position: {x: 17.26, y: -23.23, z: -109.07}
       rotation: {x: -0, y: 0, z: 0}
     _cutScenePlayer: {fileID: 7038046814094832206, guid: f1d798197feb0694dab2f20afd7eeff2, type: 3}
   _spawnableCreatures:

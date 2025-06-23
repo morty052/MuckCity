@@ -2,34 +2,29 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using DG.Tweening;
+using System.Linq;
 
 
 [System.Serializable]
 public struct LiftBarrier
 {
-  public int _level;
-  public Transform _leftItem;
-  public Transform _rightItem;
-  private bool _isOpen;
+    public int _level;
+    public Transform _leftItem;
+    public Transform _rightItem;
 
-  public void SetIsOpen(bool state)
-  {
-     _isOpen = state;
-  }
-  public bool IsOpen()
-  {
-     return _isOpen;
-  }
+
+
     public LiftBarrier(int level, Transform leftItem, Transform rightItem)
     {
         _level = level;
         _leftItem = leftItem;
         _rightItem = rightItem;
-        _isOpen = false;
     }
 }
 
 
+//TODO : NEEDS POLISHING
+//TODO : NEEDS MINOR TWEAKS
 public class LiftSwitch : MonoBehaviour, IInteractable
 {
     [SerializeField] private Lift _lift;
@@ -52,13 +47,16 @@ public class LiftSwitch : MonoBehaviour, IInteractable
 
     public bool IsQuestItem { get; set; }
 
-    [SerializeField] int _selectedFloor =0;
-    [SerializeField] int _entryFloor =0;
+    public int _selectedFloor = 0;
+    [SerializeField] int _entryFloor = 0;
+    [SerializeField] int _occupiedFloor = 0;
     [SerializeField] List<LiftBarrier> _barriers = new();
 
-   [SerializeField] Text _floorText;
+    [SerializeField] Text _floorText;
 
-   public bool _isInteracting = false;
+    public bool _isInteracting = false;
+
+    public bool _isMoving;
 
     void OnEnable()
     {
@@ -101,7 +99,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
                 }
                 break;
             case PhoneInputs.SELECT:
-            UseLift();
+                UseLift();
                 break;
             case PhoneInputs.BACK:
                 break;
@@ -111,9 +109,9 @@ public class LiftSwitch : MonoBehaviour, IInteractable
         Debug.Log("Selected Floor");
         if (_floorText != null)
         {
-             _floorText.text = _selectedFloor.ToString();
+            _floorText.text = _selectedFloor.ToString();
         }
-       
+
     }
 
     public void HideInteractionPrompt()
@@ -129,24 +127,29 @@ public class LiftSwitch : MonoBehaviour, IInteractable
         Player.Instance._isPhoneShowing.Value = true;
         // _closeUpCam.gameObject.SetActive(true);
         _interface.SetActive(true);
-         _isInteracting = true;
+        _isInteracting = true;
         // StartLift();
         // Player.Instance.MoveToPosition(_lift._centerPoint.transform.position, false, () => StartLift());
     }
 
     void UseLift()
-    {  
-      if (!_isInteracting)return;
-     _interface.SetActive(false);
-     (Transform entryLeftBarrier,Transform entryRightBarrier, LiftBarrier entryBarrier) = GetBarrier(_entryFloor);
-     (Transform leftBarrier,Transform rightBarrier, LiftBarrier barrier) = GetBarrier(_selectedFloor);
-     CloseBarriers(entryLeftBarrier, entryRightBarrier, entryBarrier);
-     _lift.Move(_selectedFloor, () => 
-     {
-         Player.Instance.LockAllInput(false);
-        _isInteracting = false;
-        OpenBarriers(leftBarrier, rightBarrier, barrier);
-     });
+    {
+        if (!_isInteracting) return;
+        _interface.SetActive(false);
+        Player.Instance._vFootStep.Volume = 0f;
+        (Transform entryLeftBarrier, Transform entryRightBarrier, LiftBarrier entryBarrier) = GetBarrier(_entryFloor);
+        (Transform leftBarrier, Transform rightBarrier, LiftBarrier barrier) = GetBarrier(_selectedFloor);
+        CloseBarriers(_entryFloor);
+        _isMoving = true;
+        _lift.Move(_selectedFloor, () =>
+        {
+            Player.Instance.LockAllInput(false);
+            Player.Instance._vFootStep.Volume = 1f;
+            _isInteracting = false;
+            OpenBarriers(_selectedFloor);
+            _occupiedFloor = _selectedFloor;
+            _isMoving = false;
+        });
     }
 
     void StartLift()
@@ -154,54 +157,52 @@ public class LiftSwitch : MonoBehaviour, IInteractable
         _lift.Move(() => Player.Instance.ToggleInputLock());
     }
 
-    public void TryCloseBarriersOnExit()
+    public void TryCloseBarriersOnExit(int level)
     {
-        
-        (Transform leftBarrier,Transform rightBarrier, LiftBarrier barrier) = GetBarrier(_selectedFloor);
-        
-        if (barrier.IsOpen())
-        { 
-            Debug.Log($"<color=blue> barrier is open </color>");
-            CloseBarriers(leftBarrier,rightBarrier, barrier);
-        }
-        else
-        {
-            Debug.Log($"<color=orange> barrier is closed </color>");
-        }
+        CloseBarriers(level);
+    }
 
+    public bool IsOnLevel(int level)
+    {
+        return _occupiedFloor == level;
     }
 
     public void CallElevator(int floor)
     {
-       _selectedFloor = floor;
-       _entryFloor = floor;
-        (Transform leftBarrier,Transform rightBarrier, LiftBarrier barrier) = GetBarrier(floor);
+
+        // if (_selectedFloor == floor)
+        // {
+        //     OpenBarriers(floor);
+        //     return;
+        // }
+        _selectedFloor = floor;
+        _entryFloor = floor;
+        (Transform leftBarrier, Transform rightBarrier, LiftBarrier barrier) = GetBarrier(floor);
         // LiftBarrier barrier = _barriers.Find(x => x._level == floor);
         // Transform leftBarrier = barrier._leftItem;
         // Transform rightBarrier = barrier._rightItem;
-        if (_selectedFloor == floor)
-        {
-            OpenBarriers(leftBarrier, rightBarrier, barrier);
-            return;
-        }
-        _lift.Move(_selectedFloor, () => 
+
+        _lift.Move(_selectedFloor, () =>
               {
-                _isInteracting = false;
-                OpenBarriers(leftBarrier, rightBarrier, barrier);
+                  _isInteracting = false;
+                  OpenBarriers(floor);
+                  _occupiedFloor = _selectedFloor;
               });
     }
 
-    void OpenBarriers(Transform leftBarrier,Transform rightBarrier, LiftBarrier barrier)
+
+    public void OpenBarriers(int floor)
     {
-        leftBarrier.DORotate(new(leftBarrier.rotation.x,90,-90),1f);
-        rightBarrier.DORotate(new(rightBarrier.rotation.x,90,270),1f);
-        barrier.SetIsOpen(true);
+        (Transform leftBarrier, Transform rightBarrier, LiftBarrier barrier) = GetBarrier(floor);
+        leftBarrier.DORotate(new(leftBarrier.rotation.x, 90, -90), 1f);
+        rightBarrier.DORotate(new(rightBarrier.rotation.x, 90, 270), 1f);
     }
-    void CloseBarriers(Transform leftBarrier,Transform rightBarrier, LiftBarrier barrier)
+
+    void CloseBarriers(int floor)
     {
-        leftBarrier.DORotate(new(0,90,0),1f);
-        rightBarrier.DORotate(new(rightBarrier.rotation.x,90,180),1f);
-        barrier.SetIsOpen(false);
+        (Transform leftBarrier, Transform rightBarrier, LiftBarrier barrier) = GetBarrier(floor);
+        leftBarrier.DORotate(new(0, 90, 0), 1f);
+        rightBarrier.DORotate(new(rightBarrier.rotation.x, 90, 180), 1f);
     }
 
     public (Transform, Transform, LiftBarrier) GetBarrier(int floor)
@@ -209,7 +210,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
         LiftBarrier barrier = _barriers.Find(x => x._level == floor);
         Transform leftBarrier = barrier._leftItem;
         Transform rightBarrier = barrier._rightItem;
-        
+
 
         return (leftBarrier, rightBarrier, barrier);
     }
@@ -222,7 +223,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
     public void ToggleDrawAttention()
     {
         // Debug.Log("Toggle Draw Attention");
-        
+
         isHighlighted = !isHighlighted;
     }
 }

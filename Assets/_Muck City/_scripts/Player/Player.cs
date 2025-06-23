@@ -89,7 +89,10 @@ public class Player : MonoBehaviour, IHavePersistentData
     vThirdPersonController _vThirdPersonController;
     vThirdPersonInput _vThirdPersonInput;
 
+    public vFootStep _vFootStep;
+
     public vThirdPersonCamera _vThirdPersonCamera;
+
 
     vItemManager _inventory;
     string _lastBlendedState;
@@ -167,7 +170,10 @@ public class Player : MonoBehaviour, IHavePersistentData
             Instance = this;
             _vThirdPersonController = GetComponent<vThirdPersonController>();
             _vThirdPersonInput = GetComponent<vThirdPersonInput>();
+            _vFootStep = GetComponent<vFootStep>();
             _inventory = GetComponent<vItemManager>();
+
+
 
             LoadPersistentData();
             _interactionSystem = new InteractionSystem(_interactionRange, _detectionRate, transform, _interactionLayerMask, _defaultLayerMask);

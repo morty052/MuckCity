@@ -2,16 +2,27 @@ using UnityEngine;
 
 public class OccupationDetector : MonoBehaviour
 {
-    public Observer<bool> _isOccupied = new(false);
 
-    void OnTriggerEnter()
+    [SerializeField] int _level;
+    [SerializeField] LiftSwitch _liftSwitch;
+
+
+    void OnTriggerEnter(Collider other)
     {
-        _isOccupied.Value = true;
+        if (_liftSwitch._isMoving) return;
+        if (_liftSwitch.IsOnLevel(_level))
+        {
+            _liftSwitch.OpenBarriers(_level);
+        }
+
     }
+
+
 
     // Update is called once per frame
     void OnTriggerExit()
     {
-       _isOccupied.Value = false; 
+        if (_liftSwitch._isMoving) return;
+        _liftSwitch.TryCloseBarriersOnExit(_level);
     }
 }
