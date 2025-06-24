@@ -140,6 +140,8 @@ public class LiftSwitch : MonoBehaviour, IInteractable
         (Transform leftBarrier, Transform rightBarrier, LiftBarrier barrier) = GetBarrier(_selectedFloor);
         CloseBarriers(_entryFloor);
         _isMoving = true;
+        //* LET LIFT KNOW IT IS OCCUPIED SO IT DISABLES AREAS 
+        _lift._isCarryingPlayer = true;
         _lift.Move(_selectedFloor, () =>
         {
             Player.Instance.LockAllInput(false);
@@ -152,10 +154,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
         });
     }
 
-    void StartLift()
-    {
-        _lift.Move(() => Player.Instance.ToggleInputLock());
-    }
+
 
     public void TryCloseBarriersOnExit(int level)
     {
@@ -170,17 +169,13 @@ public class LiftSwitch : MonoBehaviour, IInteractable
     public void CallElevator(int floor)
     {
 
-        // if (_selectedFloor == floor)
-        // {
-        //     OpenBarriers(floor);
-        //     return;
-        // }
         _selectedFloor = floor;
         _entryFloor = floor;
         (Transform leftBarrier, Transform rightBarrier, LiftBarrier barrier) = GetBarrier(floor);
-        // LiftBarrier barrier = _barriers.Find(x => x._level == floor);
-        // Transform leftBarrier = barrier._leftItem;
-        // Transform rightBarrier = barrier._rightItem;
+
+
+        //* LET LIFT KNOW IT IS EMPTY SO IT DOES NOT DISABLE AREAS YET
+        _lift._isCarryingPlayer = false;
 
         _lift.Move(_selectedFloor, () =>
               {
