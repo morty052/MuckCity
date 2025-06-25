@@ -51,7 +51,7 @@ public struct Objective
 
     public readonly bool HasWayPoint => _wayPoint != Vector3.zero;
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     [Button("Snap")]
     void Snap()
     {
@@ -142,14 +142,12 @@ public class DomeManager : MonoBehaviour
     [TabGroup("Day Management")]
     [SerializeField] Color _nightColor = new(0.1f, 0.1f, 0.1f, 1f);
     [TabGroup("Day Management")]
-    [SerializeField] Color _dayColor;
 
-    [HideInInspector]
-    public Mission _activeObjective;
+
+
 
     [SerializeField] Waypoint _questMarker;
 
-    bool IsNightTime => _timeOfDay >= _nightTime;
 
 
     private void Awake()
@@ -171,16 +169,12 @@ public class DomeManager : MonoBehaviour
     {
         GameEventsManager.OnExitDistrictEvent += HandleDistrictExit;
         GameEventsManager.OnEnterDistrictEvent += HandleDistrictEntry;
-        GameEventsManager.OnSunDownEvent += HandleSunDown;
-        // GameEventsManager.OnObjectiveUpdated += OnObjectiveUpdated;
     }
 
     void OnDisable()
     {
         GameEventsManager.OnExitDistrictEvent -= HandleDistrictExit;
         GameEventsManager.OnEnterDistrictEvent -= HandleDistrictEntry;
-        GameEventsManager.OnSunDownEvent -= HandleSunDown;
-        // GameEventsManager.OnObjectiveUpdated -= OnObjectiveUpdated;
     }
 
     [Button]
@@ -202,71 +196,6 @@ public class DomeManager : MonoBehaviour
         Debug.Log("Player EXITED a district " + exit._districtID);
     }
 
-    void Start()
-    {
-        _inGameHoursTimer.OnTimerStop += () =>
-        {
-            HandleInGameHoursEnd();
-            StartCoroutine(OffSetTextureXFixedSpeed(_offsetInterval));
-            _inGameHoursTimer.Start();
-        };
-
-        _inGameHoursTimer.Start();
-    }
-
-
-    private IEnumerator OffSetTextureXFixedSpeed()
-    {
-        float startOffset = 0.1f;
-        float endOffset = 0.4f;
-        float startTime = 0f;
-        float endTime = 24f;
-        float elapsedTime = 0f;
-        float duration = endTime - startTime;
-
-        while (elapsedTime < duration)
-        {
-            float t = elapsedTime / duration;
-            float offset = Mathf.Lerp(startOffset, endOffset, t);
-            _skyTexture.mainTextureOffset = new Vector2(offset, 0);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-    }
-
-
-    private IEnumerator OffSetTextureXFixedSpeed(float duration)
-    {
-        float offsetSpeed = 0.01f;
-        float elapsedTime = 0;
-        while (elapsedTime < duration)
-        {
-            _skyTexture.mainTextureOffset += new Vector2(offsetSpeed * Time.deltaTime, 0);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        _timeOfDay = _skyTexture.mainTextureOffset.x;
-
-        bool moonShouldBeActive = _nightTime - _timeOfDay <= 0.1f;
-        bool dayShouldBeActive = _dayTime - _timeOfDay <= 0.1f;
-        if (moonShouldBeActive)
-        {
-            _sun.SetActive(false);
-            _moon.SetActive(true);
-            GameEventsManager.Instance.OnSunDown();
-        }
-        if (dayShouldBeActive)
-        {
-            _sun.SetActive(true);
-            _moon.SetActive(false);
-        }
-    }
-    private void HandleInGameHoursEnd()
-    {
-        _inGameHours++;
-        GameEventsManager.Instance.OnInGameHoursPassed();
-        // Debug.Log($"In game hours {_inGameHours}");
-    }
 
     public void SetupMissionDisplay(Mission mission)
     {

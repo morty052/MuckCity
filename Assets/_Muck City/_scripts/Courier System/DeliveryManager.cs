@@ -15,7 +15,7 @@ public class DeliveryManager : MonoBehaviour
     {
         GameEventsManager.OnAllNpcLoadedEvent += PopulateDruggiePool;
         GameEventsManager.OnDeliveryMarkerPlacedEvent += UpdateDruggiePool;
-        GameEventsManager.OnInGameHoursPassedEvent += HandleProceduralDeliveries;
+        TimeService.OnHourChange += HandleProceduralDeliveries;
         GameEventsManager.OnDeliveryAcceptedEvent += HandleDeliveryAccepted;
         GameEventsManager.OnDeliveryPointReachedEvent += HandleDeliveryPointReached;
     }
@@ -24,7 +24,7 @@ public class DeliveryManager : MonoBehaviour
     {
         GameEventsManager.OnAllNpcLoadedEvent -= PopulateDruggiePool;
         GameEventsManager.OnDeliveryMarkerPlacedEvent -= UpdateDruggiePool;
-        GameEventsManager.OnInGameHoursPassedEvent -= HandleProceduralDeliveries;
+        TimeService.OnHourChange -= HandleProceduralDeliveries;
         GameEventsManager.OnDeliveryAcceptedEvent -= HandleDeliveryAccepted;
         GameEventsManager.OnDeliveryPointReachedEvent -= HandleDeliveryPointReached;
     }
@@ -42,10 +42,10 @@ public class DeliveryManager : MonoBehaviour
         druggieNPC.StartPickup(data);
     }
 
-    private void HandleProceduralDeliveries()
+    private void HandleProceduralDeliveries(int hour)
     {
-        if (_clients.Count == 0) return;
-
+        if (_clients.Count == 0 || _proceduralDeliveries.Count >= _maxIdleDeliveries) return;
+        // Debug.Log("Hour Changed" + _proceduralDeliveries?.Count);
         DruggieNpcSO druggieSO = GetRandomDruggie();
 
         if (druggieSO == null)
