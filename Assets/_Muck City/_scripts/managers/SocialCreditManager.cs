@@ -106,7 +106,7 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
         object data = AutoSaveManager.Load(SAVE_ID);
         if (data.IsUnityNull())
         {
-            Debug.Log("Social credit not loaded" + _lastSavedCredit);
+            // Debug.Log("Social credit not loaded" + _lastSavedCredit);
             return;
         }
         _socialCreditData = (SocialCreditData)data;

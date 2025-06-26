@@ -19,7 +19,7 @@ using DG.Tweening;
 using Invector;
 using System.Collections.Generic;
 
-public class Dog : MonoBehaviour
+public class Dog : SpecialEquipment
 {
 
     public static Dog Instance { get; private set; }
@@ -132,6 +132,8 @@ public class Dog : MonoBehaviour
 
     public bool _hasAccessToPlayer = true;
 
+
+
     void Awake()
     {
         if (Instance == null)
@@ -140,6 +142,7 @@ public class Dog : MonoBehaviour
             _agent = GetComponent<NavMeshAgent>();
             _animator = GetComponent<Animator>();
             _dogSensor = GetComponent<DogSensor>();
+            _id = SpecialEquipmentID.ROVER;
             SetupTransitions();
 
         }

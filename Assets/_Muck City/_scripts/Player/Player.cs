@@ -194,7 +194,7 @@ public class Player : MonoBehaviour, IHavePersistentData
         _vThirdPersonCamera = FindFirstObjectByType<vThirdPersonCamera>();
         _vThirdPersonInput.onUpdate += CheckForTriggerAction;
 
-        Debug.Log($" Special Equipments : {_playerSaveData._specialEquipments.Count}");
+        // Debug.Log($" Special Equipments : {_playerSaveData._specialEquipments.Count}");
         if (_useLastSavedPosition)
         {
 
@@ -280,6 +280,7 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     public void LoadPersistentData()
     {
+        if (!ES3.KeyExists(SAVE_ID.ToString())) return;
         PlayerSaveData data = (PlayerSaveData)AutoSaveManager.Load(SAVE_ID);
         _playerSaveData = data;
     }

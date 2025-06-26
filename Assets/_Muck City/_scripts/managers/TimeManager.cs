@@ -1,9 +1,24 @@
+using System;
 using System.Collections;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+
+public struct TimeData
+{
+
+
+    public DateTime _hour;
+
+
+
+    public TimeData(DateTime hour)
+    {
+        _hour = hour;
+    }
+}
 
 public class TimeManager : MonoBehaviour
 {
@@ -28,36 +43,56 @@ public class TimeManager : MonoBehaviour
 
     ColorAdjustments _colorAdjustments;
 
-    TimeService _service;
+    [SerializeField] TimeService _service;
 
     bool IsAm => _service.CurrentTime.Hour < 12;
+
+    [SerializeField] int _lastSavedHour = 999;
+    [SerializeField] DateTime _lastSavedTime;
+
+    bool HasSaveData => ES3.KeyExists("CURRENT_TIME");
 
     string _am = "AM";
     string _pm = "PM";
 
+    void Awake()
+    {
+
+
+        _skyMaterial = _skyDome.GetComponent<MeshRenderer>().material;
+    }
+
     void OnEnable()
     {
-        TimeService.OnHourChange += DoTimeStuff;
+        // TimeService.OnHourChange += DoTimeStuff;
     }
 
     void OnDisable()
     {
-        TimeService.OnHourChange -= DoTimeStuff;
+        // TimeService.OnHourChange -= DoTimeStuff;
+        TimeData timeData = new(_service.CurrentTime);
+        Debug.Log("Saving last saved hour " + _service.CurrentTime);
+        ES3.Save("CURRENT_TIME", timeData);
     }
 
     void DoTimeStuff(int hour)
     {
-        // Debug.Log("Hour is " + hour);
+        _lastSavedHour = hour;
+        TimeData timeData = new(_service.CurrentTime);
+        ES3.Save("CURRENT_TIME", timeData);
     }
 
-    void Awake()
-    {
-        _skyMaterial = _skyDome.GetComponent<MeshRenderer>().material;
-    }
+
 
     void Start()
     {
-        _service = new TimeService(_timeSettings);
+        if (HasSaveData)
+        {
+            TimeData timeData = ES3.Load<TimeData>("CURRENT_TIME");
+            _lastSavedTime = timeData._hour;
+        }
+
+        _service = new TimeService(_timeSettings, _lastSavedTime);
         _volume.profile.TryGet(out _colorAdjustments);
     }
 
@@ -80,6 +115,7 @@ public class TimeManager : MonoBehaviour
         float dotProduct = Vector3.Dot(_sun.transform.forward, Vector3.down);
         _sun.intensity = Mathf.Lerp(0, _maxSunIntensity, _lightIntensityCurve.Evaluate(dotProduct));
         _moon.intensity = Mathf.Lerp(_maxMoonIntensity, 0, _lightIntensityCurve.Evaluate(dotProduct));
+
 
         if (_colorAdjustments == null) return;
 

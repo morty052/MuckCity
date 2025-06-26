@@ -1,15 +1,22 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
+[Serializable]
 public class TimeService
 {
     readonly TimeSettings _settings;
+
+
     DateTime _currentTime;
 
     readonly TimeSpan _sunRiseTime;
     readonly TimeSpan _sunSetTime;
 
+    [ShowInInspector, ReadOnly]
     readonly Observable<bool> _isDayTime;
+
+    [ShowInInspector, ReadOnly]
     readonly Observable<int> _currentHour;
 
     public static event Action OnSunRise = delegate { };
@@ -18,10 +25,19 @@ public class TimeService
 
     public DateTime CurrentTime => _currentTime;
 
-    public TimeService(TimeSettings timeSettings)
+    public TimeService(TimeSettings timeSettings, DateTime startHour = default)
     {
         this._settings = timeSettings;
-        _currentTime = DateTime.Now + TimeSpan.FromHours(_settings._startHour);
+        if (startHour != default)
+        {
+            // _currentTime = DateTime.Now + TimeSpan.FromHours(startHour.Hour);
+            _currentTime = startHour;
+            Debug.Log("Loading last saved time" + _currentTime);
+        }
+        else
+        {
+            _currentTime = DateTime.Now + TimeSpan.FromHours(_settings._startHour);
+        }
         _sunRiseTime = TimeSpan.FromHours(_settings._sunRiseHour);
         _sunSetTime = TimeSpan.FromHours(_settings._sunSetHour);
 
