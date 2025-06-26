@@ -175,6 +175,10 @@ public class Dog : SpecialEquipment
         }
     }
 
+    public void ToggleAccessToPlayer()
+    {
+        _hasAccessToPlayer = !_hasAccessToPlayer;
+    }
 
     void Update() // Update loop for dog actions
     {
