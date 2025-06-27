@@ -71,7 +71,7 @@ public class TimeManager : MonoBehaviour
     {
         // TimeService.OnHourChange -= DoTimeStuff;
         TimeData timeData = new(_service.CurrentTime);
-        Debug.Log("Saving last saved hour " + _service.CurrentTime);
+        // Debug.Log("Saving last saved hour " + _service.CurrentTime);
         ES3.Save("CURRENT_TIME", timeData);
     }
 

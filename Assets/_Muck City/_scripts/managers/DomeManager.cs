@@ -115,13 +115,12 @@ public class DomeManager : MonoBehaviour
     [TabGroup("Locations")]
     [SerializeField] List<LocationData> _districts = new();
 
-    [SerializeField, TabGroup("ATTACK")] Zombie _enemyPrefab;
 
-    [SerializeField, TabGroup("ATTACK")] int _spawnCount;
+    [SerializeField, TabGroup("Attack")] bool _canSpawn = true;
+    [SerializeField, TabGroup("Attack")] int _spawnCount;
 
-    [SerializeField, TabGroup("ATTACK")] int _spawnSpread;
-
-    [SerializeField, TabGroup("ATTACK")] List<Zombie> _spawnedEnemies;
+    [SerializeField, TabGroup("Attack")] List<Zombie> _spawnedEnemies;
+    [SerializeField, TabGroup("Weather")] FogController _fogController;
 
 
 
@@ -131,6 +130,7 @@ public class DomeManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            _fogController = new();
         }
         else
         {
@@ -159,7 +159,8 @@ public class DomeManager : MonoBehaviour
     private void HandleSunDown()
     {
         Debug.Log("Sun is down, its zombie time!");
-        if (Player.Instance.IsUnderGround) return;
+        InitFog();
+        if (!_canSpawn || Player.Instance.IsUnderGround) return;
         for (int i = 0; i < _spawnCount; i++)
         {
             SpawnEnemy();
@@ -168,10 +169,12 @@ public class DomeManager : MonoBehaviour
     private void HandleSunUp()
     {
         Debug.Log("Sun is Up, Fry all zombies!");
+        ClearFog();
         for (int i = 0; i < _spawnedEnemies.Count; i++)
         {
             _spawnedEnemies[i].Die();
         }
+
     }
 
     private void HandleDistrictEntry(District exit)
@@ -264,15 +267,55 @@ public class DomeManager : MonoBehaviour
         Vector3 randomPosition = UnityEngine.Random.insideUnitSphere * radius;
         Vector3 spawnPoint = combatHelperSphere.position + randomPosition;
 
-        Debug.Log("Spawn Point: " + spawnPoint);
+        // Debug.Log("Spawn Point: " + spawnPoint);
         return spawnPoint;
     }
 
     #endregion
 
+    #region "Weather"
 
-    // void HandleEndObjective()
-    // {
-    //     _objectiveCanvas.SetActive(false);
-    // }
+    [Button, TabGroup("Weather")]
+    public void InitFog()
+    {
+        StartCoroutine(_fogController.FadeInFog());
+    }
+    [Button, TabGroup("Weather")]
+    public void ClearFog()
+    {
+        StartCoroutine(_fogController.ClearFog());
+    }
+    #endregion
+}
+
+
+
+public class FogController
+{
+    public float targetDensity = 0.05f;
+    public float fadeDuration = 5.0f;
+
+
+    public IEnumerator FadeInFog()
+    {
+        float timePassed = 0f;
+        while (timePassed <= fadeDuration)
+        {
+            float factor = timePassed / fadeDuration;
+            RenderSettings.fogDensity = Mathf.Lerp(0, targetDensity, factor);
+            timePassed += Time.deltaTime;
+            yield return null;
+        }
+    }
+    public IEnumerator ClearFog()
+    {
+        float timePassed = 0f;
+        while (timePassed <= fadeDuration)
+        {
+            float factor = timePassed / fadeDuration;
+            RenderSettings.fogDensity = Mathf.Lerp(targetDensity, 0, factor);
+            timePassed += Time.deltaTime;
+            yield return null;
+        }
+    }
 }
