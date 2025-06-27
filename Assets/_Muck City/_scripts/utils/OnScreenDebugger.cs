@@ -62,13 +62,7 @@ public class OnScreenDebugger : MonoBehaviour
     // [VerticalGroup]
 
 
-    [SerializeField, TabGroup("ATTACK")] NpcCharacter _enemyPrefab;
 
-    [SerializeField, TabGroup("ATTACK")] int _spawnCount;
-
-    [SerializeField, TabGroup("ATTACK")] int _spawnSpread;
-
-    [SerializeField, TabGroup("ATTACK")] List<NpcCharacter> _spawnedEnemies;
 
     [SerializeField, TabGroup("Quest")]
     Mission _mission = new();

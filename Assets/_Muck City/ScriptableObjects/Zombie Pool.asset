@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Zombie Pool
   m_EditorClassIdentifier: 
   _poolID: 1
-  _prefab: {fileID: 9205925995358951556, guid: 21844ca8ceeabb644b73c37b1aa47177, type: 3}
+  _prefab: {fileID: 2624456998552052968, guid: 6ff99ee90e1ec08418e96577cafa552a, type: 3}

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a0c62f915d8df048b4de2b91ed92b4a, type: 3}
   m_Name: ZombieData
   m_EditorClassIdentifier: 
-  _poolID: 0
+  _poolID: 1
   _prefab: {fileID: 5107572899388185901, guid: b16e39cc5ae09e84ea8fc9162787d00f, type: 3}

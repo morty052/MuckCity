@@ -102,8 +102,10 @@ public class DomeManager : MonoBehaviour
 {
     public static DomeManager Instance { get; private set; }
 
-    [TabGroup("Objective Management")]
+    [TabGroup("Objective")]
     public ObjectiveRenderer _objectiveRenderer;
+
+    [SerializeField] Waypoint _questMarker;
 
 
     [TabGroup("Locations")]
@@ -113,40 +115,14 @@ public class DomeManager : MonoBehaviour
     [TabGroup("Locations")]
     [SerializeField] List<LocationData> _districts = new();
 
-    [TabGroup("Day Management")]
-    [SerializeField] GameObject _skyDome;
-    [TabGroup("Day Management")]
-    [SerializeField] Material _skyTexture;
-    [TabGroup("Day Management")]
-    [SerializeField] GameObject _sun;
-    [TabGroup("Day Management")]
-    [SerializeField] GameObject _moon;
+    [SerializeField, TabGroup("ATTACK")] Zombie _enemyPrefab;
 
+    [SerializeField, TabGroup("ATTACK")] int _spawnCount;
 
-    [TabGroup("Day Management")]
-    CountdownTimer _inGameHoursTimer;
-    [TabGroup("Day Management")]
-    [SerializeField] float _inGameHoursInterval = 10f;
-    [TabGroup("Day Management")]
-    [SerializeField] float _nightTime = 0.4f;
-    [TabGroup("Day Management")]
-    [SerializeField] float _dayTime = 0.1f;
-    [TabGroup("Day Management")]
-    [SerializeField] float _timeOfDay = 0.1f;
-    [TabGroup("Day Management")]
-    [SerializeField] float _offsetInterval = 0.1f;
-    [TabGroup("Day Management")]
-    [SerializeField] int _inGameHours = 0;
-    [TabGroup("Day Management")]
-    [SerializeField] Light _mainDirectionalLight;
-    [TabGroup("Day Management")]
-    [SerializeField] Color _nightColor = new(0.1f, 0.1f, 0.1f, 1f);
-    [TabGroup("Day Management")]
+    [SerializeField, TabGroup("ATTACK")] int _spawnSpread;
 
+    [SerializeField, TabGroup("ATTACK")] List<Zombie> _spawnedEnemies;
 
-
-
-    [SerializeField] Waypoint _questMarker;
 
 
 
@@ -155,8 +131,6 @@ public class DomeManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            _inGameHoursTimer = new(_inGameHoursInterval);
-            _skyTexture = _skyDome.GetComponent<MeshRenderer>().material;
         }
         else
         {
@@ -169,21 +143,35 @@ public class DomeManager : MonoBehaviour
     {
         GameEventsManager.OnExitDistrictEvent += HandleDistrictExit;
         GameEventsManager.OnEnterDistrictEvent += HandleDistrictEntry;
+        TimeService.OnSunSet += HandleSunDown;
+        TimeService.OnSunRise += HandleSunUp;
     }
 
     void OnDisable()
     {
         GameEventsManager.OnExitDistrictEvent -= HandleDistrictExit;
         GameEventsManager.OnEnterDistrictEvent -= HandleDistrictEntry;
+        TimeService.OnSunSet -= HandleSunDown;
+        TimeService.OnSunRise -= HandleSunUp;
     }
 
     [Button]
     private void HandleSunDown()
     {
-        Debug.Log("Sun is down");
-        Color color = _mainDirectionalLight.color;
-        _mainDirectionalLight.DOColor(_nightColor, 0.5f);
-        _mainDirectionalLight.intensity = 0.97f;
+        Debug.Log("Sun is down, its zombie time!");
+        if (Player.Instance.IsUnderGround) return;
+        for (int i = 0; i < _spawnCount; i++)
+        {
+            SpawnEnemy();
+        }
+    }
+    private void HandleSunUp()
+    {
+        Debug.Log("Sun is Up, Fry all zombies!");
+        for (int i = 0; i < _spawnedEnemies.Count; i++)
+        {
+            _spawnedEnemies[i].Die();
+        }
     }
 
     private void HandleDistrictEntry(District exit)
@@ -257,7 +245,30 @@ public class DomeManager : MonoBehaviour
         _questMarker.Init(position);
     }
 
+    #region "ATTACK"
 
+
+
+    public void SpawnEnemy()
+    {
+        Zombie enemy = PoolManager.Instance.GetZombie();
+        enemy.transform.position = GetRandomPointInCombatRange();
+        enemy.transform.LookAt(Player.Instance.transform.position);
+        _spawnedEnemies.Add(enemy);
+    }
+
+    Vector3 GetRandomPointInCombatRange()
+    {
+        Transform combatHelperSphere = Player.Instance._combatHelperSphere;
+        float radius = combatHelperSphere.localScale.x / 2;
+        Vector3 randomPosition = UnityEngine.Random.insideUnitSphere * radius;
+        Vector3 spawnPoint = combatHelperSphere.position + randomPosition;
+
+        Debug.Log("Spawn Point: " + spawnPoint);
+        return spawnPoint;
+    }
+
+    #endregion
 
 
     // void HandleEndObjective()

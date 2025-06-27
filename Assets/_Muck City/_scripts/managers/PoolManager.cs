@@ -12,6 +12,8 @@ public interface IPoolable
 {
     GameObject GameObject { get; }
     public PoolID PoolID { get; }
+
+    public IObjectPool<IPoolable> _pool { get; set; }
     // void OnRelease();
 }
 
@@ -24,8 +26,7 @@ public enum PoolID
 
 public class PoolManager : MonoBehaviour
 {
-
-
+    public static PoolManager Instance { get; private set; }
     public PoolID _activePoolID = PoolID.ZOMBIE;
     [SerializeField] Zombie _zombiePrefab;
     // private IObjectPool<Zombie> _zombiePool;
@@ -56,7 +57,15 @@ public class PoolManager : MonoBehaviour
     void Awake()
     {
         // _zombiePool = new ObjectPool<Zombie>(CreateZombie, OnGetZombie, OnReleaseZombie, OnDestroyPooledZombie, _collectionCheck, _defaultCapacity, _maxSize);
-        CreatePools();
+        if (Instance == null)
+        {
+            Instance = this;
+            CreatePools();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
 
@@ -235,5 +244,8 @@ public class PoolManager : MonoBehaviour
         _spawnPosition = Player.Instance.transform.position;
     }
 
-
+    public IObjectPool<IPoolable> GetPool(PoolID poolID)
+    {
+        return _pools[poolID];
+    }
 }

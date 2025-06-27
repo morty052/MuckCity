@@ -1,5 +1,6 @@
 using Invector.vItemManager;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class RawMaterialContainer : Tradeable, IInteractable, IPoolable
 {
@@ -24,6 +25,8 @@ public class RawMaterialContainer : Tradeable, IInteractable, IPoolable
     public GameObject GameObject => gameObject;
 
     public PoolID PoolID => Data._poolID;
+
+    public IObjectPool<IPoolable> _pool { get; set; }
 
     void Awake()
     {

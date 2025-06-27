@@ -11,6 +11,7 @@ public class PoolData : ScriptableObject
     {
         GameObject prefab = Instantiate(_prefab);
         IPoolable poolable = prefab.GetComponent<IPoolable>();
+        poolable._pool = PoolManager.Instance.GetPool(_poolID);
         return poolable;
     }
 

@@ -38,15 +38,12 @@ public class Player : MonoBehaviour, IHavePersistentData
     public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
 
 
-    [TabGroup("State")]
-    [SerializeField] bool _isInDialogue;
+
 
     [SerializeField] Vehicle _currentVehicle;
 
-    [TabGroup("State")]
-    [SerializeField] private bool _isRunning = true;
 
-    public vThirdPersonCameraListData CameraStateList;
+
 
     [TabGroup("Interaction")]
     public float _interactionRange = 1f;
@@ -78,6 +75,12 @@ public class Player : MonoBehaviour, IHavePersistentData
     [SerializeField] Transform _backPackHolder;
 
     [TabGroup("State")]
+    [SerializeField] private bool _isRunning = true;
+
+    [TabGroup("State")]
+    [SerializeField] bool _isInDialogue;
+
+    [TabGroup("State")]
     [SerializeField] NPCConversation _activeConversation;
 
     [TabGroup("State")]
@@ -85,6 +88,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("State")]
     [SerializeField] Shop _activeShop;
 
+    public vThirdPersonCameraListData CameraStateList;
 
     vThirdPersonController _vThirdPersonController;
     vThirdPersonInput _vThirdPersonInput;
@@ -111,15 +115,20 @@ public class Player : MonoBehaviour, IHavePersistentData
     public BackPack _hotStorage;
     public Storage _activeStorage;
 
-    public bool IsInVehicle => _currentVehicle != null;
+
 
     CancellationTokenSource cts = new();
 
     public bool ShouldAutoSave { get => AutoSaveManager.ShouldAutoSave(SaveAble.PLAYER); }
+    public bool IsInVehicle => _currentVehicle != null;
 
+    public bool IsUnderGround => transform.position.y < _underGroundThreshold;
     public SaveAble SAVE_ID => SaveAble.PLAYER;
 
     private PlayerSaveData _playerSaveData;
+
+    [SerializeField] float _underGroundThreshold = 0;
+    public Transform _combatHelperSphere;
 
 
 
