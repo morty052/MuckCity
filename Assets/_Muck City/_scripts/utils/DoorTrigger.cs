@@ -10,6 +10,12 @@ public enum Direction
     FRONT
 }
 
+public enum DoorTriggerType
+{
+    FLOOR,
+    HANDLE
+}
+
 public class DoorTrigger : MonoBehaviour, IInteractable
 {
     [SerializeField] GameObject _door;
@@ -19,7 +25,10 @@ public class DoorTrigger : MonoBehaviour, IInteractable
 
     public bool CanInteract => _canInteract;
 
-    public string InteractionPrompt => "Open";
+
+    string _interactionPrompt = "Open";
+
+    public string InteractionPrompt => _interactionPrompt;
 
     public GameObject GameObject => gameObject;
 
@@ -30,8 +39,24 @@ public class DoorTrigger : MonoBehaviour, IInteractable
     public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
 
     [SerializeField] Direction _direction;
+    [SerializeField] DoorTriggerType _type;
+    [SerializeField, ShowIf("_type", DoorTriggerType.FLOOR)] DoorTrigger _doorHandle;
+    [SerializeField, ShowIf("_type", DoorTriggerType.FLOOR)] DoorTrigger _oppositeDoorTrigger;
+    [SerializeField, ShowIf("_type", DoorTriggerType.HANDLE)] DoorTrigger _backTrigger;
+    [SerializeField, ShowIf("_type", DoorTriggerType.HANDLE)] DoorTrigger _frontTrigger;
+
+    bool _isOccupied = false;
 
     public Action<string> OnInteracted;
+
+
+    void Start()
+    {
+        if (_type == DoorTriggerType.HANDLE)
+        {
+            _interactionPrompt = "Close";
+        }
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -40,6 +65,7 @@ public class DoorTrigger : MonoBehaviour, IInteractable
         Debug.Log(other.name + "entered trigger");
         Player.Instance.SetInteractableObject(this);
         PrepareInteraction();
+        _isOccupied = true;
     }
 
 
@@ -47,28 +73,59 @@ public class DoorTrigger : MonoBehaviour, IInteractable
     {
         Player.Instance.SetInteractableObject(null);
         HideInteractionPrompt();
+        _isOccupied = false;
     }
 
     void CloseDoor()
     {
-        _door.transform.DOLocalMoveY(0, 1f);
+        _canInteract = false;
+        HideInteractionPrompt();
+        _oppositeDoorTrigger._canInteract = false;
+        _door.transform.DOLocalRotate(new Vector3(0, 0, 0), 1f).OnComplete(() =>
+        {
+            _isOpen = false;
+            _canInteract = true;
+            _oppositeDoorTrigger._canInteract = true;
+            _oppositeDoorTrigger._isOpen = false;
+            _interactionPrompt = "Open";
+            if (_isOccupied)
+            {
+                PrepareInteraction();
+            }
+            if (_type == DoorTriggerType.HANDLE)
+            {
+                _frontTrigger.gameObject.SetActive(true);
+                _backTrigger.gameObject.SetActive(true);
+                gameObject.SetActive(false);
+            }
+        });
 
     }
     void OpenDoor()
     {
+        _canInteract = false;
+        HideInteractionPrompt();
         if (_direction == Direction.FRONT)
         {
             Debug.Log("Player is ahead of pos");
-            _door.transform.DOLocalRotate(new Vector3(0, -90, 0), 1f).OnComplete(() => _isOpen = true);
+            _door.transform.DOLocalRotate(new Vector3(0, -90, 0), 1f).OnComplete(() => { _isOpen = true; _oppositeDoorTrigger._isOpen = true; _canInteract = true; });
 
         }
 
         else
         {
             Debug.Log("Player is behind of pos");
-            _door.transform.DOLocalRotate(new Vector3(0, 90, 0), 1f).OnComplete(() => _isOpen = true);
+            _door.transform.DOLocalRotate(new Vector3(0, 90, 0), 1f).OnComplete(() => { _isOpen = true; _oppositeDoorTrigger._isOpen = true; _canInteract = true; });
         }
 
+        // _doorHandle.GameObject.SetActive(true);
+        // _oppositeDoorTrigger.GameObject.SetActive(false);
+        // gameObject.SetActive(false);
+        _interactionPrompt = "Close";
+        if (_isOccupied)
+        {
+            PrepareInteraction();
+        }
     }
 
     bool IsPlayerAheadOfPos()
@@ -91,6 +148,11 @@ public class DoorTrigger : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        if (_type == DoorTriggerType.HANDLE)
+        {
+            CloseDoor();
+            return;
+        }
         if (!_isOpen)
         {
             OpenDoor();

@@ -12,7 +12,7 @@ public class Shop : MonoBehaviour, IInteractable
     [SerializeField] Transform _shopItemsParent;
     [SerializeField] List<ShopItemSO> _tradeables;
 
-    [SerializeField] GameObject _shopUi;
+    [SerializeField] protected GameObject _shopUi;
 
     public bool IsHighlighted { get; }
 
@@ -64,7 +64,7 @@ public class Shop : MonoBehaviour, IInteractable
             AddFunctionToButton(shopItem, i);
         }
     }
-    void OpenShop()
+    protected void OpenShop()
     {
         _shopUi.SetActive(true);
         HideInteractionPrompt();
@@ -99,21 +99,21 @@ public class Shop : MonoBehaviour, IInteractable
         tradable.OnBuy(_tradeables[index]);
     }
 
-    public void PrepareInteraction()
+    public virtual void PrepareInteraction()
     {
         if (_shopUi.activeSelf) return;
         HudManager.Instance.ShowInteractPrompt();
-        // SetShopAsPlayerInteractable(true);
+        Player.Instance.SetInteractableObject(this);
     }
 
-    public void Interact()
+    public virtual void Interact()
     {
         OpenShop();
         Player.Instance.EnterShop(this);
         HideInteractionPrompt();
     }
 
-    public void HideInteractionPrompt()
+    public virtual void HideInteractionPrompt()
     {
         HudManager.Instance.HideInteractPrompt();
     }

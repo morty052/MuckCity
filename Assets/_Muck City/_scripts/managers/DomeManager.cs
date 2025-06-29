@@ -158,9 +158,9 @@ public class DomeManager : MonoBehaviour
     [Button]
     private void HandleSunDown()
     {
-        Debug.Log("Sun is down, its zombie time!");
         InitFog();
         if (!_canSpawn || Player.Instance.IsUnderGround) return;
+        Debug.Log("Sun is down, its zombie time!");
         for (int i = 0; i < _spawnCount; i++)
         {
             SpawnEnemy();
@@ -168,7 +168,7 @@ public class DomeManager : MonoBehaviour
     }
     private void HandleSunUp()
     {
-        Debug.Log("Sun is Up, Fry all zombies!");
+        // Debug.Log("Sun is Up, Fry all zombies!");
         ClearFog();
         for (int i = 0; i < _spawnedEnemies.Count; i++)
         {

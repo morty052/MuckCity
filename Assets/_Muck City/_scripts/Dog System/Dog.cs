@@ -603,7 +603,7 @@ public class Dog : SpecialEquipment
 
     void InitDebugger()
     {
-        Debug.Log("Init Debugger");
+        // Debug.Log("Init Debugger");
         _debugger = new(this);
     }
     void OnDrawGizmosSelected()
@@ -611,6 +611,11 @@ public class Dog : SpecialEquipment
         Gizmos.color = Color.blue;
 
         Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, 0, _combatDistance));
+    }
+
+    public void MoveToPoint(Vector3 point)
+    {
+        _agent.SetDestination(point);
     }
 }
 

@@ -1,7 +1,12 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class InteractionTrigger : MonoBehaviour
 {
+
+    [SerializeField] UnityEvent OnInteract;
+    [SerializeField] UnityEvent OnTriggerEnterEvent;
+    [SerializeField] UnityEvent OnTriggerExitEvent;
     IInteractable _parent;
 
     void Awake()
@@ -9,9 +14,18 @@ public class InteractionTrigger : MonoBehaviour
         _parent = GetComponentInParent<IInteractable>();
     }
 
+    void OnTriggerEnter()
+    {
+        OnTriggerEnterEvent?.Invoke();
+    }
+    void OnTriggerExit()
+    {
+        OnTriggerExitEvent?.Invoke();
+    }
+
     public void Interact()
     {
-        _parent.Interact();
+        OnInteract?.Invoke();
     }
 
     public void PrepareInteraction()

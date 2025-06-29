@@ -32,7 +32,7 @@ public class TimeService
         {
             // _currentTime = DateTime.Now + TimeSpan.FromHours(startHour.Hour);
             _currentTime = startHour;
-            Debug.Log("Loading last saved time" + _currentTime);
+            // Debug.Log("Loading last saved time" + _currentTime);
         }
         else
         {

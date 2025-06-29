@@ -47,11 +47,13 @@ MonoBehaviour:
   _questInfoSo: {fileID: 0}
   _isFinished: 0
   _questId: 
-  _questPointPrefab: {fileID: 0}
+  _questPointPrefab: {fileID: 5783401725927670678, guid: 89b4cd5bfe195334180a364f101c0279, type: 3}
   _questPointsData: []
   _questItemsData:
   - _name: Room Door
+    _tag: 
     _position: {x: 1.46, y: 1.432, z: -90.766}
+    _radius: 0
   _objectDetector:
     _radius: 0
     _position: {x: 0, y: 0, z: 0}

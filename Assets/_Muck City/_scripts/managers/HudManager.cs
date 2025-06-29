@@ -37,6 +37,8 @@ public class HudManager : MonoBehaviour
 
     [SerializeField] private GameObject _phone;
 
+    [SerializeField] ActionText _actionText;
+
 
 
     void Awake()
@@ -116,20 +118,7 @@ public class HudManager : MonoBehaviour
         _phone.SetActive(false);
     }
 
-    // void Start()
-    // {
-    //     startTime = Time.time;
-    // }
 
-    // void Update()
-    // {
-    //     float t = Time.time - startTime;
-
-    //     string minutes = ((int)t / 60).ToString();
-    //     string seconds = (t % 60).ToString("f2");
-
-    //     timerText.text = minutes + ":" + seconds;
-    // }
 
     public void ShowInteractPrompt(string promptText = null)
     {
@@ -141,11 +130,24 @@ public class HudManager : MonoBehaviour
 
         _interactionPrompt.SetActive(true);
     }
+    public void ShowInteractPrompt(Vector3 position, string promptText = null)
+    {
+
+        if (promptText != null)
+        {
+            _interactionPromptText.text = promptText;
+        }
+
+        _actionText.transform.position = position;
+        _actionText.SetText(promptText);
+        _actionText.gameObject.SetActive(true);
+    }
     public void HideInteractPrompt()
     {
 
         _interactionPrompt.SetActive(false);
         _interactionPromptText.text = "Interact";
+        _actionText.gameObject.SetActive(false);
 
     }
     public void ToggleLoadingScreen(bool state)
