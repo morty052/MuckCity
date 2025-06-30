@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class TourDomeQuest : QuestStep
+public class TheMuck : QuestStep
 {
 
     void Start()

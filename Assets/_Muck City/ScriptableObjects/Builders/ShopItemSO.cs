@@ -8,6 +8,8 @@ public class ShopItemSO : ScriptableObject
     public int _price;
     public Tradeable _tradeable;
 
+    public Pos _rackPos;
+
     private void OnValidate()
     {
 #if UNITY_EDITOR

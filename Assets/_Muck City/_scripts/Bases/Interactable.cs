@@ -1,25 +1,50 @@
-
-
 using System;
 using UnityEngine;
 
-public interface IInteractable
+public class Interactable : MonoBehaviour, IInteractable
 {
 
-    bool CanInteract { get; }
+    [SerializeField] bool _canInteract = true;
+    [SerializeField] string _interactionPrompt;
+    public bool CanInteract => _canInteract;
 
-    public GameObject GameObject { get; }
-    string InteractionPrompt { get; }
-    public bool IsHighlighted { get; }
-    public bool IsQuestItem { get; set; }
+    public GameObject GameObject => gameObject;
 
+    public string InteractionPrompt => _interactionPrompt;
 
-    public void ToggleDrawAttention();
-    public void PrepareInteraction();
+    public bool IsHighlighted => _actionText.IsHighlighted;
 
-    public void Interact();
+    public ActionText _actionText;
 
-    public void HideInteractionPrompt();
+    public Action<string> OnInteracted;
 
+    [SerializeField] bool _isQuestItem;
 
+    public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
+
+    void Start()
+    {
+        _actionText.SetText(_interactionPrompt);
+    }
+
+    public virtual void HideInteractionPrompt()
+    {
+        _actionText.HideInteractionPrompt();
+    }
+
+    public virtual void Interact()
+    {
+        Debug.Log("Interacted");
+    }
+
+    public virtual void PrepareInteraction()
+    {
+        _actionText.ShowInteractionPrompt();
+        Player.Instance.SetInteractableObject(this);
+    }
+
+    public virtual void ToggleDrawAttention()
+    {
+        _actionText.ToggleWhiteDot();
+    }
 }

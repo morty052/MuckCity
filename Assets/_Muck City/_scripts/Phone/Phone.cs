@@ -122,7 +122,7 @@ public class Phone : SpecialEquipment
         _isPhoneActive = !_isPhoneActive;
     }
 
-    void OnPhoneButtonPress(PhoneInputs input)
+    void OnPhoneButtonPress(Inputs input)
     {
         if (!_isPhoneActive) return;
         if (_currentApp == null)
@@ -137,11 +137,11 @@ public class Phone : SpecialEquipment
     }
 
 
-    void UseHomePageNavigation(PhoneInputs input)
+    void UseHomePageNavigation(Inputs input)
     {
         switch (input)
         {
-            case PhoneInputs.LEFT:
+            case Inputs.LEFT:
                 // MOVE TO PREVIOUS APP IF CAN GO BACK
                 if (_selectedAppIndex > 0)
                 {
@@ -153,7 +153,7 @@ public class Phone : SpecialEquipment
                     _selectedAppIndex = _appIcons.Count - 1;
                 }
                 break;
-            case PhoneInputs.RIGHT:
+            case Inputs.RIGHT:
                 if (_selectedAppIndex == _appIcons.Count - 1)
                 {
                     //MOVE TO FIRST APP IF CANT GO FORWARD
@@ -166,10 +166,10 @@ public class Phone : SpecialEquipment
                     _selectedAppIndex++;
                 }
                 break;
-            case PhoneInputs.SELECT:
+            case Inputs.SELECT:
                 SelectApp();
                 break;
-            case PhoneInputs.BACK:
+            case Inputs.BACK:
                 GoToHomePage();
                 break;
             default:
@@ -181,32 +181,32 @@ public class Phone : SpecialEquipment
         // _selectedApp.ToggleActive(true);
     }
 
-    void RelayInputToCurrentApp(PhoneInputs input)
+    void RelayInputToCurrentApp(Inputs input)
     {
         switch (input)
         {
-            case PhoneInputs.UP:
+            case Inputs.UP:
                 _currentApp.OnUpPressed();
                 break;
-            case PhoneInputs.DOWN:
+            case Inputs.DOWN:
                 _currentApp.OnDownPressed();
                 break;
-            case PhoneInputs.LEFT:
+            case Inputs.LEFT:
                 _currentApp.OnLeftPressed();
                 break;
-            case PhoneInputs.RIGHT:
+            case Inputs.RIGHT:
                 _currentApp.OnRightPressed();
                 break;
-            case PhoneInputs.SELECT:
+            case Inputs.SELECT:
                 _currentApp.OnSelectPressed();
                 break;
-            case PhoneInputs.BACK:
+            case Inputs.BACK:
                 _currentApp.OnBackPressed();
                 break;
-            case PhoneInputs.ACCEPT:
+            case Inputs.ACCEPT:
                 _currentApp.OnAcceptPressed();
                 break;
-            case PhoneInputs.REJECT:
+            case Inputs.REJECT:
                 _currentApp.OnRejectPressed();
                 break;
             default:

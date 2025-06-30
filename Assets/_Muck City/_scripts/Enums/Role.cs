@@ -7,5 +7,6 @@ public enum Role
     QUEST_GIVER,
     SHOP_OWNER,
     DRUGGIE,
-    GUARD
+    GUARD,
+    CITY_DWELLER
 }

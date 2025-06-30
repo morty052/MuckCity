@@ -69,11 +69,11 @@ public class LiftSwitch : MonoBehaviour, IInteractable
     }
 
 
-    void OnPhoneButtonPress(PhoneInputs input)
+    void OnPhoneButtonPress(Inputs input)
     {
         switch (input)
         {
-            case PhoneInputs.DOWN:
+            case Inputs.DOWN:
                 // MOVE TO PREVIOUS APP IF CAN GO BACK
                 if (_selectedFloor > 0)
                 {
@@ -85,7 +85,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
                     _selectedFloor = _lift._points.Length - 1;
                 }
                 break;
-            case PhoneInputs.UP:
+            case Inputs.UP:
                 if (_selectedFloor == _lift._points.Length - 1)
                 {
                     //MOVE TO FIRST APP IF CANT GO FORWARD
@@ -98,10 +98,10 @@ public class LiftSwitch : MonoBehaviour, IInteractable
                     _selectedFloor++;
                 }
                 break;
-            case PhoneInputs.SELECT:
+            case Inputs.SELECT:
                 UseLift();
                 break;
-            case PhoneInputs.BACK:
+            case Inputs.BACK:
                 break;
             default:
                 break;

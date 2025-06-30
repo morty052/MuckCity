@@ -10,6 +10,7 @@ using Invector.vCharacterController;
 using Invector.vItemManager;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 
 
@@ -36,8 +37,14 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Inputs")]
 
     public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")]
+    public AltInput _altInput;
 
+    [TabGroup("Inputs")]
+    public bool _isUsingAltInput = false;
 
+    [TabGroup("Inputs")]
+    [SerializeField] InputActionAsset _inputAsset;
 
 
     [SerializeField] Vehicle _currentVehicle;
@@ -109,13 +116,10 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Phone")]
     public Observer<bool> _isPhoneShowing = new(false);
 
-
     [SerializeField] Camera _defaultCamera;
 
     public BackPack _hotStorage;
     public Storage _activeStorage;
-
-
 
     CancellationTokenSource cts = new();
 
@@ -129,12 +133,8 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     [SerializeField] float _underGroundThreshold = 0;
     public Transform _combatHelperSphere;
-
-
-
     [SerializeField] bool _useLastSavedPosition = false;
-
-
+    [SerializeField] GameObject _model;
 
     void OnEnable()
     {
@@ -145,8 +145,6 @@ public class Player : MonoBehaviour, IHavePersistentData
         GameEventsManager.OnCraftItemEvent += AddItemToInventory;
         AutoSaveManager.OnShouldAutoSave += AutoSave;
     }
-
-
 
     void OnDisable()
     {
@@ -182,6 +180,7 @@ public class Player : MonoBehaviour, IHavePersistentData
             _vFootStep = GetComponent<vFootStep>();
             _inventory = GetComponent<vItemManager>();
 
+            _altInput = new(_inputAsset);
 
 
             LoadPersistentData();
@@ -212,16 +211,12 @@ public class Player : MonoBehaviour, IHavePersistentData
 
         _specialEquipmentManager.SetSpecialEquipments(_playerSaveData._specialEquipments);
 
-        // _detectionTimer = new(_detectionRate);
-        // _detectionTimer.OnTimerStop += () =>
-        // {
-        //     EnvironmentInteraction();
-        //     _detectionTimer.Start();
-        // };
-
-        // _detectionTimer.Start();
     }
 
+    void Update()
+    {
+        _altInput.Update();
+    }
     private void CheckForTriggerAction()
     {
         if (_showPhoneInput.GetButtonDown())
@@ -326,7 +321,20 @@ public class Player : MonoBehaviour, IHavePersistentData
         _isPhoneShowing.Value = _phoneCamera.gameObject.activeSelf;
     }
 
-
+    public void UseAltControls(bool state, IBrowsable browsable = null)
+    {
+        _isUsingAltInput = state;
+        _altInput.ToggleUseInput(state);
+        LockAllInput(state);
+        if (browsable != null)
+        {
+            _altInput._activeBrowsable = browsable;
+        }
+        else
+        {
+            _altInput._activeBrowsable = null;
+        }
+    }
     private void OnCutSceneStart(TimelinePlayer player)
     {
 
@@ -719,5 +727,10 @@ public class Player : MonoBehaviour, IHavePersistentData
     void OnDrawGizmosSelected()
     {
         Gizmos.DrawSphere(transform.position + Vector3.up, _interactionRange);
+    }
+
+    public void HideModel()
+    {
+        _model.SetActive(false);
     }
 }
