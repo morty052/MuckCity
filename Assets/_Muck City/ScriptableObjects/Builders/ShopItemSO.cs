@@ -9,6 +9,7 @@ public class ShopItemSO : ScriptableObject
     public Tradeable _tradeable;
 
     public Pos _rackPos;
+    public int _orderInRack;
 
     private void OnValidate()
     {

@@ -99,13 +99,14 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     vThirdPersonController _vThirdPersonController;
     vThirdPersonInput _vThirdPersonInput;
+    vInventory _inventory;
 
     public vFootStep _vFootStep;
 
     public vThirdPersonCamera _vThirdPersonCamera;
 
 
-    vItemManager _inventory;
+    vItemManager _itemManager;
     string _lastBlendedState;
 
     [TabGroup("Phone")]
@@ -178,7 +179,8 @@ public class Player : MonoBehaviour, IHavePersistentData
             _vThirdPersonController = GetComponent<vThirdPersonController>();
             _vThirdPersonInput = GetComponent<vThirdPersonInput>();
             _vFootStep = GetComponent<vFootStep>();
-            _inventory = GetComponent<vItemManager>();
+            _itemManager = GetComponent<vItemManager>();
+            _inventory = GetComponentInChildren<vInventory>();
 
             _altInput = new(_inputAsset);
 
@@ -465,6 +467,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     public void LockAllInput(bool value)
     {
         _vThirdPersonInput.SetLockAllInput(value);
+        _inventory.lockInventoryInput = value;
     }
 
     async Task WatchForDestinationReached(Vector3 targetPosition)
@@ -682,7 +685,7 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     public void AddItemToInventory(ItemReference item)
     {
-        _inventory.AddItem(item);
+        _itemManager.AddItem(item);
         if (_hotStorage != null)
         {
             _hotStorage.AddItem(item);
@@ -729,8 +732,10 @@ public class Player : MonoBehaviour, IHavePersistentData
         Gizmos.DrawSphere(transform.position + Vector3.up, _interactionRange);
     }
 
-    public void HideModel()
+    public void ToggleModel()
     {
-        _model.SetActive(false);
+        _model.SetActive(!_model.activeSelf);
     }
+
+
 }

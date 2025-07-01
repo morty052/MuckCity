@@ -11,7 +11,8 @@ public enum Inputs
     SELECT,
     BACK,
     ACCEPT,
-    REJECT
+    REJECT,
+    EXIT
 }
 
 public class PhoneNavigation : MonoBehaviour
@@ -203,6 +204,7 @@ public class AltInput
     private InputAction _acceptInput;
 
     private InputAction _rejectInput;
+    private InputAction _exitInput;
 
     public static event Action<Inputs> OnButtonPress;
 
@@ -233,29 +235,9 @@ public class AltInput
         _backInput = InputSystem.actions.FindAction("Back");
         _acceptInput = InputSystem.actions.FindAction("Accept");
         _rejectInput = InputSystem.actions.FindAction("Reject");
+        _exitInput = InputSystem.actions.FindAction("Exit");
     }
 
-
-    void Awake()
-    {
-        _selectInput = InputSystem.actions.FindAction("Select");
-        _upInput = InputSystem.actions.FindAction("Up");
-        _downInput = InputSystem.actions.FindAction("Down");
-        _leftInput = InputSystem.actions.FindAction("Left");
-        _rightInput = InputSystem.actions.FindAction("Right");
-        _backInput = InputSystem.actions.FindAction("Back");
-        _acceptInput = InputSystem.actions.FindAction("Accept");
-        _rejectInput = InputSystem.actions.FindAction("Reject");
-    }
-
-    void OnEnable()
-    {
-        _input.FindActionMap("Phone").Enable();
-    }
-    void OnDisable()
-    {
-        _input.FindActionMap("Phone").Disable();
-    }
 
     public void ToggleUseInput(bool state)
     {
@@ -307,6 +289,10 @@ public class AltInput
         if (_rejectInput.WasPressedThisFrame())
         {
             _activeBrowsable.OnButtonPress(Inputs.REJECT);
+        }
+        if (_exitInput.WasPressedThisFrame())
+        {
+            _activeBrowsable.OnButtonPress(Inputs.EXIT);
         }
 
     }

@@ -50,6 +50,7 @@ public class GameEventsManager : MonoBehaviour
     public static Action<ItemReference> OnCraftItemEvent;
     public static Action OnSunDownEvent;
     public static Action OnSunUpEvent;
+    public static Action OnToggleUiEvent;
 
 
     public static Action<float, bool> OnContaminationUpdate;
@@ -241,6 +242,10 @@ public class GameEventsManager : MonoBehaviour
     public void OnCraftItem(ItemReference itemReference)
     {
         OnCraftItemEvent?.Invoke(itemReference);
+    }
+    public void OnToggleUi()
+    {
+        OnToggleUiEvent?.Invoke();
     }
 
 

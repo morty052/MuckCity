@@ -36,6 +36,7 @@ public class HudManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _statusText;
 
     [SerializeField] private GameObject _phone;
+    [SerializeField] private GameObject _ui;
 
     [SerializeField] ActionText _actionText;
 
@@ -60,6 +61,7 @@ public class HudManager : MonoBehaviour
         GameEventsManager.OnGameLoadEndEvent += () => ToggleLoadingScreen(false);
         GameEventsManager.OnDisplayPhone += OnDisplayPhone;
         GameEventsManager.OnHidePhone += OnHidePhone;
+        GameEventsManager.OnToggleUiEvent += OnToggleUi;
         GameEventsManager.OnSceneLoadStartEvent += (location) => ToggleLoadingScreen(true);
         GameEventsManager.OnSceneLoadEndEvent += () => ToggleLoadingScreen(false);
 
@@ -72,11 +74,15 @@ public class HudManager : MonoBehaviour
         GameEventsManager.OnGameLoadEndEvent -= () => ToggleLoadingScreen(false);
         GameEventsManager.OnDisplayPhone -= OnDisplayPhone;
         GameEventsManager.OnHidePhone -= OnHidePhone;
+        GameEventsManager.OnToggleUiEvent -= OnToggleUi;
         GameEventsManager.OnSceneLoadStartEvent -= (location) => ToggleLoadingScreen(true);
         GameEventsManager.OnSceneLoadEndEvent -= () => ToggleLoadingScreen(false);
     }
 
-
+    private void OnToggleUi()
+    {
+        _ui.SetActive(!_ui.activeSelf);
+    }
 
     void UseStatusText(string text, Color color = default)
     {
@@ -95,7 +101,10 @@ public class HudManager : MonoBehaviour
     }
 
 
+    public void ToggleUiVisibility()
+    {
 
+    }
     private void OnSocialCreditUpdated(int amount, bool isDeduction)
     {
         if (isDeduction)
