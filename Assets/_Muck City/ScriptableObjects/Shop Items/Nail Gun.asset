@@ -14,9 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Nail Gun
   _icon: {fileID: 0}
-  _price: 0
+  _price: 50
   _tradeable: {fileID: 2732260309701993162, guid: 02a6fd463d63a594d971ddbe4e1db6ff, type: 3}
   _rackPos:
     position: {x: 21.747738, y: -28.776608, z: -121.65743}
     rotation: {x: 90, y: 0, z: 0}
   _orderInRack: 4
+  _itemReference:
+    id: 31
+    name: Nail Gun
+    amount: 0
+    attributes: []
+    changeAttributes: 0
+    autoEquip: 1
+    addToEquipArea: 0
+    indexArea: 0

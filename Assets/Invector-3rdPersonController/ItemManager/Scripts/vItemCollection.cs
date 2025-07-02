@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Invector.vItemManager
 {
-    using vCharacterController.vActions;   
+    using vCharacterController.vActions;
     public class vItemCollection : vTriggerGenericAction
     {
         [vEditorToolbar("Item Collection")]
@@ -17,7 +17,7 @@ namespace Invector.vItemManager
         [Tooltip("Ignore the Enable/Disable animation of your item, you can assign an animation to your item in the ItemListData")]
         public bool ignoreItemAnimation = false;
 
-        [HideInInspector]      
+        [HideInInspector]
         public List<vItemType> itemsFilter = new List<vItemType>() { 0 };
 
         [HideInInspector]
@@ -25,7 +25,7 @@ namespace Invector.vItemManager
 
         protected override void Start()
         {
-            base.Start();           
+            base.Start();
         }
 
     }

@@ -20,3 +20,12 @@ MonoBehaviour:
     position: {x: 21.743275, y: -28.464968, z: -123.00166}
     rotation: {x: -0, y: 0, z: 0}
   _orderInRack: 2
+  _itemReference:
+    id: 0
+    name: 
+    amount: 0
+    attributes: []
+    changeAttributes: 0
+    autoEquip: 0
+    addToEquipArea: 0
+    indexArea: 0

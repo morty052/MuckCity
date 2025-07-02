@@ -12,7 +12,8 @@ public enum Inputs
     BACK,
     ACCEPT,
     REJECT,
-    EXIT
+    EXIT,
+    BUY
 }
 
 public class PhoneNavigation : MonoBehaviour
@@ -205,8 +206,12 @@ public class AltInput
 
     private InputAction _rejectInput;
     private InputAction _exitInput;
+    private InputAction _buyInput;
 
     public static event Action<Inputs> OnButtonPress;
+
+    private int _buyHoldCounter = 0;
+    private int _buyHoldThreshold = 30;
 
     public IBrowsable _activeBrowsable;
 
@@ -236,6 +241,7 @@ public class AltInput
         _acceptInput = InputSystem.actions.FindAction("Accept");
         _rejectInput = InputSystem.actions.FindAction("Reject");
         _exitInput = InputSystem.actions.FindAction("Exit");
+        _buyInput = InputSystem.actions.FindAction("Buy");
     }
 
 
@@ -295,6 +301,39 @@ public class AltInput
             _activeBrowsable.OnButtonPress(Inputs.EXIT);
         }
 
+        HandleBuyButton();
+
+
+
+    }
+
+
+
+    public void HandleBuyButton()
+    {
+
+
+        // if (_buyInput.WasPressedThisFrame())
+        // {
+        //     // _activeBrowsable.OnButtonPress(Inputs.BUY);
+        //     _buyHoldCounter = 1; // reset counter when button is first pressed
+        // }
+        if (_buyInput.IsPressed())
+        {
+            _buyHoldCounter++; // increment counter while button is held down
+                               // you can use the _buyHoldCounter value as needed
+
+            if (_buyHoldCounter == _buyHoldThreshold)
+            {
+                Debug.Log("Buy button held down for " + _buyHoldCounter + " frames");
+                _activeBrowsable.OnButtonPress(Inputs.BUY);
+                _buyHoldCounter = 0;
+            }
+        }
+        else if (_buyInput.WasReleasedThisFrame())
+        {
+            _buyHoldCounter = 0; // reset counter when button is released
+        }
     }
 
 

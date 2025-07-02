@@ -46,7 +46,7 @@ public class GameEventsManager : MonoBehaviour
     public static Action<District> OnExitDistrictEvent;
     public static Action<District> OnEnterDistrictEvent;
     public static Action<Locations> OnDeliveryMarkerPlacedEvent;
-    public static Action<ShopItemSO> OnPurchaseItem;
+    public static Action<ShopItemSO> OnBuyItemEvent;
     public static Action<ItemReference> OnCraftItemEvent;
     public static Action OnSunDownEvent;
     public static Action OnSunUpEvent;
@@ -248,6 +248,11 @@ public class GameEventsManager : MonoBehaviour
         OnToggleUiEvent?.Invoke();
     }
 
+
+    public void OnBuyItem(ShopItemSO itemData)
+    {
+        OnBuyItemEvent?.Invoke(itemData);
+    }
 
 
 

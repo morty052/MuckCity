@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class SocialCreditManager : MonoBehaviour, IHavePersistentData
 {
+
+
     [field: SerializeField] public int SocialCredit { get; private set; }
 
     [SerializeField] private TextMeshProUGUI _socialCreditText;
@@ -38,7 +40,6 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
         if (_socialCreditData.Equals(null)) return;
         SocialCredit = _socialCreditData._socialCredit;
         _socialCreditText.text = SocialCredit.ToString();
-
     }
 
 
@@ -46,7 +47,7 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
     {
         GameEventsManager.OnSocialCreditUpdated += OnSocialCreditUpdated;
         GameEventsManager.OnDeliveryPointReachedEvent += OnDeliveryPointReached;
-        GameEventsManager.OnPurchaseItem += OnPurchase;
+        GameEventsManager.OnBuyItemEvent += OnPurchase;
         // GameEventsManager.OnShouldAutoSave += TriggerAutoSave;
     }
 
@@ -54,16 +55,17 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
     {
         GameEventsManager.OnSocialCreditUpdated -= OnSocialCreditUpdated;
         GameEventsManager.OnDeliveryPointReachedEvent -= OnDeliveryPointReached;
-        GameEventsManager.OnPurchaseItem -= OnPurchase;
+        GameEventsManager.OnBuyItemEvent -= OnPurchase;
         // GameEventsManager.OnShouldAutoSave -= TriggerAutoSave;
 
-        // TriggerAutoSave();
+        TriggerAutoSave();
     }
 
     private void OnPurchase(ShopItemSO sO)
     {
         SocialCredit -= sO._price;
         _socialCreditText.text = SocialCredit.ToString();
+        TriggerAutoSave();
     }
 
     private void OnDeliveryPointReached(DeliveryData data)
@@ -75,14 +77,25 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
 
     public void TriggerAutoSave()
     {
+        _lastSavedCredit = SocialCredit;
+        SocialCreditData data = new()
+        {
+            _socialCredit = _lastSavedCredit,
+            _socialCreditTextValue = _lastSavedCredit.ToString()
+        };
 
+        AutoSaveManager.Autosave(SAVE_ID, data);
+        Debug.Log("saved social credit data: " + _lastSavedCredit);
     }
 
-    // private void OnPurchase(ShopItemSO sO)
-    // {
-    //     SocialCredit -= sO.Price;
-    //     _socialCreditText.text = SocialCredit.ToString();
-    // }
+    public bool CanBuy(int price)
+    {
+        if (SocialCredit >= price)
+        {
+            return true;
+        }
+        return false;
+    }
 
     private void OnSocialCreditUpdated(int credit, bool isDeduction = false)
     {

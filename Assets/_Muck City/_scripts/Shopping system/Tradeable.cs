@@ -1,3 +1,4 @@
+using Invector.vItemManager;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,9 +8,11 @@ public class Tradeable : MonoBehaviour
 
     [SerializeField] GameObject _highlight;
     public ShopItemSO _itemData;
+
     public virtual void OnBuy(ShopItemSO shopItemSO)
     {
-        Debug.Log("Buying " + shopItemSO._name);
+        Debug.Log("Buying " + shopItemSO._name + " with id " + shopItemSO._itemReference.id);
+        Player.Instance.AddItemToInventory(shopItemSO._itemReference);
     }
     public virtual void OnSell()
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Invector.vItemManager;
 using Sirenix.OdinInspector;
 using TMPro;
 using Unity.Cinemachine;
@@ -17,14 +18,15 @@ public class Rack : Interactable, IBrowsable
 
     [SerializeField] Camera _cam;
     [SerializeField] Camera _focusCam;
-    [SerializeField] Transform _debugTransform;
-    [SerializeField] private int _selectedItemIndex = 0;
-    [SerializeField] private List<ShopItemSO> _itemSOs;
-    [SerializeField] private List<Tradeable> _items;
-
     [SerializeField] GameObject UI;
     [SerializeField] TextMeshProUGUI _selectedItemNameText;
     [SerializeField] TextMeshProUGUI _selectedItemPriceText;
+    [SerializeField] private int _selectedItemIndex = 0;
+    [SerializeField] private List<ShopItemSO> _itemSOs;
+    [SerializeField] private List<Tradeable> _items;
+    [SerializeField] Transform _debugTransform;
+
+
 
     int _columns = 3;
     int _rows = 2;
@@ -89,6 +91,9 @@ public class Rack : Interactable, IBrowsable
             case Inputs.EXIT:
                 ExitRack();
                 break;
+            case Inputs.BUY:
+                Buy();
+                break;
             default:
                 break;
         }
@@ -103,6 +108,20 @@ public class Rack : Interactable, IBrowsable
         Player.Instance.UseAltControls(false);
         UI.SetActive(false);
         GameEventsManager.Instance.OnToggleUi();
+    }
+
+    public void Buy()
+    {
+        Tradeable item = _items[_selectedItemIndex]; //get item
+        if (SocialCreditManager.Instance.CanBuy(item._itemData._price))
+        {
+            item.OnBuy(item._itemData);
+            GameEventsManager.Instance.OnBuyItem(item._itemData);
+        }
+        else
+        {
+            Debug.Log("Not enough deniro");
+        }
     }
 
     void HandleNavigation(Inputs input)
