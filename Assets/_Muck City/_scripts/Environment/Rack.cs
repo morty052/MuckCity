@@ -12,6 +12,13 @@ public interface IBrowsable
 {
     public void OnButtonPress(Inputs button);
 }
+public interface IFindable
+{
+    public GameObject GameObject { get; }
+    public bool IsQuestItem { get; set; }
+    public void SetupInteractionListener(Action<string> action);
+    public void RemoveInteractionListener(Action<string> action);
+}
 
 public class Rack : Interactable, IBrowsable
 {
@@ -55,6 +62,14 @@ public class Rack : Interactable, IBrowsable
     }
 
 
+    void OnTriggerEnter(Collider other)
+    {
+        PrepareInteraction();
+    }
+    void OnTriggerExit(Collider other)
+    {
+        HideInteractionPrompt();
+    }
 
     public override void Interact()
     {
@@ -117,6 +132,11 @@ public class Rack : Interactable, IBrowsable
         {
             item.OnBuy(item._itemData);
             GameEventsManager.Instance.OnBuyItem(item._itemData);
+            if (IsQuestItem)
+            {
+                QuestItem questItem = GetComponent<QuestItem>();
+                OnInteracted?.Invoke(questItem._questItemData._tag);
+            }
         }
         else
         {

@@ -298,7 +298,7 @@ GameObject:
   - component: {fileID: 3807058190381915226}
   - component: {fileID: 3283938940002342254}
   - component: {fileID: 88166058957955233}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Cross Bow
   m_TagString: Action
   m_Icon: {fileID: 0}

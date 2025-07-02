@@ -241,14 +241,19 @@ public abstract class QuestStep : MonoBehaviour
     #region Quest Item
     public QuestItemStruct FindQuestItemByName(string name)
     {
-        QuestItemStruct data = _questItemsData.Find(x => x._name == name);
-        return data;
+        List<QuestItemStruct> data = _questItemsData.FindAll(x => x._name == name);
+        if (data.Count == 0)
+        {
+            Debug.LogError("No data found for " + name);
+        }
+        return data[0];
     }
 
-    public T GetQuestItem<T>(string name, bool setupListener = false) where T : IInteractable
+    public T GetQuestItem<T>(string name, bool setupListener = false) where T : IFindable
     {
+        // Debug.Log("Looking for " + name);
         QuestItemStruct itemData = FindQuestItemByName(name);
-        T item = _objectDetector.DetectObject<T>(itemData._position, itemData._radius);
+        T item = _objectDetector.DetectFindable<T>(itemData._position, itemData._radius);
 
         // Debug.Log("item is " + item.GameObject.name);
         if (setupListener)
@@ -259,11 +264,35 @@ public abstract class QuestStep : MonoBehaviour
         return item;
     }
 
-    protected void AddQuestItemToObject(IInteractable obj, QuestItemStruct itemData)
+    protected void AddQuestItemToObject(IFindable obj, QuestItemStruct itemData)
     {
         QuestItem powerBackOnQuest = obj.GameObject.AddComponent<QuestItem>();
         powerBackOnQuest._questItemData = itemData;
         obj.IsQuestItem = true;
+        // Debug.Log(obj.GameObject.name + " is a quest item");
+        obj.SetupInteractionListener(OnQuestItemInteracted);
+    }
+    protected void RemoveInteractionListener(string tag)
+    {
+
+        List<QuestItemStruct> data = _questItemsData.FindAll(x => x._name == name);
+        if (data.Count == 0)
+        {
+            Debug.LogError("No data found for " + name);
+            return;
+        }
+
+        QuestItemStruct itemData = data[0];
+
+        IFindable obj = _objectDetector.DetectFindable<IFindable>(itemData._position, itemData._radius);
+
+        QuestItem item = obj.GameObject.GetComponent<QuestItem>();
+        item._questItemData = itemData;
+
+        obj.IsQuestItem = false;
+        obj.RemoveInteractionListener(OnQuestItemInteracted);
+
+
     }
     #endregion
     public QuestPointData FindQuestPointDataByName(string name)

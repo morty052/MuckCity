@@ -155,7 +155,7 @@ public class OnScreenDebugger : MonoBehaviour
     [Button("Detect"), TabGroup("Detect")]
     void DetectObject()
     {
-        DoorTrigger door = _detector.DetectObject<DoorTrigger>(_detector._position);
+        Rack door = _detector.DetectFindable<Rack>(_detector._position);
         Debug.Log("Detected" + door.name);
     }
 

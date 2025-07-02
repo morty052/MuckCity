@@ -16,27 +16,26 @@ public enum DoorTriggerType
     HANDLE
 }
 
-public class DoorTrigger : MonoBehaviour, IInteractable
+public class DoorTrigger : Interactable
 {
     [SerializeField] GameObject _door;
 
     [SerializeField] bool _isOpen = false;
-    [SerializeField] bool _canInteract = true;
+    // [SerializeField] bool _canInteract = true;
 
-    public bool CanInteract => _canInteract;
+    // string _interactionPrompt = "Open";
 
+    //  public bool CanInteract => _canInteract;
 
-    string _interactionPrompt = "Open";
+    // public string InteractionPrompt => _interactionPrompt;
 
-    public string InteractionPrompt => _interactionPrompt;
+    // public GameObject GameObject => gameObject;
 
-    public GameObject GameObject => gameObject;
+    // public bool IsHighlighted { get; }
 
-    public bool IsHighlighted { get; }
+    // bool _isQuestItem;
 
-    bool _isQuestItem;
-
-    public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
+    // public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
 
     [SerializeField] Direction _direction;
     [SerializeField] DoorTriggerType _type;
@@ -47,7 +46,7 @@ public class DoorTrigger : MonoBehaviour, IInteractable
 
     bool _isOccupied = false;
 
-    public Action<string> OnInteracted;
+    // public Action<string> OnInteracted;
 
 
     void Start()
@@ -136,17 +135,7 @@ public class DoorTrigger : MonoBehaviour, IInteractable
         return dot > 0;
     }
 
-    public void PrepareInteraction()
-    {
-        HudManager.Instance.ShowInteractPrompt(InteractionPrompt);
-    }
-
-    public void ToggleDrawAttention()
-    {
-
-    }
-
-    public void Interact()
+    public override void Interact()
     {
         if (_type == DoorTriggerType.HANDLE)
         {
@@ -193,8 +182,4 @@ public class DoorTrigger : MonoBehaviour, IInteractable
         _canInteract = !_canInteract;
     }
 
-    public void HideInteractionPrompt()
-    {
-        HudManager.Instance.HideInteractPrompt();
-    }
 }

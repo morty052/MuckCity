@@ -8,7 +8,7 @@ public class DogPound : Shop
 
     public bool _isAtCounter;
     public bool _roverIsInPound;
-    private string _interactionPrompt;
+
 
     // public void ExitShop()
     // {

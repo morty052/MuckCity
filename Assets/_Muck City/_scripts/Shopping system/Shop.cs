@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [System.Serializable]
-public class Shop : MonoBehaviour, IInteractable
+public class Shop : Interactable, IFindable
 {
     [SerializeField] ShopItemButton _shopButtonPrefab;
 
@@ -14,22 +14,22 @@ public class Shop : MonoBehaviour, IInteractable
 
     [SerializeField] protected GameObject _shopUi;
 
-    public bool IsHighlighted { get; }
-
-    bool _isQuestItem;
-
-    public bool IsQuestItem { get; set; }
-
     Action<int> _onShopItemButtonPressed;
 
 
 
-    bool _canInteract;
-    public bool CanInteract => _canInteract;
+    // bool _canInteract;
 
-    public string InteractionPrompt => "Shop ";
+    // public bool IsHighlighted { get; }
 
-    public GameObject GameObject => gameObject;
+    // bool _isQuestItem;
+
+    // public bool IsQuestItem { get; set; }
+    // public bool CanInteract => _canInteract;
+
+    // public string InteractionPrompt => "Shop ";
+
+    // public GameObject GameObject => gameObject;
 
     void OnEnable()
     {
@@ -99,27 +99,37 @@ public class Shop : MonoBehaviour, IInteractable
         tradable.OnBuy(_tradeables[index]);
     }
 
-    public virtual void PrepareInteraction()
+    public override void PrepareInteraction()
     {
         if (_shopUi.activeSelf) return;
         HudManager.Instance.ShowInteractPrompt();
         Player.Instance.SetInteractableObject(this);
     }
 
-    public virtual void Interact()
+    public override void Interact()
     {
         OpenShop();
         Player.Instance.EnterShop(this);
         HideInteractionPrompt();
     }
 
-    public virtual void HideInteractionPrompt()
-    {
-        HudManager.Instance.HideInteractPrompt();
-    }
+    // public virtual void HideInteractionPrompt()
+    // {
+    //     HudManager.Instance.HideInteractPrompt();
+    // }
 
-    public void ToggleDrawAttention()
-    {
-        throw new NotImplementedException();
-    }
+    // public void ToggleDrawAttention()
+    // {
+    //     throw new NotImplementedException();
+    // }
+
+    // public void SetupInteractionListener(Action<string> action)
+    // {
+
+    // }
+
+    // public void RemoveInteractionListener(Action<string> action)
+    // {
+    //     throw new NotImplementedException();
+    // }
 }

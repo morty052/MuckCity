@@ -54,6 +54,10 @@ MonoBehaviour:
     _tag: Get Rover
     _position: {x: 0, y: 0, z: 0}
     _radius: 0
+  - _name: Gun Rack
+    _tag: Buy Nail Gun
+    _position: {x: 21.796, y: -28.79, z: -121.74}
+    _radius: 0
   _objectDetector:
     _radius: 0
     _position: {x: 0, y: 0, z: 0}

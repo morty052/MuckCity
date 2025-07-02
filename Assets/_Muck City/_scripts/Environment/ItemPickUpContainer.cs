@@ -8,41 +8,36 @@ public enum PickupType
     SPECIAL_EQUIPMENT = 1
 }
 
-public class ItemPickUpContainer : MonoBehaviour, IInteractable
+public class ItemPickUpContainer : Interactable
 {
-    [SerializeField] ActionText _actionText;
 
     public PickupType _pickupType;
 
     [ShowIf("_pickupType", PickupType.SPECIAL_EQUIPMENT)]
     public SpecialEquipmentSO _specialEquipment;
 
-    public bool CanInteract => true;
+    // public bool CanInteract => true;
 
-    public GameObject GameObject => gameObject;
+    // public GameObject GameObject => gameObject;
 
-    public string InteractionPrompt => "Pick Up";
+    // public string InteractionPrompt => "Pick Up";
 
-    public bool IsHighlighted => _actionText.IsHighlighted;
+    // public bool IsHighlighted => _actionText.IsHighlighted;
 
-     [SerializeField]bool _isQuestItem;
+    // [SerializeField] bool _isQuestItem;
 
-    public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
+    // public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
 
-    public Action<string> OnInteracted;
+    // public Action<string> OnInteracted;
 
 
 
-    public void HideInteractionPrompt()
-    {
-        _actionText.HideInteractionPrompt();
-        Player.Instance.SetInteractableObject(null);
-    }
 
-    public void Interact()
+
+    public override void Interact()
     {
         PickUp();
-         if (IsQuestItem)
+        if (IsQuestItem)
         {
             QuestItem questItem = GetComponent<QuestItem>();
             OnInteracted?.Invoke(questItem._questItemData._tag);
@@ -63,14 +58,25 @@ public class ItemPickUpContainer : MonoBehaviour, IInteractable
         }
     }
 
-    public void PrepareInteraction()
-    {
-        _actionText.ShowInteractionPrompt();
-        Player.Instance.SetInteractableObject(this);
-    }
+    // public void HideInteractionPrompt()
+    // {
+    //     _actionText.HideInteractionPrompt();
+    //     Player.Instance.SetInteractableObject(null);
+    // }
 
-    public void ToggleDrawAttention()
-    {
-        _actionText.ToggleWhiteDot();
-    }
+    // public void PrepareInteraction()
+    // {
+    //     _actionText.ShowInteractionPrompt();
+    //     Player.Instance.SetInteractableObject(this);
+    // }
+
+    // public void ToggleDrawAttention()
+    // {
+    //     _actionText.ToggleWhiteDot();
+    // }
+
+    // public void SetupInteractionListener(Action<string> action)
+    // {
+    //     throw new NotImplementedException();
+    // }
 }

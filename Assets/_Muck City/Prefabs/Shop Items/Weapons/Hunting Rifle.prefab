@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1008439248442163637}
   - component: {fileID: 7708811491987102828}
   - component: {fileID: 306515580408342495}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Hunting Rifle
   m_TagString: Action
   m_Icon: {fileID: 0}

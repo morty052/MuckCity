@@ -123,7 +123,7 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
             return;
         }
         _socialCreditData = (SocialCreditData)data;
-        Debug.Log("Loaded social credit data: " + _lastSavedCredit);
+        // Debug.Log("Loaded social credit data: " + _lastSavedCredit);
     }
 
     public void AutoSave()

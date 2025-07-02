@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 604132351146094103}
   - component: {fileID: 497618631158377378}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: 'Sawn off Shotgun Shop Item '
   m_TagString: Action
   m_Icon: {fileID: 0}

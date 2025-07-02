@@ -72,15 +72,15 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
 
         Generator gen = GetQuestItem<Generator>("Generator", true);
         DoorTrigger mainDoorTrigger = GetQuestItem<DoorTrigger>("Main Room Door", true);
-        ItemPickUpContainer phonePickUp =  GetQuestItem<ItemPickUpContainer>("Phone", true);
+        ItemPickUpContainer phonePickUp = GetQuestItem<ItemPickUpContainer>("Phone", true);
 
         // mainDoorTrigger.ToggleCanInteract();
 
         gen.ToggleCanInteract();
 
-        gen.OnInteracted += OnQuestItemInteracted;
-        mainDoorTrigger.OnInteracted += OnQuestItemInteracted;
-        phonePickUp.OnInteracted += OnQuestItemInteracted;
+        // gen.OnInteracted += OnQuestItemInteracted;
+        // mainDoorTrigger.OnInteracted += OnQuestItemInteracted;
+        // phonePickUp.OnInteracted += OnQuestItemInteracted;
 
 
 
@@ -126,6 +126,7 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
                 // UpdateMissionObjectives(1);
                 InitBunkerHeights();
                 //* SETUP QUESTPOINT TO FIGURE OUT WHEN PLAYER IS ON RIGHT TRACK TO ALBERTO
+                // * AFTER ALLOWING CITY TO LOAD BY DELAYING FUNCTION
                 StartCoroutine(InstantiateQuestPointAfterDelay(1f, "Find Officers Mess"));
                 break;
             case "Find Officers Mess":
@@ -169,6 +170,7 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         }
 
         Debug.Log("Interacting with " + questItemTag);
+        RemoveInteractionListener(questItemTag);
     }
 
     IEnumerator InstantiateQuestPointAfterDelay(float delay, string pointName)

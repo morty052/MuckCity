@@ -271,7 +271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3482535675778757909}
   - component: {fileID: 2732260309701993162}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Nail Gun_Shop Item
   m_TagString: Action
   m_Icon: {fileID: 0}
@@ -320,7 +320,7 @@ GameObject:
   - component: {fileID: 4697211117488879832}
   - component: {fileID: 5060596456625606027}
   - component: {fileID: 8904125179152473982}
-  m_Layer: 23
+  m_Layer: 0
   m_Name: Close Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -409,7 +409,7 @@ GameObject:
   - component: {fileID: 3156264978518778158}
   - component: {fileID: 23356351036833160}
   - component: {fileID: 9165523886633759472}
-  m_Layer: 23
+  m_Layer: 0
   m_Name: SM_Wep_Nailgun_01_Handle_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -495,7 +495,7 @@ GameObject:
   - component: {fileID: 3185546064207477970}
   - component: {fileID: 4863456289440898785}
   - component: {fileID: 5069501529352127677}
-  m_Layer: 23
+  m_Layer: 0
   m_Name: SM_Wep_Nailgun_01_Sights_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -786,7 +786,7 @@ GameObject:
   - component: {fileID: 6035117645500615999}
   - component: {fileID: 8168472463763581855}
   - component: {fileID: 3744347540091257611}
-  m_Layer: 23
+  m_Layer: 0
   m_Name: SM_Wep_Nailgun_01_Magazine_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

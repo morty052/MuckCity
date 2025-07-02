@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-public class Interactable : MonoBehaviour, IInteractable
+public class Interactable : MonoBehaviour, IInteractable, IFindable
 {
 
-    [SerializeField] bool _canInteract = true;
-    [SerializeField] string _interactionPrompt;
+    [SerializeField] protected bool _canInteract = true;
+    [SerializeField] protected string _interactionPrompt;
     public bool CanInteract => _canInteract;
 
     public GameObject GameObject => gameObject;
@@ -21,6 +21,8 @@ public class Interactable : MonoBehaviour, IInteractable
     [SerializeField] bool _isQuestItem;
 
     public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
+
+
 
     void Start()
     {
@@ -46,5 +48,15 @@ public class Interactable : MonoBehaviour, IInteractable
     public virtual void ToggleDrawAttention()
     {
         _actionText.ToggleWhiteDot();
+    }
+
+    public void SetupInteractionListener(Action<string> action)
+    {
+        OnInteracted += action;
+    }
+
+    public void RemoveInteractionListener(Action<string> action)
+    {
+        OnInteracted -= action;
     }
 }

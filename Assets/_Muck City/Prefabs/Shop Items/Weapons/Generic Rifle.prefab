@@ -467,7 +467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2829608827017070211}
   - component: {fileID: 5422782136411264312}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Generic Rifle
   m_TagString: Action
   m_Icon: {fileID: 0}
