@@ -16,10 +16,6 @@ MonoBehaviour:
   _icon: {fileID: 0}
   _price: 0
   _tradeable: {fileID: 497618631158377378, guid: ea884d02b3151c44ea6ed6e1efbd7686, type: 3}
-  _rackPos:
-    position: {x: -0.05272484, y: 0.36219597, z: 0.9684448}
-    rotation: {x: -0, y: 0, z: 0}
-  _orderInRack: 0
   _itemReference:
     id: 0
     name: 

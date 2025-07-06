@@ -9,9 +9,6 @@ public class ShopItemSO : ScriptableObject
     public int _price;
     public Tradeable _tradeable;
 
-    public Pos _rackPos;
-    public int _orderInRack;
-
     public ItemReference _itemReference;
 
     private void OnValidate()

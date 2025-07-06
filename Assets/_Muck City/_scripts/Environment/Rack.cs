@@ -12,6 +12,24 @@ public interface IBrowsable
 {
     public void OnButtonPress(Inputs button);
 }
+
+[Serializable]
+public struct RackItem
+{
+    [HideLabel, HorizontalGroup("Left")]
+    public ShopItemSO SO;
+    [HorizontalGroup("Left"), HideLabel]
+    public int _orderInRack;
+
+    public Pos transform;
+
+    public RackItem(ShopItemSO SO, int _orderInRack, Pos transform)
+    {
+        this.SO = SO;
+        this._orderInRack = _orderInRack;
+        this.transform = transform;
+    }
+}
 public interface IFindable
 {
     public GameObject GameObject { get; }
@@ -29,8 +47,9 @@ public class Rack : Interactable, IBrowsable
     [SerializeField] TextMeshProUGUI _selectedItemNameText;
     [SerializeField] TextMeshProUGUI _selectedItemPriceText;
     [SerializeField] private int _selectedItemIndex = 0;
-    [SerializeField] private List<ShopItemSO> _itemSOs;
+    [SerializeField] private List<RackItem> _itemSOs;
     [SerializeField] private List<Tradeable> _items;
+    [SerializeField] private bool _orderByOrderInRack = true;
     [SerializeField] Transform _debugTransform;
 
 
@@ -40,17 +59,20 @@ public class Rack : Interactable, IBrowsable
 
     void Awake()
     {
+        if (_orderByOrderInRack)
+        {
+            _itemSOs = _itemSOs.OrderBy(x => x._orderInRack).ToList();
+        }
         for (int i = 0; i < _itemSOs.Count; i++)
         {
-            ShopItemSO SO = _itemSOs[i];
-            Tradeable tradeable = Instantiate(SO._tradeable, SO._rackPos.position, Quaternion.Euler(SO._rackPos.rotation), transform);
-            tradeable.transform.SetLocalPositionAndRotation(SO._rackPos.position, Quaternion.Euler(SO._rackPos.rotation));
+            ShopItemSO SO = _itemSOs[i].SO;
+            Tradeable tradeable = Instantiate(SO._tradeable, _itemSOs[i].transform.position, Quaternion.Euler(_itemSOs[i].transform.rotation), transform);
+            tradeable.transform.SetLocalPositionAndRotation(_itemSOs[i].transform.position, Quaternion.Euler(_itemSOs[i].transform.rotation));
             _items.Add(tradeable);
-
         }
 
-        //* ORDER ITEMS BY ORDER IN RACK TO GET THEM IN THE CORRECT ORDER
-        _items = _items.OrderBy(x => x._itemData._orderInRack).ToList();
+        // //* ORDER ITEMS BY ORDER IN RACK TO GET THEM IN THE CORRECT ORDER
+        // _items = _items.OrderBy(x => x._itemData._orderInRack).ToList();
     }
 
     [Button("focus")]
