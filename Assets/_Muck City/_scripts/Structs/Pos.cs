@@ -19,15 +19,24 @@ public struct Pos
 
 #if UNITY_EDITOR
     [Button("Copy Transform")]
-    public void CopyTransform()
+    public void CopyTransform(bool useLocalPosition = false)
     {
         if (Selection.activeGameObject == null)
         {
             Debug.LogError("No transform selected to copy");
             return;
         }
-        position = Selection.activeGameObject.transform.position;
-        rotation = Selection.activeGameObject.transform.rotation.eulerAngles;
+        if (!useLocalPosition)
+        {
+            position = Selection.activeGameObject.transform.position;
+            rotation = Selection.activeGameObject.transform.rotation.eulerAngles;
+        }
+
+        else
+        {
+            position = Selection.activeGameObject.transform.localPosition;
+            rotation = Selection.activeGameObject.transform.localRotation.eulerAngles;
+        }
     }
 #endif
 }

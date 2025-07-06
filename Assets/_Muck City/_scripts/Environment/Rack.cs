@@ -35,8 +35,8 @@ public class Rack : Interactable, IBrowsable
 
 
 
-    int _columns = 3;
-    int _rows = 2;
+    [SerializeField] int _columns = 3;
+    [SerializeField] int _rows = 3;
 
     void Awake()
     {
@@ -44,9 +44,12 @@ public class Rack : Interactable, IBrowsable
         {
             ShopItemSO SO = _itemSOs[i];
             Tradeable tradeable = Instantiate(SO._tradeable, SO._rackPos.position, Quaternion.Euler(SO._rackPos.rotation), transform);
+            tradeable.transform.SetLocalPositionAndRotation(SO._rackPos.position, Quaternion.Euler(SO._rackPos.rotation));
             _items.Add(tradeable);
+
         }
 
+        //* ORDER ITEMS BY ORDER IN RACK TO GET THEM IN THE CORRECT ORDER
         _items = _items.OrderBy(x => x._itemData._orderInRack).ToList();
     }
 
@@ -69,6 +72,35 @@ public class Rack : Interactable, IBrowsable
     void OnTriggerExit(Collider other)
     {
         HideInteractionPrompt();
+    }
+
+
+
+
+    [Button("Next Row")]
+    int GetNextRow()
+    {
+        int currentRow = _selectedItemIndex / _columns + 1;
+
+
+        bool isLastRow = currentRow == _rows;
+
+        int nextRow = isLastRow ? 1 : currentRow + 1;
+
+        int selectionIndexInNextRow = _selectedItemIndex % _columns + (_columns * (nextRow - 1));
+
+        Debug.Log("row: " + currentRow + " last row: " + isLastRow + " next row: " + nextRow + " selection index: " + selectionIndexInNextRow);
+        return selectionIndexInNextRow;
+    }
+
+    private int GetPreviousRow()
+    {
+        int currentRow = _selectedItemIndex / _columns + 1;
+        bool isFirstRow = currentRow == 1;
+        int previousRow = isFirstRow ? _rows : currentRow - 1;
+        int selectionIndexInPreviousRow = _selectedItemIndex % _columns + (_columns * (previousRow - 1));
+        Debug.Log("row: " + currentRow + " last row: " + isFirstRow + " next row: " + previousRow + " selection index: " + selectionIndexInPreviousRow);
+        return selectionIndexInPreviousRow;
     }
 
     public override void Interact()
@@ -174,6 +206,12 @@ public class Rack : Interactable, IBrowsable
                     _selectedItemIndex++;
                 }
                 break;
+            case Inputs.UP:
+                _selectedItemIndex = GetPreviousRow();
+                break;
+            case Inputs.DOWN:
+                _selectedItemIndex = GetNextRow();
+                break;
             default:
                 break;
         }
@@ -181,4 +219,6 @@ public class Rack : Interactable, IBrowsable
         _selectedItemNameText.text = _items[_selectedItemIndex]._itemData._name;
         _selectedItemPriceText.text = _items[_selectedItemIndex]._itemData._price.ToString();
     }
+
+
 }
