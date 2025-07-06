@@ -20,6 +20,7 @@ MonoBehaviour:
   _defaultConversation: {fileID: 0}
   _spawnPosition: {x: -5.162938, y: 0, z: -101.3973}
   _spawnRotation: {x: 0, y: 0, z: 0}
+  _waypointArea: {fileID: 0}
   _preferredSubstances: 00000000
   _pickUpSpots:
   - {x: -9.37, y: 0, z: -127.72}

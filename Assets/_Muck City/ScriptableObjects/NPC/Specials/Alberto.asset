@@ -20,3 +20,4 @@ MonoBehaviour:
   _defaultConversation: {fileID: 0}
   _spawnPosition: {x: -7.89, y: 3.7924244, z: -59.613735}
   _spawnRotation: {x: 0, y: 270, z: 0}
+  _waypointArea: {fileID: 0}

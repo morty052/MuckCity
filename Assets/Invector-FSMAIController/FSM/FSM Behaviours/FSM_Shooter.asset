@@ -1315,7 +1315,7 @@ MonoBehaviour:
   - decisions:
     - trueValue: 1
       decision: {fileID: 114194159120130302}
-      isValid: 0
+      isValid: 1
       validated: 0
     trueState: {fileID: 114289679422943792}
     falseState: {fileID: 0}

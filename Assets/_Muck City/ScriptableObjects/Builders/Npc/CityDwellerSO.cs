@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Npc", menuName = "ScriptableObjects/NewNpc/DruggieNpc", order = 3)]
+[CreateAssetMenu(fileName = "Npc", menuName = "ScriptableObjects/NewNpc/CityDweller", order = 3)]
 public class CityDwellerSO : NpcSO
 {
     public List<SubstanceType> _preferredSubstances = new();
@@ -9,6 +9,9 @@ public class CityDwellerSO : NpcSO
 
     public int _defaultPurchasingPower = 1;
     public DeliveryPoint _deliveryPointPrefab;
+    public GangStatus _gangStatus = GangStatus.UNAFFILIATED;
+
+
 
     private void OnValidate()
     {

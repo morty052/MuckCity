@@ -254,7 +254,7 @@ MonoBehaviour:
   canEditName: 1
   canEditColor: 1
   isOpen: 0
-  isSelected: 1
+  isSelected: 0
   nodeRect:
     serializedVersion: 2
     x: 450

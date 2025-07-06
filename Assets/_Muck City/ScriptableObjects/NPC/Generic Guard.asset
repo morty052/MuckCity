@@ -20,5 +20,6 @@ MonoBehaviour:
   _defaultConversation: {fileID: 0}
   _spawnPosition: {x: 41.7, y: 0, z: -73.9}
   _spawnRotation: {x: -0, y: 179.99968, z: -0}
+  _waypointArea: {fileID: 0}
   _defaultPatrolPoints: {fileID: 649329674490142394, guid: 7035ccc12f8fdde42b021ba5e41368a5, type: 3}
   _idlePosition: {x: 0, y: 0, z: 0}

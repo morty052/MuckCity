@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEditor;
+using Invector.vCharacterController.AI;
 
 
 
@@ -20,6 +21,9 @@ public class NpcSO : ScriptableObject
 
     public Vector3 _spawnPosition;
     public Vector3 _spawnRotation;
+
+    public vWaypointArea _waypointArea;
+
     private void OnValidate()
     {
 #if UNITY_EDITOR

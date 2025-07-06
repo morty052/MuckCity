@@ -1,7 +1,5 @@
 using Invector;
-using Invector.vCharacterController;
 using Invector.vCharacterController.AI;
-using Invector.vShooter;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -9,13 +7,8 @@ public class GuardNPC : NpcCharacter
 {
     GuardNpcSO _guardNpcSO;
     vControlAIShooter _shooterController;
-    vAIShooterManager _shooterManager;
     vAIHeadtrack _head;
 
-    public GameObject _weaponHolder;
-    public vShooterWeapon _defaultWeaponPrefab;
-
-    GameObject _activeWeapon;
 
     public bool _IsUnderAttack { get; set; }
 

@@ -5,19 +5,29 @@ using Invector.vShooter;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+public enum GangStatus
+{
+    UNAFFILIATED,
+    BAGGER
+}
+
 public class CityDwellerNPC : NpcCharacter
 {
     CityDwellerSO _dwellerSO;
     vControlAIShooter _shooterController;
-    vAIShooterManager _shooterManager;
+
+    [SerializeField] GangStatus _gang;
+
     vAIHeadtrack _head;
 
-    public GameObject _weaponHolder;
-    public vShooterWeapon _defaultWeaponPrefab;
-
-    GameObject _activeWeapon;
-
     public bool _IsUnderAttack { get; set; }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _shooterManager = GetComponent<vAIShooterManager>();
+        _shooterController = GetComponent<vControlAIShooter>();
+    }
 
 
 
@@ -29,7 +39,11 @@ public class CityDwellerNPC : NpcCharacter
         _shooterController = GetComponent<vControlAIShooter>();
         // _aiController.waypointArea = _guardNpcSO._defaultPatrolPoints;
         _shooterManager = GetComponent<vAIShooterManager>();
+        _gang = _dwellerSO._gangStatus;
+        _shooterController.waypointArea = _dwellerSO._waypointArea;
     }
+
+
 
 
     [Button("Hide Weapon")]
@@ -43,14 +57,7 @@ public class CityDwellerNPC : NpcCharacter
         _head.LookAtTarget(Player.Instance.transform);
     }
 
-    [Button("Equip Weapon")]
-    void EquipWeapon()
-    {
-        GameObject w = Instantiate(_defaultWeaponPrefab.gameObject, _weaponHolder.transform);
-        w.transform.localPosition = Vector3.zero;
-        _activeWeapon = w.transform.parent.gameObject;
-        _shooterManager.SetRightWeapon(w);
-    }
+
 
     public void UpdateWayPoint(vWaypointArea waypoint)
     {

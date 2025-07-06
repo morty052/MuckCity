@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using DialogueEditor;
 using Invector.vCharacterController.AI;
 using Invector.vCharacterController.AI.FSMBehaviour;
+using Invector.vShooter;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class NpcCharacter : MonoBehaviour, IInteractable
@@ -23,6 +25,15 @@ public class NpcCharacter : MonoBehaviour, IInteractable
     public List<Role> _roles = new();
 
     public SpecialCharacters ID { get => _id; }
+
+    public vShooterWeapon _defaultWeaponPrefab;
+
+    public GameObject _weaponHolder;
+
+    protected GameObject _activeWeapon;
+
+    protected vAIShooterManager _shooterManager;
+
     public bool CanInteract => _canInteract;
     public string InteractionPrompt => $"Talk to {_name}";
     public bool IsQuestGiver => _roles.Contains(Role.QUEST_GIVER);
@@ -46,7 +57,7 @@ public class NpcCharacter : MonoBehaviour, IInteractable
 
 
 
-    void Awake()
+    protected virtual void Awake()
     {
         if (_npcSO != null)
         {
@@ -69,6 +80,21 @@ public class NpcCharacter : MonoBehaviour, IInteractable
         _name = _npcSO._name;
         _id = _npcSO._id;
         _roles = _npcSO._roles;
+    }
+
+    public virtual void HandleMessages(string message)
+    {
+        Debug.Log("HandleMessages" + message);
+        EquipWeapon();
+    }
+
+    [Button("Equip Weapon")]
+    void EquipWeapon()
+    {
+        GameObject w = Instantiate(_defaultWeaponPrefab.gameObject, _weaponHolder.transform);
+        w.transform.localPosition = Vector3.zero;
+        _activeWeapon = w.transform.parent.gameObject;
+        _shooterManager.SetRightWeapon(w);
     }
 
 
