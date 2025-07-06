@@ -26,3 +26,12 @@ MonoBehaviour:
   _defaultPurchasingPower: 1
   _deliveryPointPrefab: {fileID: 0}
   _gangStatus: 1
+  _loot:
+    id: 31
+    name: Nail Gun
+    amount: 1
+    attributes: []
+    changeAttributes: 0
+    autoEquip: 0
+    addToEquipArea: 0
+    indexArea: 0

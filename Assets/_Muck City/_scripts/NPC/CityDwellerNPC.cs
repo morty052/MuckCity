@@ -1,6 +1,7 @@
 using Invector;
 using Invector.vCharacterController;
 using Invector.vCharacterController.AI;
+using Invector.vItemManager;
 using Invector.vShooter;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -27,6 +28,7 @@ public class CityDwellerNPC : NpcCharacter
         base.Awake();
         _shooterManager = GetComponent<vAIShooterManager>();
         _shooterController = GetComponent<vControlAIShooter>();
+
     }
 
 
@@ -41,6 +43,9 @@ public class CityDwellerNPC : NpcCharacter
         _shooterManager = GetComponent<vAIShooterManager>();
         _gang = _dwellerSO._gangStatus;
         _shooterController.waypointArea = _dwellerSO._waypointArea;
+
+        LootHandler = new(_lootHandler.GetComponent<vItemCollection>());
+        LootHandler.AddItemToCollection(_dwellerSO._loot);
     }
 
 
@@ -58,6 +63,14 @@ public class CityDwellerNPC : NpcCharacter
     }
 
 
+    public override void Interact()
+    {
+
+        if (_canBeSearched)
+        {
+            GiveSearchResultItems();
+        }
+    }
 
     public void UpdateWayPoint(vWaypointArea waypoint)
     {

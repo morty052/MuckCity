@@ -1,10 +1,29 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using DialogueEditor;
 using Invector.vCharacterController.AI;
 using Invector.vCharacterController.AI.FSMBehaviour;
+using Invector.vItemManager;
 using Invector.vShooter;
 using Sirenix.OdinInspector;
 using UnityEngine;
+
+
+public class LootHandler
+{
+    public readonly vItemCollection _vItemCollection;
+    public LootHandler(vItemCollection itemCollection)
+    {
+        _vItemCollection = itemCollection;
+    }
+
+    public void AddItemToCollection(ItemReference item)
+    {
+        _vItemCollection.items.Add(item);
+        Debug.Log($"<color=orange> Adding {item.name} to Loot handler new count is {_vItemCollection.items.Count} items </color>");
+    }
+}
 
 public class NpcCharacter : MonoBehaviour, IInteractable
 {
@@ -20,7 +39,9 @@ public class NpcCharacter : MonoBehaviour, IInteractable
 
 
     [SerializeField] bool _canInteract;
+    public bool _canBeSearched = false;
 
+    public GameObject _lootHandler;
 
     public List<Role> _roles = new();
 
@@ -29,6 +50,9 @@ public class NpcCharacter : MonoBehaviour, IInteractable
     public vShooterWeapon _defaultWeaponPrefab;
 
     public GameObject _weaponHolder;
+    public ActionText _actionText;
+
+    public LootHandler LootHandler { get; protected set; }
 
     protected GameObject _activeWeapon;
 
@@ -109,17 +133,19 @@ public class NpcCharacter : MonoBehaviour, IInteractable
         GameEventsManager.Instance.OnConversationStarted(_activeConversation);
     }
 
-    public void PrepareInteraction()
+    public virtual void PrepareInteraction()
     {
         if (_canInteract)
         {
             HudManager.Instance.ShowInteractPrompt(InteractionPrompt);
+            Player.Instance.SetInteractableObject(this);
         }
     }
 
-    public void HideInteractionPrompt()
+    public virtual void HideInteractionPrompt()
     {
         HudManager.Instance.HideInteractPrompt();
+        Player.Instance.SetInteractableObject(null);
     }
 
     protected virtual void SetupTransitions()
@@ -167,5 +193,41 @@ public class NpcCharacter : MonoBehaviour, IInteractable
     public void ToggleDrawAttention()
     {
         throw new System.NotImplementedException();
+    }
+
+    public virtual void OnDie()
+    {
+        StartCoroutine(DelayedInvoke(2, () =>
+        {
+            _canBeSearched = true;
+            _lootHandler.gameObject.SetActive(true);
+        }));
+    }
+
+    public void GiveSearchResultItems()
+    {
+        if (!_canBeSearched) return;
+        Debug.Log("Loot Succesfull");
+        Destroy(_lootHandler.gameObject);
+    }
+
+    public void ActivateSearch()
+    {
+        _canBeSearched = true;
+        _actionText.gameObject.SetActive(true);
+        Player.Instance.SetInteractableObject(this);
+    }
+    public void DisableSearch()
+    {
+        _canBeSearched = false;
+        _actionText.gameObject.SetActive(false);
+        Player.Instance.SetInteractableObject(null);
+    }
+
+
+    IEnumerator DelayedInvoke(float delay, Action callback)
+    {
+        yield return new WaitForSeconds(delay);
+        callback?.Invoke();
     }
 }

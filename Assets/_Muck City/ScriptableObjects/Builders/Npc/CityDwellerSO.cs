@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Invector.vItemManager;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Npc", menuName = "ScriptableObjects/NewNpc/CityDweller", order = 3)]
@@ -10,6 +12,8 @@ public class CityDwellerSO : NpcSO
     public int _defaultPurchasingPower = 1;
     public DeliveryPoint _deliveryPointPrefab;
     public GangStatus _gangStatus = GangStatus.UNAFFILIATED;
+
+    public ItemReference _loot;
 
 
 
