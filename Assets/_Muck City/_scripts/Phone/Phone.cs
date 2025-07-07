@@ -4,11 +4,12 @@ using DG.Tweening;
 using Invector.vCharacterController;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 
 
-public class Phone : SpecialEquipment
+public class Phone : SpecialEquipment, IBrowsable
 {
     public static Phone Instance { get; private set; }
 
@@ -52,6 +53,8 @@ public class Phone : SpecialEquipment
 
     public bool _isPhoneActive = false;
 
+    public Action<string> OnInstallApp;
+
 
     void Awake()
     {
@@ -79,7 +82,7 @@ public class Phone : SpecialEquipment
         // GameEventsManager.OnDisplayPhone += OnDisplayPhone;
         // GameEventsManager.OnHidePhone += OnHidePhone;
         // GameEventsManager.OnMessageReceived += HandleNewMessage;
-        PhoneNavigation.OnButtonPress += OnPhoneButtonPress;
+        // PhoneNavigation.OnButtonPress += OnPhoneButtonPress;
         GameEventsManager.OnDeliveryAddedEvent += ShowNewDeliveryAlert;
     }
 
@@ -88,7 +91,7 @@ public class Phone : SpecialEquipment
         // GameEventsManager.OnDisplayPhone -= OnDisplayPhone;
         // GameEventsManager.OnHidePhone -= OnHidePhone;
         // GameEventsManager.OnMessageReceived -= HandleNewMessage;
-        PhoneNavigation.OnButtonPress -= OnPhoneButtonPress;
+        // PhoneNavigation.OnButtonPress -= OnPhoneButtonPress;
         GameEventsManager.OnDeliveryAddedEvent -= ShowNewDeliveryAlert;
     }
 
@@ -122,19 +125,19 @@ public class Phone : SpecialEquipment
         _isPhoneActive = !_isPhoneActive;
     }
 
-    void OnPhoneButtonPress(Inputs input)
-    {
-        if (!_isPhoneActive) return;
-        if (_currentApp == null)
-        {
-            UseHomePageNavigation(input);
-            return;
-        }
-        else
-        {
-            RelayInputToCurrentApp(input);
-        }
-    }
+    // void OnPhoneButtonPress(Inputs input)
+    // {
+    //     if (!_isPhoneActive) return;
+    //     if (_currentApp == null)
+    //     {
+    //         UseHomePageNavigation(input);
+    //         return;
+    //     }
+    //     else
+    //     {
+    //         RelayInputToCurrentApp(input);
+    //     }
+    // }
 
 
     void UseHomePageNavigation(Inputs input)
@@ -325,6 +328,21 @@ public class Phone : SpecialEquipment
         app._appMainScreen.gameObject.SetActive(false);
         _installedApps.Add(app);
         Routes.Add(app);
+        OnInstallApp?.Invoke(app.AppName);
+    }
+
+    public void OnButtonPress(Inputs input)
+    {
+        // if (!_isPhoneActive) return;
+        if (_currentApp == null)
+        {
+            UseHomePageNavigation(input);
+            return;
+        }
+        else
+        {
+            RelayInputToCurrentApp(input);
+        }
     }
 
     // void Start()

@@ -690,6 +690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6620133d81ee2df46b813ded528feb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _id: 0
   _quickAcceptInput:
     useInput: 1
     isAxisInUse: 0
@@ -733,8 +734,7 @@ MonoBehaviour:
   _alertShownXPos: 294.9999
   _canQuickAcceptReject: 0
   _currentApp: {fileID: 0}
-  _installedAppsPrefabs:
-  - {fileID: -4242541331063905304, guid: d8459e5e1059de04386d90d96f8b2f0e, type: 3}
+  _installedAppsPrefabs: []
   _installedApps: []
   Routes: []
   _appIcons: []
@@ -2137,6 +2137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe8fb5d34ade82448abf5edaef61a2ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _highlight: {fileID: 0}
+  _itemData: {fileID: 0}
   _appName: Pinga
   _appIcon: {fileID: 6690658502803900008}
   _appMainScreen: {fileID: 5746034287304266411}

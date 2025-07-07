@@ -21,7 +21,7 @@ public class LootHandler
     public void AddItemToCollection(ItemReference item)
     {
         _vItemCollection.items.Add(item);
-        Debug.Log($"<color=orange> Adding {item.name} to Loot handler new count is {_vItemCollection.items.Count} items </color>");
+        // Debug.Log($"<color=orange> Adding {item.name} to Loot handler new count is {_vItemCollection.items.Count} items </color>");
     }
 }
 

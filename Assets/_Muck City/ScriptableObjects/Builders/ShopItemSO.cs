@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Invector.vItemManager;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 
@@ -16,7 +17,8 @@ public enum StatName
 public enum ShopItemType
 {
     WEAPON,
-    AMMO
+    AMMO,
+    APP
 }
 
 [Serializable]
@@ -44,6 +46,7 @@ public class ShopItemSO : ScriptableObject
 
     public ShopItemType _type;
 
+    [ShowIf("@_type == ShopItemType.WEAPON")]
     public List<Stat> _stats = new();
 
     private void OnValidate()
@@ -57,6 +60,10 @@ public class ShopItemSO : ScriptableObject
             _stats.Add(new Stat(StatName.RECOIL, 0));
             _stats.Add(new Stat(StatName.MAGAZINE_SIZE, 0));
             _stats.Add(new Stat(StatName.RANGE, 0));
+        }
+        if (_type == ShopItemType.APP && _stats.Count > 0)
+        {
+            _stats.Clear();
         }
         UnityEditor.EditorUtility.SetDirty(this);
 #endif

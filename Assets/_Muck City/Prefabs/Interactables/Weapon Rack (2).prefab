@@ -1019,7 +1019,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4892255452922544049
 Transform:
   m_ObjectHideFlags: 0
@@ -2609,6 +2609,7 @@ MonoBehaviour:
     _previewTransform:
       position: {x: -0.034, y: -0.159, z: 0.7}
       rotation: {x: 326.74786, y: 270, z: 0.000014293098}
+  _stockType: 0
   _columns: 3
   _rows: 2
   _orderByOrderInRack: 1
@@ -2619,6 +2620,12 @@ MonoBehaviour:
   _selectedItemIndex: 0
   _isInspectingItem: 0
   _inspectedItem: {fileID: 0}
+  OnInitialized:
+    m_PersistentCalls:
+      m_Calls: []
+  OnChangeSelection:
+    m_PersistentCalls:
+      m_Calls: []
   OnStartInspectItem:
     m_PersistentCalls:
       m_Calls: []

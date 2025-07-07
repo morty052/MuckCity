@@ -126,7 +126,10 @@ public class Rack : Interactable, IBrowsable
     void Start()
     {
         OnInitialized?.Invoke(_stockType);
-        OnChangeSelection.Invoke(_items[_selectedItemIndex]._itemData);
+        if (_items.Count != 0)
+        {
+            OnChangeSelection.Invoke(_items[_selectedItemIndex]._itemData);
+        }
     }
 
 
@@ -344,6 +347,34 @@ public class Rack : Interactable, IBrowsable
         _selectedItemNameText.text = _items[_selectedItemIndex]._itemData._name;
         _selectedItemPriceText.text = _items[_selectedItemIndex]._itemData._price.ToString();
         OnChangeSelection.Invoke(_items[_selectedItemIndex]._itemData);
+
+        //* UPDATE INSPECTOR UI IF ALREADY INSPECTING ITEM
+        if (_isInspectingItem)
+        {
+            if (_inspectedItem != null)
+            {
+                Destroy(_inspectedItem);
+            }
+            GameObject itemToInspect = Instantiate(_items[_selectedItemIndex]._itemData._tradeable.gameObject, _inspectionSpot);
+            itemToInspect.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+            // *Set item to close up layer
+            itemToInspect.layer = LayerMask.NameToLayer("CloseUp");
+
+            // *Set All children of item to close up layer
+            foreach (Transform child in itemToInspect.transform)
+            {
+                child.gameObject.layer = LayerMask.NameToLayer("CloseUp");
+            }
+            //* Check if item is small
+            bool isSmallItem = IsSmallItem(itemToInspect);
+            if (isSmallItem)
+            {
+                // *Zoom in small items
+                itemToInspect.transform.localPosition = new Vector3(_smallItemZoomOffset, 0, 0);
+            }
+            _inspectedItem = itemToInspect;
+        }
     }
 
 

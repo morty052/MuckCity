@@ -15,6 +15,7 @@ public class SpecialEquipmentManager
 
     public void AddSpecialEquipment(SpecialEquipmentID specialEquipment)
     {
+        if (specialEquipments.Contains(specialEquipment)) return;
         Debug.Log($"Adding {specialEquipment} from SpecialEquipment/{specialEquipment}/{specialEquipment}");
         specialEquipments.Add(specialEquipment);
         SpecialEquipmentSO specialEquipmentSO = Resources.Load<SpecialEquipmentSO>($"SpecialEquipment/{specialEquipment}/{specialEquipment}");

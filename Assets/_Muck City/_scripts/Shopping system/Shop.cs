@@ -16,8 +16,6 @@ public class Shop : Interactable, IFindable
 
     Action<int> _onShopItemButtonPressed;
 
-
-
     // bool _canInteract;
 
     // public bool IsHighlighted { get; }
@@ -102,7 +100,7 @@ public class Shop : Interactable, IFindable
     public override void PrepareInteraction()
     {
         if (_shopUi.activeSelf) return;
-        HudManager.Instance.ShowInteractPrompt();
+        _actionText.ShowInteractionPrompt();
         Player.Instance.SetInteractableObject(this);
     }
 

@@ -311,7 +311,8 @@ public class Player : MonoBehaviour, IHavePersistentData
         {
             _phoneCamera.gameObject.SetActive(true);
             _phoneModel.SetActive(true);
-            _vThirdPersonInput.SetLockBasicInput(true);
+            // _vThirdPersonInput.SetLockBasicInput(true);
+            UseAltControls(true, Phone.Instance);
         }
 
         else
@@ -319,8 +320,9 @@ public class Player : MonoBehaviour, IHavePersistentData
             _phoneCamera.gameObject.SetActive(false);
             _phoneModel.SetActive(false);
             _vThirdPersonInput.SetLockBasicInput(false);
+            UseAltControls(false);
         }
-        _isPhoneShowing.Value = _phoneCamera.gameObject.activeSelf;
+        // _isPhoneShowing.Value = _phoneCamera.gameObject.activeSelf;
     }
 
     public void UseAltControls(bool state, IBrowsable browsable = null)
@@ -732,10 +734,7 @@ public class Player : MonoBehaviour, IHavePersistentData
         Gizmos.DrawSphere(transform.position + Vector3.up, _interactionRange);
     }
 
-    public void ToggleModel()
-    {
-        _model.SetActive(!_model.activeSelf);
-    }
+
 
 
 }

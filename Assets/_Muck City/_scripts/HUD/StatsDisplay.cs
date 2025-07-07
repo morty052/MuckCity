@@ -24,7 +24,7 @@ public class StatDisplay : MonoBehaviour
     public void CreateStatList(ShopItemType type)
     {
         List<Stat> stats = new();
-        Debug.Log($"<color=green> Creating {type} Stats List </color>");
+        // Debug.Log($"<color=green> Creating {type} Stats List </color>");
         if (type == ShopItemType.WEAPON)
         {
             stats.Add(new Stat(StatName.DAMAGE, 0));
@@ -42,7 +42,7 @@ public class StatDisplay : MonoBehaviour
         for (int i = 0; i < _stats.Count; i++)
         {
             _stats[i].UpdateStatValues(stats[i]);
-            Debug.Log(_stats[i]._statImageBar.fillAmount);
+            // Debug.Log(_stats[i]._statImageBar.fillAmount);
         }
     }
 }

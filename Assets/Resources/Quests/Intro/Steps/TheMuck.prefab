@@ -56,8 +56,8 @@ MonoBehaviour:
     _radius: 0
   - _name: Gun Rack
     _tag: Buy Nail Gun
-    _position: {x: 21.796, y: -28.79, z: -121.74}
-    _radius: 0
+    _position: {x: -34.84, y: 2.06, z: -64.71728}
+    _radius: 0.5
   _objectDetector:
     _radius: 0
     _position: {x: 0, y: 0, z: 0}

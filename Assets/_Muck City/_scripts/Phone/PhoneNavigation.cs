@@ -258,6 +258,7 @@ public class AltInput
         if (!_isUsingAltInput) return;
         if (_selectInput.WasPressedThisFrame())
         {
+            Debug.Log("Select Pressed");
             _activeBrowsable.OnButtonPress(Inputs.SELECT);
         }
 
