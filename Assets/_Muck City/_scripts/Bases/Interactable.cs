@@ -1,23 +1,32 @@
 using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Interactable : MonoBehaviour, IInteractable, IFindable
 {
 
+
+    [TabGroup("Interaction")]
     [SerializeField] protected bool _canInteract = true;
+    [TabGroup("Interaction")]
     [SerializeField] protected string _interactionPrompt;
+    [TabGroup("Interaction")]
     public bool CanInteract => _canInteract;
+    [TabGroup("Interaction")]
 
     public GameObject GameObject => gameObject;
+    [TabGroup("Interaction")]
 
     public string InteractionPrompt => _interactionPrompt;
+    [TabGroup("Interaction")]
 
     public bool IsHighlighted => _actionText.IsHighlighted;
+    [TabGroup("Interaction")]
 
     public ActionText _actionText;
 
     public Action<string> OnInteracted;
-
+    [TabGroup("Interaction")]
     [SerializeField] bool _isQuestItem;
 
     public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }

@@ -25,3 +25,15 @@ MonoBehaviour:
     autoEquip: 1
     addToEquipArea: 0
     indexArea: 0
+  _type: 0
+  _stats:
+  - _name: 0
+    _value: 0
+  - _name: 1
+    _value: 0
+  - _name: 2
+    _value: 0
+  - _name: 3
+    _value: 0
+  - _name: 4
+    _value: 0

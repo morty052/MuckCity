@@ -13,7 +13,8 @@ public enum Inputs
     ACCEPT,
     REJECT,
     EXIT,
-    BUY
+    BUY,
+    INSPECT
 }
 
 public class PhoneNavigation : MonoBehaviour
@@ -207,6 +208,7 @@ public class AltInput
     private InputAction _rejectInput;
     private InputAction _exitInput;
     private InputAction _buyInput;
+    private InputAction _inspectInput;
 
     public static event Action<Inputs> OnButtonPress;
 
@@ -242,6 +244,7 @@ public class AltInput
         _rejectInput = InputSystem.actions.FindAction("Reject");
         _exitInput = InputSystem.actions.FindAction("Exit");
         _buyInput = InputSystem.actions.FindAction("Buy");
+        _inspectInput = InputSystem.actions.FindAction("Inspect");
     }
 
 
@@ -299,6 +302,11 @@ public class AltInput
         if (_exitInput.WasPressedThisFrame())
         {
             _activeBrowsable.OnButtonPress(Inputs.EXIT);
+        }
+
+        if (_inspectInput.WasPressedThisFrame())
+        {
+            _activeBrowsable.OnButtonPress(Inputs.INSPECT);
         }
 
         HandleBuyButton();
