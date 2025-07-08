@@ -7707,6 +7707,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4972187759490476839, guid: 7afe0da9fdc816f4eb9269bb026dc6e1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5758163323922822024, guid: 7afe0da9fdc816f4eb9269bb026dc6e1, type: 3}
       propertyPath: startItems.Array.data[2].autoEquip
       value: 0
@@ -11797,11 +11801,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1860274188}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1881356378 stripped
+--- !u!1 &1881356378
 GameObject:
+  m_ObjectHideFlags: 8
   m_CorrespondingSourceObject: {fileID: 7123726607737729070, guid: d3aa6de16e8fb9a4ca8d48506859e701, type: 3}
   m_PrefabInstance: {fileID: 1625023133}
   m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component: []
+  m_Layer: 0
+  m_Name: 'Horse Realistic (Missing Prefab with guid: d3aa6de16e8fb9a4ca8d48506859e701)'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1882723942 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 106212, guid: ee6b6825a91ae674c9b5887384ed033c, type: 3}
@@ -13492,6 +13506,9 @@ MonoBehaviour:
       m_Calls: []
   currentPlayer: {fileID: 0}
   onSpawn:
+    m_PersistentCalls:
+      m_Calls: []
+  onSpawnAtPoint:
     m_PersistentCalls:
       m_Calls: []
   dontDestroyOnLoad: 1
@@ -17390,7 +17407,7 @@ MonoBehaviour:
       Variable: {fileID: 0}
     position:
       UseConstant: 1
-      ConstantValue: 0
+      ConstantValue: 4.908939
       Variable: {fileID: 0}
     lerpPosition:
       UseConstant: 1
@@ -17414,7 +17431,7 @@ MonoBehaviour:
       Variable: {fileID: 0}
     lerpAnimator:
       UseConstant: 1
-      ConstantValue: 4
+      ConstantValue: 5
       Variable: {fileID: 0}
     strafeSpeed:
       UseConstant: 1
@@ -17432,7 +17449,7 @@ MonoBehaviour:
       Variable: {fileID: 0}
     position:
       UseConstant: 1
-      ConstantValue: 0
+      ConstantValue: 4.908939
       Variable: {fileID: 0}
     lerpPosition:
       UseConstant: 1
@@ -17456,7 +17473,7 @@ MonoBehaviour:
       Variable: {fileID: 0}
     lerpAnimator:
       UseConstant: 1
-      ConstantValue: 4
+      ConstantValue: 5
       Variable: {fileID: 0}
     strafeSpeed:
       UseConstant: 1

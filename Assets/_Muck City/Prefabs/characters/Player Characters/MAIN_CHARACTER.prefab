@@ -22227,7 +22227,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2441345748304367833
 Transform:
   m_ObjectHideFlags: 0
@@ -40922,7 +40922,6 @@ GameObject:
   - component: {fileID: 4620764409371348659}
   - component: {fileID: 5883837416835085116}
   - component: {fileID: 2917474288595144066}
-  - component: {fileID: 4117844025186084774}
   - component: {fileID: 8679926521249292455}
   m_Layer: 8
   m_Name: MAIN_CHARACTER
@@ -42733,7 +42732,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 4117844025186084774}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: PhoneNavigation, Assembly-CSharp
           m_MethodName: ToggleUseInput
           m_Mode: 1
@@ -42752,20 +42751,6 @@ MonoBehaviour:
   _combatHelperSphere: {fileID: 8399320948882783371}
   _useLastSavedPosition: 0
   _model: {fileID: 1797400114931836752}
---- !u!114 &4117844025186084774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5595326391184520092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4fe436f9590e5946aca6f4e43721b2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _input: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  _isPhoneShowing: 0
 --- !u!114 &8679926521249292455
 MonoBehaviour:
   m_ObjectHideFlags: 0
