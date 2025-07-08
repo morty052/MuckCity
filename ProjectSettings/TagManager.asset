@@ -4,6 +4,10 @@
 TagManager:
   serializedVersion: 3
   tags:
+  - Stair
+  - WallRun
+  - Climb
+  - Fly
   - Action
   - AutoCrouch
   - Ragdoll
@@ -33,6 +37,7 @@ TagManager:
   - SpawnPoint
   - Cursor
   - InteractionHelper
+  - Animal
   layers:
   - Default
   - TransparentFX
