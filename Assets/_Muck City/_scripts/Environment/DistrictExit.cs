@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DistrictExit : MonoBehaviour
 {
@@ -15,15 +16,10 @@ public class DistrictExit : MonoBehaviour
     [SerializeField] float _leftClosePos;
     [SerializeField] float _openRate;
 
+    [SerializeField] UnityEvent<bool> OnEntryExit;
+    [SerializeField] UnityEvent<bool> OnTriggerEnterEvent;
+    [SerializeField] UnityEvent<bool> OnTriggerExitEvent;
 
-
-    [SerializeField] District _district;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-
-    void Awake()
-    {
-        _district = GetComponentInParent<District>();
-    }
 
 
     void HandleExitOrEntry()
@@ -32,16 +28,15 @@ public class DistrictExit : MonoBehaviour
         if (IsPlayerAheadOfPos())
         {
             Debug.Log("Player is ahead of the exit gate");
-            _district.TogglePlayerPresence(false);
-            // _playerIsInCompound = false;
+            // _district.TogglePlayerPresence(false);
+            OnEntryExit?.Invoke(false);
 
         }
 
         else
         {
             Debug.Log("Player is behind the exit gate");
-            _district.TogglePlayerPresence(true);
-            // _playerIsInCompound = true;
+            OnEntryExit?.Invoke(true);
         }
     }
 
@@ -61,13 +56,14 @@ public class DistrictExit : MonoBehaviour
             OpenBigGate();
         }
 
-
+        OnTriggerEnterEvent?.Invoke(true);
     }
 
 
     void OnTriggerExit(Collider other)
     {
         HandleExitOrEntry();
+        OnTriggerExitEvent?.Invoke(true);
     }
 
 

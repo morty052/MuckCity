@@ -6,10 +6,14 @@ using Invector.vCharacterController.AI.FSMBehaviour;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+
+
 public class District : MonoBehaviour, ILoadDataOnStart
 {
     [TabGroup("Details")]
     public Locations _districtID;
+
+    [SerializeField] NpcSpawnData _npcList;
 
 
     [TabGroup("State")]
@@ -71,6 +75,13 @@ public class District : MonoBehaviour, ILoadDataOnStart
     }
 
 
+    /// <summary>
+    /// *Toggles the player's presence in the district.
+    /// 
+    ///* When the player is present, the district's guards will be activated and the district's Enter event will be triggered.
+    ///* When the player is not present, the district's guards will be deactivated and the district's Exit event will be triggered.
+    /// </summary>
+    /// <param name="state">The player's presence state.</param>
     public void TogglePlayerPresence(bool state)
     {
         _playerIsInCompound = state;
@@ -92,13 +103,31 @@ public class District : MonoBehaviour, ILoadDataOnStart
         }
     }
 
+    public Task LoadDistrictNpcs()
+    {
+        if (_npcList == null)
+        {
+            Debug.Log("No spawn data");
+            return Task.CompletedTask;
+        }
+        foreach (SpawnStruct npcData in _npcList._data)
+        {
+            NpcCharacter npcCharacter = Instantiate(npcData._npc._npcPrefab, npcData._location.position, Quaternion.Euler(npcData._location.rotation), transform);
+            npcCharacter.transform.SetLocalPositionAndRotation(npcData._location.position, Quaternion.Euler(npcData._location.rotation));
+            NpcManager.Instance.AddNPC(npcCharacter);
+        }
+
+        GameEventsManager.Instance.OnAllNpcLoaded();
+        return Task.CompletedTask;
+    }
+
     public void OnDeliveryMarkerPlaced()
     {
         Debug.Log(" Player has placed delivery marker in district " + _districtID);
         GameEventsManager.OnDeliveryMarkerPlacedEvent(_districtID);
     }
 
-    public Task OnLoadTask()
+    public Task LoadGuards()
     {
         if (_patrolPoints == null || _guardSpawnPoints.Count == 0) return Task.CompletedTask;
 
@@ -117,6 +146,14 @@ public class District : MonoBehaviour, ILoadDataOnStart
             // Debug.Log("Spawned guard " + " in district " + _districtID);
         }
         return Task.CompletedTask;
+    }
+    public async Task OnLoadTask()
+    {
+
+        await LoadGuards();
+        await LoadDistrictNpcs();
+
+        // return Task.CompletedTask;
     }
 
     public void AddLoadingTaskToQueue()

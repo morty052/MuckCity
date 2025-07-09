@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [System.Serializable]
-public class NpcManager : MonoBehaviour, ILoadDataOnStart
+public class NpcManager : MonoBehaviour
 {
     public static NpcManager Instance { get; private set; }
 
@@ -39,27 +39,19 @@ public class NpcManager : MonoBehaviour, ILoadDataOnStart
 
     void OnEnable()
     {
-        GameEventsManager.OnGameLoadStartEvent += AddLoadingTaskToQueue;
-        GameEventsManager.OnSceneLoadStartEvent += OnSceneChanged;
+        // GameEventsManager.OnGameLoadStartEvent += AddLoadingTaskToQueue;
+        // GameEventsManager.OnSceneLoadStartEvent += OnSceneChanged;
         GameEventsManager.OnExitDistrictEvent += HandleDistrictExit;
         GameEventsManager.OnEnterDistrictEvent += HandleDistrictEntry;
     }
 
     void OnDisable()
     {
-        GameEventsManager.OnGameLoadStartEvent -= AddLoadingTaskToQueue;
-        GameEventsManager.OnSceneLoadStartEvent -= OnSceneChanged;
+        // GameEventsManager.OnGameLoadStartEvent -= AddLoadingTaskToQueue;
+        // GameEventsManager.OnSceneLoadStartEvent -= OnSceneChanged;
         GameEventsManager.OnExitDistrictEvent -= HandleDistrictExit;
         GameEventsManager.OnEnterDistrictEvent -= HandleDistrictEntry;
     }
-
-    private void OnSceneChanged(Locations scene)
-    {
-        _activeLocation = scene;
-        AddLoadingTaskToQueue();
-    }
-
-
 
     private void HandleDistrictEntry(District district)
     {
@@ -140,39 +132,6 @@ public class NpcManager : MonoBehaviour, ILoadDataOnStart
         return npc;
     }
 
-    public void AddLoadingTaskToQueue()
-    {
-
-        GameEventsManager.Instance.AddGameStartTask(this);
-    }
-
-    // public async Task OnLoadTask()
-    // {
-    //     LoadAddressable();
-    //     await AwaitAddressable();
-    //     NpcLoader npcLoader = _npcLoaderInstance.GetComponent<NpcLoader>();
-    //     _activeSpawnParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
-    //     await npcLoader.SpawnNpcList(_activeLocation, _activeSpawnParent);
-    //     Addressables.Release(_npcLoaderInstance);
-    //     Destroy(_npcLoaderInstance);
-    //     GameEventsManager.Instance.OnAllNpcLoaded();
-    //     OnScreenDebugger.Instance.Log("loaded npcs " + _activeLocation);
-    // }
-
-    public async Task OnLoadTask()
-    {
-        NpcLoader npcLoader = Instantiate(_npcLoaderPrefabDirty, Vector3.zero, Quaternion.identity).GetComponent<NpcLoader>();
-        _activeSpawnParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
-        // Scene secondScene = SceneManager.GetSceneAt(1);
-        // _activeLocation = GameEventsManager.Instance.SceneNameToLocation(secondScene.name);
-        // OnScreenDebugger.Instance.Log("loaded npcs for " + _activeLocation + " in scene " + SceneManager.GetSceneAt(1).name);
-
-        await npcLoader.SpawnNpcList(Locations.BUNKER_HEIGHTS, _activeSpawnParent);
-        // OnScreenDebugger.Instance.Log("loaded npcs for " + _activeLocation + " total: " + _specialCharacters.Count + " in scene " + SceneManager.GetSceneAt(1).name);
-        GameEventsManager.Instance.OnAllNpcLoaded();
-        Destroy(npcLoader.gameObject);
-    }
-
     public async Task LoadNpcInArea(Locations location)
     {
         NpcLoader npcLoader = Instantiate(_npcLoaderPrefabDirty, Vector3.zero, Quaternion.identity).GetComponent<NpcLoader>();
@@ -180,11 +139,6 @@ public class NpcManager : MonoBehaviour, ILoadDataOnStart
         await npcLoader.SpawnNpcList(location, _activeSpawnParent, true);
         GameEventsManager.Instance.OnAllNpcLoaded();
         Destroy(npcLoader.gameObject);
-    }
-
-    void LoadAddressable()
-    {
-        _npcLoaderPrefab.InstantiateAsync().Completed += OnAddressableLoaded;
     }
 
     public SpecialNPC SpawnAndMoveToPosition(NpcSO npc, Pos position)
@@ -221,13 +175,54 @@ public class NpcManager : MonoBehaviour, ILoadDataOnStart
         }
     }
 
-    async Task AwaitAddressable()
-    {
-        while (_npcLoaderInstance == null)
-        {
-            await Task.Yield();
-        }
-    }
+
+
+    // public async Task OnLoadTask()
+    // {
+    //     NpcLoader npcLoader = Instantiate(_npcLoaderPrefabDirty, Vector3.zero, Quaternion.identity).GetComponent<NpcLoader>();
+    //     _activeSpawnParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
+
+    //     await npcLoader.SpawnNpcList(Locations.BUNKER_HEIGHTS, _activeSpawnParent);
+    //     GameEventsManager.Instance.OnAllNpcLoaded();
+    //     Destroy(npcLoader.gameObject);
+    // }
+
+    // void LoadAddressable()
+    // {
+    //     _npcLoaderPrefab.InstantiateAsync().Completed += OnAddressableLoaded;
+    // }
+    // async Task AwaitAddressable()
+    // {
+    //     while (_npcLoaderInstance == null)
+    //     {
+    //         await Task.Yield();
+    //     }
+    // }
+
+    // private void OnSceneChanged(Locations scene)
+    // {
+    //     _activeLocation = scene;
+    //     AddLoadingTaskToQueue();
+    // }
+
+    // public void AddLoadingTaskToQueue()
+    // {
+
+    //     GameEventsManager.Instance.AddGameStartTask(this);
+    // }
+
+    // public async Task OnLoadTask()
+    // {
+    //     LoadAddressable();
+    //     await AwaitAddressable();
+    //     NpcLoader npcLoader = _npcLoaderInstance.GetComponent<NpcLoader>();
+    //     _activeSpawnParent = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
+    //     await npcLoader.SpawnNpcList(_activeLocation, _activeSpawnParent);
+    //     Addressables.Release(_npcLoaderInstance);
+    //     Destroy(_npcLoaderInstance);
+    //     GameEventsManager.Instance.OnAllNpcLoaded();
+    //     OnScreenDebugger.Instance.Log("loaded npcs " + _activeLocation);
+    // }
 }
 
 
