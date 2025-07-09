@@ -12,7 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5cca247090dfc4b8bc0fd9e764d40c, type: 3}
   m_Name: Bunker Heights NpcSpawnData
   m_EditorClassIdentifier: 
-  _location:
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-  _npcList: {fileID: 0}
+  _data:
+  - _location:
+      position: {x: -25.910826, y: 3.2672396, z: 25.24289}
+      rotation: {x: 0, y: 270, z: 0}
+    _npc: {fileID: 11400000, guid: e7643c4cd3609c8489350d05bd6382e5, type: 2}
+  - _location:
+      position: {x: -35.85, y: -0.5, z: -20.14}
+      rotation: {x: -0, y: 0, z: 0}
+    _npc: {fileID: 11400000, guid: 3158f4934826ce1499778b3e3e23fba5, type: 2}
+  - _location:
+      position: {x: -40.84, y: -0.5, z: -20.14}
+      rotation: {x: -0, y: 0, z: 0}
+    _npc: {fileID: 11400000, guid: 7237f024f4fcc9a4598fee80b0bf8a26, type: 2}
+  - _location:
+      position: {x: -40.84, y: -0.5, z: -1.6}
+      rotation: {x: -0, y: 0, z: 0}
+    _npc: {fileID: 11400000, guid: 3dc1897638a179844856db23cd6c23a0, type: 2}

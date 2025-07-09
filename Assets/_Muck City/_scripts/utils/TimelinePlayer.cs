@@ -26,21 +26,21 @@ public class TimelinePlayer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
 
-    void OnEnable()
-    {
-        if (_enablePlayOnAwake)
-        {
-            GameEventsManager.OnGameLoadEndEvent += PlayTimeline;
-        }
-    }
+    // void OnEnable()
+    // {
+    //     if (_enablePlayOnAwake)
+    //     {
+    //         GameEventsManager.OnGameLoadEndEvent += PlayTimeline;
+    //     }
+    // }
 
-    void OnDisable()
-    {
-        if (_enablePlayOnAwake)
-        {
-            GameEventsManager.OnGameLoadEndEvent -= PlayTimeline;
-        }
-    }
+    // void OnDisable()
+    // {
+    //     if (_enablePlayOnAwake)
+    //     {
+    //         GameEventsManager.OnGameLoadEndEvent -= PlayTimeline;
+    //     }
+    // }
     void Awake()
     {
         _playableDirector = GetComponent<PlayableDirector>();

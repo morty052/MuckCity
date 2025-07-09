@@ -21,8 +21,7 @@ public class NpcManager : MonoBehaviour
     [SerializeField] private List<NpcCharacter> _npcList = new();
     [SerializeField] Locations _activeLocation;
     [SerializeField] Transform _activeSpawnParent;
-
-
+    [SerializeField] private bool _debug;
 
     void Awake()
     {
@@ -85,7 +84,15 @@ public class NpcManager : MonoBehaviour
 
     public void AddNPC(NpcCharacter npc)
     {
-        _specialCharacters[npc.ID] = npc; // Ensures fast insertion and prevents duplicate IDs
+        if (npc is SpecialNPC)
+        {
+            if (_debug)
+            {
+                Debug.Log($"<color=yellow> Added special npc {npc.ID}<color/>");
+            }
+            _specialCharacters[npc.ID] = npc; // Ensures fast insertion and prevents duplicate IDs 
+        }
+
         _npcList.Add(npc);
     }
 

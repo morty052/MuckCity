@@ -5,6 +5,7 @@ using DialogueEditor;
 using Invector;
 using Invector.vItemManager;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 
@@ -28,9 +29,9 @@ public class GameEventsManager : MonoBehaviour
 
     public Transform _sceneSpawnPoint;
 
-    public static event Action<Scene> OnSceneChanged;
-    public static Action OnGameLoadStartEvent;
-    public static Action OnGameLoadEndEvent;
+    [SerializeField] UnityEvent OnGameStartEvent;
+    [SerializeField] UnityEvent OnGameLoadEndedEvent;
+    // public static Action OnGameLoadEndEvent;
 
     public static Action OnAllNpcLoadedEvent;
     public static Action<Locations> OnSceneLoadStartEvent;
@@ -106,7 +107,7 @@ public class GameEventsManager : MonoBehaviour
     void Start()
     {
         // OnScreenDebugger.Instance.Log("GameEventsManager started");
-        OnGameLoadStartEvent?.Invoke();
+        OnGameStartEvent?.Invoke();
         Invoke(nameof(LoadGameStartTasks), 1f);
     }
     public void AddGameStartTask(ILoadDataOnStart task)
@@ -124,7 +125,8 @@ public class GameEventsManager : MonoBehaviour
         }
 
         await Task.WhenAll(tasks);
-        OnGameLoadEndEvent?.Invoke();
+        // OnGameLoadEndEvent?.Invoke();
+        OnGameLoadEndedEvent?.Invoke();
         _onGameStartTasks.Clear();
         // Debug.Log("All tasks completed");
     }

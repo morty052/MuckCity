@@ -35,15 +35,15 @@ public class District : MonoBehaviour, ILoadDataOnStart
     [ShowInInspector, ReadOnly]
     public HashSet<GuardNPC> _guards = new();
 
-    void OnEnable()
-    {
-        GameEventsManager.OnGameLoadStartEvent += AddLoadingTaskToQueue;
-    }
+    // void OnEnable()
+    // {
+    //     GameEventsManager.OnGameLoadStartEvent += AddLoadingTaskToQueue;
+    // }
 
-    void OnDisable()
-    {
-        GameEventsManager.OnGameLoadStartEvent -= AddLoadingTaskToQueue;
-    }
+    // void OnDisable()
+    // {
+    //     GameEventsManager.OnGameLoadStartEvent -= AddLoadingTaskToQueue;
+    // }
 
 
     [Button("Respond to threat"), TabGroup("Security")]
@@ -112,7 +112,7 @@ public class District : MonoBehaviour, ILoadDataOnStart
         }
         foreach (SpawnStruct npcData in _npcList._data)
         {
-            NpcCharacter npcCharacter = Instantiate(npcData._npc._npcPrefab, npcData._location.position, Quaternion.Euler(npcData._location.rotation), transform);
+            NpcCharacter npcCharacter = Instantiate(npcData._npc._npcPrefab, transform);
             npcCharacter.transform.SetLocalPositionAndRotation(npcData._location.position, Quaternion.Euler(npcData._location.rotation));
             NpcManager.Instance.AddNPC(npcCharacter);
         }

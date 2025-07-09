@@ -57,8 +57,8 @@ public class HudManager : MonoBehaviour
 
     void OnEnable()
     {
-        GameEventsManager.OnGameLoadStartEvent += () => ToggleLoadingScreen(true);
-        GameEventsManager.OnGameLoadEndEvent += () => ToggleLoadingScreen(false);
+        // GameEventsManager.OnGameLoadStartEvent += () => ToggleLoadingScreen(true);
+        // GameEventsManager.OnGameLoadEndEvent += () => ToggleLoadingScreen(false);
         GameEventsManager.OnDisplayPhone += OnDisplayPhone;
         GameEventsManager.OnHidePhone += OnHidePhone;
         GameEventsManager.OnToggleUiEvent += OnToggleUi;
@@ -70,8 +70,8 @@ public class HudManager : MonoBehaviour
 
     void OnDisable()
     {
-        GameEventsManager.OnGameLoadStartEvent -= () => ToggleLoadingScreen(true);
-        GameEventsManager.OnGameLoadEndEvent -= () => ToggleLoadingScreen(false);
+        // GameEventsManager.OnGameLoadStartEvent -= () => ToggleLoadingScreen(true);
+        // GameEventsManager.OnGameLoadEndEvent -= () => ToggleLoadingScreen(false);
         GameEventsManager.OnDisplayPhone -= OnDisplayPhone;
         GameEventsManager.OnHidePhone -= OnHidePhone;
         GameEventsManager.OnToggleUiEvent -= OnToggleUi;
