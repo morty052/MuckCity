@@ -28,7 +28,7 @@ public class DistrictExit : MonoBehaviour
 
     void HandleExitOrEntry()
     {
-        CloseBigGate();
+        Invoke(nameof(CloseBigGate), 3);
         if (IsPlayerAheadOfPos())
         {
             Debug.Log("Player is ahead of the exit gate");
