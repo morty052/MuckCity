@@ -25,7 +25,7 @@ public struct LiftBarrier
 
 //TODO : NEEDS POLISHING
 //TODO : NEEDS MINOR TWEAKS
-public class LiftSwitch : MonoBehaviour, IInteractable
+public class LiftSwitch : MonoBehaviour, IInteractable, IBrowsable
 {
     [SerializeField] private Lift _lift;
     [SerializeField] private bool _canInteract = true;
@@ -58,18 +58,7 @@ public class LiftSwitch : MonoBehaviour, IInteractable
 
     public bool _isMoving;
 
-    void OnEnable()
-    {
-        PhoneNavigation.OnButtonPress += OnPhoneButtonPress;
-    }
-
-    void OnDisable()
-    {
-        PhoneNavigation.OnButtonPress -= OnPhoneButtonPress;
-    }
-
-
-    void OnPhoneButtonPress(Inputs input)
+    public void OnButtonPress(Inputs input)
     {
         switch (input)
         {
@@ -122,18 +111,15 @@ public class LiftSwitch : MonoBehaviour, IInteractable
     {
         HideInteractionPrompt();
         Player.Instance.transform.parent = _lift.transform;
-        Player.Instance.LockAllInput(true);
-        Player.Instance._isPhoneShowing.Value = true;
-        // _closeUpCam.gameObject.SetActive(true);
+        Player.Instance.UseAltControls(true, this);
         _interface.SetActive(true);
         _isInteracting = true;
-        // StartLift();
-        // Player.Instance.MoveToPosition(_lift._centerPoint.transform.position, false, () => StartLift());
+
     }
 
     void UseLift()
     {
-        if (!_isInteracting) return;
+        if (!_isInteracting || _selectedFloor == _entryFloor) return;
         _interface.SetActive(false);
         Player.Instance._vFootStep.Volume = 0f;
         (Transform entryLeftBarrier, Transform entryRightBarrier, LiftBarrier entryBarrier) = GetBarrier(_entryFloor);
@@ -144,8 +130,9 @@ public class LiftSwitch : MonoBehaviour, IInteractable
         _lift._isCarryingPlayer = true;
         _lift.Move(_selectedFloor, () =>
         {
-            Player.Instance.LockAllInput(false);
+            Player.Instance.UseAltControls(false);
             Player.Instance._vFootStep.Volume = 1f;
+            Player.Instance.transform.parent = null;
             _isInteracting = false;
             OpenBarriers(_selectedFloor);
             _occupiedFloor = _selectedFloor;

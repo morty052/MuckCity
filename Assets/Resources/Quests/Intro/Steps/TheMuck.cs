@@ -4,6 +4,8 @@ using UnityEngine;
 public class TheMuck : QuestStep
 {
 
+    Mountable _dodge;
+
     void Start()
     {
         DogPound dogPound = FindFirstObjectByType<DogPound>();
@@ -12,6 +14,8 @@ public class TheMuck : QuestStep
         AddQuestItemToObject(dogPound, itemData);
 
         Rack rack = GetQuestItem<Rack>("Gun Rack", true);
+        _dodge = GetQuestItem<Mountable>("Dodge", true);
+        _dodge._playerCanMount = false;
     }
 
     public override void OnQuestItemInteracted(string questItemTag)
