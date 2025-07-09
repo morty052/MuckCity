@@ -11,6 +11,7 @@ using Invector.vItemManager;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 
@@ -19,6 +20,21 @@ using UnityEngine.Rendering.Universal;
 public class Player : MonoBehaviour, IHavePersistentData
 {
     public static Player Instance { get; private set; }
+
+    vThirdPersonController _vThirdPersonController;
+    vThirdPersonInput _vThirdPersonInput;
+
+    vInventory _inventory;
+
+    Vehicle _currentVehicle;
+
+    private PlayerSaveData _playerSaveData;
+
+    vItemManager _itemManager;
+
+    CancellationTokenSource cts = new();
+
+    string _lastBlendedState;
 
     [TabGroup("Inputs")]
     public GenericInput _interactionInput = new("E", "Y", "Y");
@@ -38,7 +54,7 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
     [TabGroup("Inputs")]
-    public AltInput _altInput;
+
 
     [TabGroup("Inputs")]
     public bool _isUsingAltInput = false;
@@ -46,11 +62,8 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Inputs")]
     [SerializeField] InputActionAsset _inputAsset;
 
-
-    [SerializeField] Vehicle _currentVehicle;
-
-
-
+    [TabGroup("Inputs")]
+    public AltInput _altInput;
 
     [TabGroup("Interaction")]
     public float _interactionRange = 1f;
@@ -61,10 +74,6 @@ public class Player : MonoBehaviour, IHavePersistentData
     [SerializeField] LayerMask _defaultLayerMask = new();
 
     [TabGroup("Interaction")]
-
-    [SerializeField] List<IInteractable> _closestInteractables = new();
-
-    CountdownTimer _detectionTimer;
 
     [TabGroup("Interaction")]
     [SerializeField] float _detectionRate = 0.2f;
@@ -95,19 +104,20 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("State")]
     [SerializeField] Shop _activeShop;
 
+    [TabGroup("Components")]
     public vThirdPersonCameraListData CameraStateList;
 
-    vThirdPersonController _vThirdPersonController;
-    vThirdPersonInput _vThirdPersonInput;
-    vInventory _inventory;
-
+    [TabGroup("Components")]
+    public Transform _combatHelperSphere;
+    [TabGroup("Components")]
     public vFootStep _vFootStep;
 
+    [TabGroup("Components")]
     public vThirdPersonCamera _vThirdPersonCamera;
 
+    [TabGroup("Components")]
+    [SerializeField] Camera _defaultCamera;
 
-    vItemManager _itemManager;
-    string _lastBlendedState;
 
     [TabGroup("Phone")]
     [SerializeField] GameObject _phoneModel;
@@ -117,25 +127,32 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Phone")]
     public Observer<bool> _isPhoneShowing = new(false);
 
-    [SerializeField] Camera _defaultCamera;
 
+
+    [TabGroup("Storage")]
     public BackPack _hotStorage;
+
+    [TabGroup("Storage")]
     public Storage _activeStorage;
 
-    CancellationTokenSource cts = new();
+
+    [TabGroup("Settings")]
+    public SaveAble SAVE_ID => SaveAble.PLAYER;
+
+    [TabGroup("Settings")]
+    [SerializeField] bool _useLastSavedPosition = false;
+
+    [TabGroup("Settings")]
+    [SerializeField] float _underGroundThreshold = 0;
+
+    [TabGroup("Effects")]
+    [SerializeField] PostProcessManager _postProcessManager;
 
     public bool ShouldAutoSave { get => AutoSaveManager.ShouldAutoSave(SaveAble.PLAYER); }
     public bool IsInVehicle => _currentVehicle != null;
 
     public bool IsUnderGround => transform.position.y < _underGroundThreshold;
-    public SaveAble SAVE_ID => SaveAble.PLAYER;
 
-    private PlayerSaveData _playerSaveData;
-
-    [SerializeField] float _underGroundThreshold = 0;
-    public Transform _combatHelperSphere;
-    [SerializeField] bool _useLastSavedPosition = false;
-    [SerializeField] GameObject _model;
 
     void OnEnable()
     {
@@ -188,6 +205,7 @@ public class Player : MonoBehaviour, IHavePersistentData
             LoadPersistentData();
             _interactionSystem = new InteractionSystem(_interactionRange, _detectionRate, transform, _interactionLayerMask, _defaultLayerMask);
             _specialEquipmentManager = new SpecialEquipmentManager();
+            _postProcessManager = new(GetComponentInChildren<Volume>());
             // DontDestroyOnLoad(gameObject);
         }
 
@@ -195,7 +213,6 @@ public class Player : MonoBehaviour, IHavePersistentData
         {
             Destroy(gameObject);
         }
-
 
     }
 
@@ -305,14 +322,14 @@ public class Player : MonoBehaviour, IHavePersistentData
             _lastInteractable.Interact();
         }
     }
-    void ShowPhone()
+    public void ShowPhone(bool useBlur = true)
     {
         if (!_phoneCamera.gameObject.activeSelf)
         {
             _phoneCamera.gameObject.SetActive(true);
             _phoneModel.SetActive(true);
-            // _vThirdPersonInput.SetLockBasicInput(true);
             UseAltControls(true, Phone.Instance);
+            _vThirdPersonCamera.LockCamera = true;
         }
 
         else
@@ -321,8 +338,13 @@ public class Player : MonoBehaviour, IHavePersistentData
             _phoneModel.SetActive(false);
             _vThirdPersonInput.SetLockBasicInput(false);
             UseAltControls(false);
+            _vThirdPersonCamera.LockCamera = false;
         }
-        // _isPhoneShowing.Value = _phoneCamera.gameObject.activeSelf;
+
+        if (useBlur)
+        {
+            _postProcessManager.ToggleBlur();
+        }
     }
 
     public void UseAltControls(bool state, IBrowsable browsable = null)
@@ -402,7 +424,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     }
 
 
-    [Button]
+    [Button, TabGroup("Debug")]
     public void LockPlayerControls()
     {
         // _vThirdPersonInput.lockInput = true;
@@ -411,7 +433,7 @@ public class Player : MonoBehaviour, IHavePersistentData
         _vThirdPersonInput.LockCursor(true);
         _vThirdPersonCamera.LockCamera = true;
     }
-    [Button]
+    [Button, TabGroup("Debug")]
     public void UnlockPlayerControls()
     {
         // _vThirdPersonInput.lockInput = true;
@@ -737,4 +759,29 @@ public class Player : MonoBehaviour, IHavePersistentData
 
 
 
+}
+
+
+[Serializable]
+public class PostProcessManager
+{
+    readonly Volume _volume;
+    DepthOfField _blur;
+    public PostProcessManager(Volume volume)
+    {
+        _volume = volume;
+        SetupEffects();
+    }
+
+    void SetupEffects()
+    {
+        _volume.profile.TryGet(out _blur);
+    }
+
+    [Button]
+    public void ToggleBlur()
+    {
+
+        _blur.active = !_blur.active;
+    }
 }

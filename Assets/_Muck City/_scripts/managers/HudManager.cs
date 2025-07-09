@@ -79,7 +79,7 @@ public class HudManager : MonoBehaviour
         GameEventsManager.OnSceneLoadEndEvent -= () => ToggleLoadingScreen(false);
     }
 
-    private void OnToggleUi()
+    public void OnToggleUi()
     {
         _ui.SetActive(!_ui.activeSelf);
     }

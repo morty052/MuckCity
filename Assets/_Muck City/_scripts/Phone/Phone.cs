@@ -2,12 +2,18 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Invector.vCharacterController;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-
+public enum PhonePosition
+{
+    RIGHT,
+    CENTER,
+    LANDSCAPE
+}
 
 public class Phone : SpecialEquipment, IBrowsable
 {
@@ -55,6 +61,20 @@ public class Phone : SpecialEquipment, IBrowsable
 
     public Action<string> OnInstallApp;
 
+    [SerializeField] Pos _centerPos;
+    [SerializeField] Pos _rightPos;
+
+    [TabGroup("Events")]
+    public UnityEvent OnPhoneRing;
+    [TabGroup("Events")]
+    public UnityEvent OnPhoneRingEnd;
+    [TabGroup("Events")]
+    public UnityEvent OnPhoneCallStart;
+    [TabGroup("Events")]
+    public UnityEvent OnPhoneCallEnd;
+    [TabGroup("Events")]
+    public UnityEvent OnGenericButtonPress;
+
 
     void Awake()
     {
@@ -73,25 +93,19 @@ public class Phone : SpecialEquipment, IBrowsable
     {
         _newOrderAlert.transform.position = new Vector3(_alertHiddenXPos, _newOrderAlert.transform.position.y, _newOrderAlert.transform.position.z);
         SetupAppIcons();
+        SetPhonePos(PhonePosition.CENTER);
     }
 
 
 
     void OnEnable()
     {
-        // GameEventsManager.OnDisplayPhone += OnDisplayPhone;
-        // GameEventsManager.OnHidePhone += OnHidePhone;
-        // GameEventsManager.OnMessageReceived += HandleNewMessage;
-        // PhoneNavigation.OnButtonPress += OnPhoneButtonPress;
+
         GameEventsManager.OnDeliveryAddedEvent += ShowNewDeliveryAlert;
     }
 
     void OnDisable()
     {
-        // GameEventsManager.OnDisplayPhone -= OnDisplayPhone;
-        // GameEventsManager.OnHidePhone -= OnHidePhone;
-        // GameEventsManager.OnMessageReceived -= HandleNewMessage;
-        // PhoneNavigation.OnButtonPress -= OnPhoneButtonPress;
         GameEventsManager.OnDeliveryAddedEvent -= ShowNewDeliveryAlert;
     }
 
@@ -118,6 +132,34 @@ public class Phone : SpecialEquipment, IBrowsable
         transform.SetParent(Player.Instance.transform, false);
         transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         Player.Instance.UpdatePhone(this);
+    }
+
+    [Button("Init Call")]
+    void InitCall()
+    {
+        ShowPhone();
+        SetPhonePos(PhonePosition.RIGHT);
+        OnPhoneRing?.Invoke();
+    }
+
+    void ShowPhone()
+    {
+        Player.Instance.ShowPhone(false);
+    }
+
+
+    [Button]
+    public void SetPhonePos(PhonePosition pos)
+    {
+        if (pos == PhonePosition.RIGHT)
+        {
+            _phoneModel.transform.SetLocalPositionAndRotation(_rightPos.position, Quaternion.Euler(_rightPos.rotation));
+        }
+        if (pos == PhonePosition.CENTER)
+        {
+            _phoneModel.transform.SetLocalPositionAndRotation(_centerPos.position, Quaternion.Euler(_centerPos.rotation));
+            HudManager.Instance.OnToggleUi();
+        }
     }
 
     public void ToggleUseInput()

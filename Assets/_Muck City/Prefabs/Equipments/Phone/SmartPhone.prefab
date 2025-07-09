@@ -743,6 +743,12 @@ MonoBehaviour:
   _messagesScreen: {fileID: 0}
   _messages: []
   _isPhoneActive: 0
+  _centerPos:
+    position: {x: 0.01, y: 1.32, z: 0.59}
+    rotation: {x: 90, y: 181.08995, z: 0}
+  _rightPos:
+    position: {x: 0.24400339, y: 1.292, z: 0.52400017}
+    rotation: {x: 90, y: 196.20183, z: 0}
 --- !u!1 &2515892099664890833
 GameObject:
   m_ObjectHideFlags: 0
