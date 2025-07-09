@@ -18,4 +18,9 @@ public class Mountable : MonoBehaviour, IFindable
     {
         OnInteracted -= action;
     }
+
+    public void DisableMount()
+    {
+
+    }
 }
