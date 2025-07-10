@@ -10,6 +10,8 @@ public class DruggieNpcSO : NpcSO
     public int _defaultPurchasingPower = 1;
     public DeliveryPoint _deliveryPointPrefab;
 
+    public Chat _chat;
+
     private void OnValidate()
     {
 #if UNITY_EDITOR

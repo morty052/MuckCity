@@ -1,0 +1,175 @@
+using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public enum Inputs
+{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    SELECT,
+    BACK,
+    ACCEPT,
+    REJECT,
+    EXIT,
+    BUY,
+    INSPECT
+}
+
+
+public class AltInput
+{
+
+    public InputActionAsset _input;
+    public bool _isUsingAltInput;
+    private InputAction _selectInput;
+    private InputAction _upInput;
+    private InputAction _downInput;
+
+    private InputAction _leftInput;
+
+    private InputAction _rightInput;
+
+    private InputAction _backInput;
+
+    private InputAction _acceptInput;
+
+    private InputAction _rejectInput;
+    private InputAction _exitInput;
+    private InputAction _buyInput;
+    private InputAction _inspectInput;
+
+    public static event Action<Inputs> OnButtonPress;
+
+    private int _buyHoldCounter = 0;
+    private int _buyHoldThreshold = 30;
+
+    public IBrowsable _activeBrowsable;
+
+    public AltInput(InputActionAsset inputActions)
+    {
+        _input = inputActions;
+        InitInputs();
+        _input.FindActionMap("Phone").Enable();
+    }
+
+
+    public void Dispose()
+    {
+        _input.FindActionMap("Phone").Disable();
+
+    }
+
+
+    void InitInputs()
+    {
+        _selectInput = InputSystem.actions.FindAction("Select");
+        _upInput = InputSystem.actions.FindAction("Up");
+        _downInput = InputSystem.actions.FindAction("Down");
+        _leftInput = InputSystem.actions.FindAction("Left");
+        _rightInput = InputSystem.actions.FindAction("Right");
+        _backInput = InputSystem.actions.FindAction("Back");
+        _acceptInput = InputSystem.actions.FindAction("Accept");
+        _rejectInput = InputSystem.actions.FindAction("Reject");
+        _exitInput = InputSystem.actions.FindAction("Exit");
+        _buyInput = InputSystem.actions.FindAction("Buy");
+        _inspectInput = InputSystem.actions.FindAction("Inspect");
+    }
+
+
+    public void ToggleUseInput(bool state)
+    {
+        _isUsingAltInput = state;
+    }
+
+    public void Update()
+    {
+        if (!_isUsingAltInput) return;
+        if (_selectInput.WasPressedThisFrame())
+        {
+            Debug.Log("Select Pressed");
+            _activeBrowsable.OnButtonPress(Inputs.SELECT);
+        }
+
+        if (_upInput.WasPressedThisFrame())
+        {
+            Debug.Log("Up pressed");
+            _activeBrowsable.OnButtonPress(Inputs.UP);
+        }
+
+        if (_downInput.WasPressedThisFrame())
+        {
+            Debug.Log("Down pressed");
+            _activeBrowsable.OnButtonPress(Inputs.DOWN);
+        }
+
+        if (_leftInput.WasPressedThisFrame())
+        {
+            Debug.Log("Left pressed");
+            _activeBrowsable.OnButtonPress(Inputs.LEFT);
+        }
+
+        if (_rightInput.WasPressedThisFrame())
+        {
+            Debug.Log("Right pressed");
+            _activeBrowsable.OnButtonPress(Inputs.RIGHT);
+        }
+
+        if (_backInput.WasPressedThisFrame())
+        {
+            _activeBrowsable.OnButtonPress(Inputs.BACK);
+        }
+
+        if (_acceptInput.WasPressedThisFrame())
+        {
+            _activeBrowsable.OnButtonPress(Inputs.ACCEPT);
+        }
+
+        if (_rejectInput.WasPressedThisFrame())
+        {
+            _activeBrowsable.OnButtonPress(Inputs.REJECT);
+        }
+        if (_exitInput.WasPressedThisFrame())
+        {
+            _activeBrowsable.OnButtonPress(Inputs.EXIT);
+        }
+
+        if (_inspectInput.WasPressedThisFrame())
+        {
+            _activeBrowsable.OnButtonPress(Inputs.INSPECT);
+        }
+
+        HandleBuyButton();
+
+
+
+    }
+
+
+
+    public void HandleBuyButton()
+    {
+
+
+        if (_buyInput.IsPressed())
+        {
+            _buyHoldCounter++; // increment counter while button is held down
+                               // you can use the _buyHoldCounter value as needed
+
+            if (_buyHoldCounter == _buyHoldThreshold)
+            {
+                Debug.Log("Buy button held down for " + _buyHoldCounter + " frames");
+                _activeBrowsable.OnButtonPress(Inputs.BUY);
+                _buyHoldCounter = 0;
+            }
+        }
+        else if (_buyInput.WasReleasedThisFrame())
+        {
+            _buyHoldCounter = 0; // reset counter when button is released
+        }
+    }
+
+}
+
+

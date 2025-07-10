@@ -1,7 +1,8 @@
+using TMPro;
 using UnityEngine;
 
-[System.Serializable]
-public class Message
+
+public class Message : MonoBehaviour
 {
     public string _title;
     public string _body;
@@ -12,44 +13,43 @@ public class Message
 
     public AudioClip _audioClip;
 
+    public TextMeshProUGUI _content;
+
 
     public bool _read = false;
     public bool _isRejected = false;
 
-    public Message() { }
+    // public Message() { }
 
-    public class Builder
-    {
-        readonly Message message = new();
-
-        public Builder(string title)
-        {
-            message._title = title;
-
-        }
-        public Builder WithCitizen(string sender)
-        {
-            message._senderId = sender;
-            return this;
-        }
-        public Builder WithBody(string body)
-        {
-            message._body = body;
-            return this;
-        }
-
-        public Message Build()
-        {
-            //* SEND MESSAGE
-            // message.OnReceived(message);
-            return message;
-        }
-    }
-
-    // public void OnReceived(Message message)
+    // public class Builder
     // {
-    //     GameEventsManager.Instance.OnMessageReceivedEvent(message);
+    //     readonly Message message = new();
+
+    //     public Builder(string title)
+    //     {
+    //         message._title = title;
+
+    //     }
+    //     public Builder WithCitizen(string sender)
+    //     {
+    //         message._senderId = sender;
+    //         return this;
+    //     }
+    //     public Builder WithBody(string body)
+    //     {
+    //         message._body = body;
+    //         return this;
+    //     }
+
+    //     public Message Build()
+    //     {
+    //         //* SEND MESSAGE
+    //         // message.OnReceived(message);
+    //         return message;
+    //     }
     // }
+
+
 
     public void PlayVoiceMessage()
     {

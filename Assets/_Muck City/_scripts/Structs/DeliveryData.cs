@@ -12,13 +12,16 @@ public struct DeliveryData
 
     public Dictionary<Substance, int> _deliverables;
 
+    public Chat _chat;
 
-    public DeliveryData(string deliveryId, int deliveryFee, Locations deliveryArea, Vector3 deliveryLocation, Dictionary<Substance, int> deliverables)
+
+    public DeliveryData(string deliveryId, int deliveryFee, Locations deliveryArea, Vector3 deliveryLocation, Dictionary<Substance, int> deliverables, Chat chat)
     {
         _deliveryId = deliveryId;
         _deliveryFee = deliveryFee;
         _deliveryArea = deliveryArea;
         _deliveryLocation = deliveryLocation;
         _deliverables = deliverables;
+        _chat = chat;
     }
 }

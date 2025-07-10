@@ -13,7 +13,8 @@ public class District : MonoBehaviour, ILoadDataOnStart
     [TabGroup("Details")]
     public Locations _districtID;
 
-    [SerializeField] NpcSpawnData _npcList;
+    [SerializeField] NpcSpawnData _npcSpawnData;
+    [SerializeField] HashSet<NpcCharacter> _npcList = new();
 
 
     [TabGroup("State")]
@@ -87,15 +88,17 @@ public class District : MonoBehaviour, ILoadDataOnStart
         _playerIsInCompound = state;
         if (state)
         {
-            GameEventsManager.Instance.OnDistrictEnter(this);
+            // GameEventsManager.Instance.OnDistrictEnter(this);
             foreach (GuardNPC guard in _guards)
             {
                 guard.GetComponent<vFSMBehaviourController>().StartFSM();
             }
+            EnableDistrictNpcs();
         }
         else
         {
-            GameEventsManager.Instance.OnDistrictExit(this);
+            // GameEventsManager.Instance.OnDistrictExit(this);
+            DisableDistrictNpcs();
             foreach (GuardNPC guard in _guards)
             {
                 guard.GetComponent<vFSMBehaviourController>().StopFSM();
@@ -105,22 +108,47 @@ public class District : MonoBehaviour, ILoadDataOnStart
 
     public Task LoadDistrictNpcs()
     {
-        if (_npcList == null)
+        if (_npcSpawnData == null)
         {
             Debug.Log("No spawn data");
             return Task.CompletedTask;
         }
-        foreach (SpawnStruct npcData in _npcList._data)
+        foreach (SpawnStruct npcData in _npcSpawnData._data)
         {
             NpcCharacter npcCharacter = Instantiate(npcData._npc._npcPrefab, transform);
             npcCharacter.transform.SetLocalPositionAndRotation(npcData._location.position, Quaternion.Euler(npcData._location.rotation));
-            NpcManager.Instance.AddNPC(npcCharacter);
+
+            if (npcCharacter is SpecialNPC)
+            {
+                NpcManager.Instance.AddSpecialNPC(npcCharacter);
+            }
+            else
+            {
+                NpcManager.Instance.AddNPC(npcCharacter);
+            }
+
+            _npcList.Add(npcCharacter);
         }
 
-        GameEventsManager.Instance.OnAllNpcLoaded();
+
+
         return Task.CompletedTask;
     }
 
+    void DisableDistrictNpcs()
+    {
+        foreach (NpcCharacter npc in _npcList)
+        {
+            npc.gameObject.SetActive(false);
+        }
+    }
+    void EnableDistrictNpcs()
+    {
+        foreach (NpcCharacter npc in _npcList)
+        {
+            npc.gameObject.SetActive(true);
+        }
+    }
     public void OnDeliveryMarkerPlaced()
     {
         Debug.Log(" Player has placed delivery marker in district " + _districtID);
@@ -153,7 +181,6 @@ public class District : MonoBehaviour, ILoadDataOnStart
         await LoadGuards();
         await LoadDistrictNpcs();
 
-        // return Task.CompletedTask;
     }
 
     public void AddLoadingTaskToQueue()

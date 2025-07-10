@@ -15,53 +15,63 @@ public enum PhonePosition
     LANDSCAPE
 }
 
+public enum AppNames
+{
+    DELIVERY_APP = 0,
+    MESSENGER_APP = 1,
+}
+
 public class Phone : SpecialEquipment, IBrowsable
 {
     public static Phone Instance { get; private set; }
 
 
     [Header("EDITOR VARIABLES")]
+
+    [TabGroup("Inputs")]
     public GenericInput _quickAcceptInput = new("C", "Y", "Y");
+
+    [TabGroup("Inputs")]
     public GenericInput _quickRejectInput = new("C", "Y", "Y");
 
+    [TabGroup("Components")]
     [SerializeField] Transform _homeScreenTransform;
+
+    [TabGroup("Components")]
     [SerializeField] Transform _appScreensParent;
 
+    [TabGroup("Components")]
     [SerializeField] Image _appIconPrefab;
 
+    [TabGroup("Components")]
     public GameObject _phoneModel;
+
+    [TabGroup("Components")]
     public Camera _phoneCamera;
 
+    [TabGroup("Components")]
     [SerializeField] private GameObject _newOrderAlert;
+
+    [TabGroup("Components")]
     [SerializeField] private TextMeshProUGUI _newOrderDeliveryFeeText;
 
-    [SerializeField] float _alertHiddenXPos = 1000f;
-    [SerializeField] float _alertShownXPos = 0f;
-
-    [Header("RUNTIME VARIABLES")]
-
-    public bool _canQuickAcceptReject = false;
-    [SerializeField] PhoneApp _currentApp;
-    [SerializeField] List<PhoneApp> _installedAppsPrefabs;
-    [SerializeField] List<PhoneApp> _installedApps;
-
-    [SerializeField] private List<PhoneApp> Routes = new();
-    [SerializeField] private List<AppIcon> _appIcons = new();
-
-    [SerializeField] private int _selectedAppIndex = 0;
-    [SerializeField] private PhoneApp _activeRoute;
-
+    [TabGroup("Components")]
     [SerializeField] private MessagesScreen _messagesScreen;
 
-    public List<Message> _messages = new();
-
-    public DeliveryData? _currentDelivery;
-
-    public bool _isPhoneActive = false;
-
     public Action<string> OnInstallApp;
+    [TabGroup("Settings")]
+    [SerializeField] float _alertHiddenXPos = 1000f;
 
+    [TabGroup("Settings")]
+    [SerializeField] float _alertShownXPos = 0f;
+
+    [TabGroup("Settings")]
+    public bool _canQuickAcceptReject = false;
+
+    [TabGroup("Settings")]
     [SerializeField] Pos _centerPos;
+
+    [TabGroup("Settings")]
     [SerializeField] Pos _rightPos;
 
     [TabGroup("Events")]
@@ -73,7 +83,46 @@ public class Phone : SpecialEquipment, IBrowsable
     [TabGroup("Events")]
     public UnityEvent OnPhoneCallEnd;
     [TabGroup("Events")]
+    public UnityEvent OnStartInstantMessage;
+    [TabGroup("Events")]
+    public UnityEvent<Chat> OnReceiveInstantMessage;
+    [TabGroup("Events")]
+    public UnityEvent<int> OnSendInstantMessage;
+    [TabGroup("Events")]
+    public UnityEvent OnEndInstantMessage;
+    [TabGroup("Events")]
     public UnityEvent OnGenericButtonPress;
+
+    [TabGroup("Debug")]
+    public bool _isPhoneActive = false;
+
+    [TabGroup("Debug")]
+    public DeliveryData? _currentDelivery;
+
+    [TabGroup("Debug")]
+    [SerializeField] PhoneApp _currentApp;
+
+    [TabGroup("Debug")]
+    [SerializeField] List<PhoneApp> _installedAppsPrefabs;
+
+    [TabGroup("Debug")]
+    [SerializeField] List<PhoneApp> _installedApps;
+
+
+    [TabGroup("Debug")]
+    [SerializeField] private List<PhoneApp> Routes = new();
+
+    [TabGroup("Debug")]
+    [SerializeField] private List<AppIcon> _appIcons = new();
+
+    [TabGroup("Debug")]
+    [SerializeField] private int _selectedAppIndex = 0;
+
+    [TabGroup("Debug")]
+    [SerializeField] private PhoneApp _activeRoute;
+    [TabGroup("Debug")]
+    [SerializeField] private bool _isTexting;
+
 
 
     void Awake()
@@ -101,12 +150,12 @@ public class Phone : SpecialEquipment, IBrowsable
     void OnEnable()
     {
 
-        GameEventsManager.OnDeliveryAddedEvent += ShowNewDeliveryAlert;
+        GameEventsManager.OnDeliveryAddedEvent += HandleNewDeliveryAdded;
     }
 
     void OnDisable()
     {
-        GameEventsManager.OnDeliveryAddedEvent -= ShowNewDeliveryAlert;
+        GameEventsManager.OnDeliveryAddedEvent -= HandleNewDeliveryAdded;
     }
 
     void Update()
@@ -117,7 +166,11 @@ public class Phone : SpecialEquipment, IBrowsable
             {
                 _canQuickAcceptReject = false;
                 _newOrderAlert.SetActive(false);
-                GameEventsManager.Instance.OnDeliveryAccepted(_currentDelivery.Value);
+                if (_currentDelivery.Value._chat != null)
+                {
+                    OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
+                    StartInstantMessage();
+                }
             }
 
             if (_quickRejectInput.GetButtonDown())
@@ -127,6 +180,15 @@ public class Phone : SpecialEquipment, IBrowsable
         }
     }
 
+    [Button, TabGroup("Debug")]
+    void StartInstantMessage()
+    {
+        // SetApp(AppNames.MESSENGER_APP);
+        ShowPhone(true);
+        OnStartInstantMessage?.Invoke();
+        _isTexting = true;
+    }
+
     public override void Init()
     {
         transform.SetParent(Player.Instance.transform, false);
@@ -134,21 +196,26 @@ public class Phone : SpecialEquipment, IBrowsable
         Player.Instance.UpdatePhone(this);
     }
 
-    [Button("Init Call")]
+    [Button, TabGroup("Debug")]
     void InitCall()
     {
-        ShowPhone();
+        ShowPhone(false);
         SetPhonePos(PhonePosition.RIGHT);
         OnPhoneRing?.Invoke();
     }
 
-    void ShowPhone()
+    void ShowPhone(bool useBlur)
     {
-        Player.Instance.ShowPhone(false);
+        Player.Instance.ShowPhone(useBlur);
+    }
+
+    void AcceptDelivery()
+    {
+        GameEventsManager.Instance.OnDeliveryAccepted(_currentDelivery.Value);
     }
 
 
-    [Button]
+    [Button, TabGroup("Debug")]
     public void SetPhonePos(PhonePosition pos)
     {
         if (pos == PhonePosition.RIGHT)
@@ -217,6 +284,18 @@ public class Phone : SpecialEquipment, IBrowsable
             case Inputs.BACK:
                 GoToHomePage();
                 break;
+            case Inputs.ACCEPT:
+                if (_isTexting)
+                {
+                    OnSendInstantMessage?.Invoke(0);
+                }
+                break;
+            case Inputs.REJECT:
+                if (_isTexting)
+                {
+                    OnSendInstantMessage?.Invoke(1);
+                }
+                break;
             default:
                 break;
         }
@@ -259,13 +338,8 @@ public class Phone : SpecialEquipment, IBrowsable
         }
     }
 
-    private void ShowNewDeliveryAlert(DeliveryData data)
+    private void HandleNewDeliveryAdded(DeliveryData data)
     {
-        _currentDelivery = data;
-        _newOrderDeliveryFeeText.text = data._deliveryFee.ToString();
-        _newOrderAlert.SetActive(true);
-        _newOrderAlert.transform.DOMoveX(_alertShownXPos, 0.5f).onComplete = () => { _canQuickAcceptReject = true; };
-        Invoke(nameof(HideDeliveryAlert), 3f);
 
         DeliveryApp deliveryApp = _installedApps.Find(app => app is DeliveryApp) as DeliveryApp;
         if (deliveryApp != null)
@@ -277,6 +351,12 @@ public class Phone : SpecialEquipment, IBrowsable
         {
             Debug.LogWarning("No DeliveryApp found in installed apps.");
         }
+        _currentDelivery = data;
+        _newOrderDeliveryFeeText.text = data._deliveryFee.ToString();
+        _newOrderAlert.SetActive(true);
+        _newOrderAlert.transform.DOMoveX(_alertShownXPos, 0.5f).onComplete = () => { _canQuickAcceptReject = true; };
+        Invoke(nameof(HideDeliveryAlert), 3f);
+
     }
 
     private void HideDeliveryAlert()
@@ -330,6 +410,20 @@ public class Phone : SpecialEquipment, IBrowsable
         _currentApp = _installedApps[_selectedAppIndex];
         Debug.Log($"Selected app: {_currentApp.AppName}");
     }
+    private void SetApp(AppNames id)
+    {
+        if (_activeRoute != null)
+        {
+            //* Exit out of current app if already in app
+            _activeRoute._appMainScreen.gameObject.SetActive(false);
+        }
+        PhoneApp phoneApp = _installedApps.Find(x => x.ID == id);
+        _selectedAppIndex = Routes.IndexOf(phoneApp);
+        _activeRoute = Routes[_selectedAppIndex];
+        _activeRoute._appMainScreen.gameObject.SetActive(true);
+        _currentApp = _installedApps[_selectedAppIndex];
+        Debug.Log($"Selected app: {_currentApp.AppName}");
+    }
 
     public void GoToHomePage()
     {
@@ -340,10 +434,7 @@ public class Phone : SpecialEquipment, IBrowsable
         // _activeRoute.gameObject.SetActive(true);
     }
 
-    private void HandleNewMessage(Message message)
-    {
-        _messagesScreen.HandleNewMessage(message);
-    }
+
 
     public void InstallApp(PhoneApp app)
     {
@@ -386,6 +477,11 @@ public class Phone : SpecialEquipment, IBrowsable
             RelayInputToCurrentApp(input);
         }
     }
+
+    // private void HandleNewMessage(Message message)
+    // {
+    //     _messagesScreen.HandleNewMessage(message);
+    // }
 
     // void Start()
     // {
@@ -460,3 +556,4 @@ public class Phone : SpecialEquipment, IBrowsable
 
 
 }
+

@@ -26,3 +26,4 @@ MonoBehaviour:
   - {x: -9.37, y: 0, z: -127.72}
   _defaultPurchasingPower: 1
   _deliveryPointPrefab: {fileID: 4633138635349451138, guid: 118d008c5c8508d468e85df86cef061a, type: 3}
+  _chat: {fileID: 11400000, guid: 08db74162ac0a8740bacb9c607d7e743, type: 2}

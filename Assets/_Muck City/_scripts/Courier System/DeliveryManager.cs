@@ -91,7 +91,7 @@ public class DeliveryManager : MonoBehaviour
         int deliveryFee = GetDeliveryFee(position, deliverables); // Get the delivery fee
 
 
-        DeliveryData delivery = new(druggieSO._name, deliveryFee, druggieSO._primaryLocation, position, deliverables);
+        DeliveryData delivery = new(druggieSO._name, deliveryFee, druggieSO._primaryLocation, position, deliverables, druggieSO._chat);
 
         _druggiesWithOrders.Add(druggieSO);
         return delivery;

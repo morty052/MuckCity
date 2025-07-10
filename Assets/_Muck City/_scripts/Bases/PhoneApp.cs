@@ -8,6 +8,8 @@ public class PhoneApp : Tradeable
     public AppScreen _appMainScreen;
 
     public string AppName => _appName;
+
+    public AppNames ID;
     public AppIcon AppIcon => _appIcon;
 
     public virtual void OnSelectPressed()

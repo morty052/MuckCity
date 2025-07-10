@@ -5,6 +5,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Sirenix.OdinInspector;
 
 [System.Serializable]
 public class NpcManager : MonoBehaviour
@@ -17,7 +18,7 @@ public class NpcManager : MonoBehaviour
     [SerializeField] GameObject _npcLoaderPrefabDirty;
 
     private GameObject _npcLoaderInstance;
-    [SerializeField] private Dictionary<SpecialCharacters, NpcCharacter> _specialCharacters = new();
+    [ShowInInspector] public Dictionary<SpecialCharacters, NpcCharacter> _specialCharacters = new();
     [SerializeField] private List<NpcCharacter> _npcList = new();
     [SerializeField] Locations _activeLocation;
     [SerializeField] Transform _activeSpawnParent;
@@ -84,16 +85,15 @@ public class NpcManager : MonoBehaviour
 
     public void AddNPC(NpcCharacter npc)
     {
-        if (npc is SpecialNPC)
-        {
-            if (_debug)
-            {
-                Debug.Log($"<color=yellow> Added special npc {npc.ID}<color/>");
-            }
-            _specialCharacters[npc.ID] = npc; // Ensures fast insertion and prevents duplicate IDs 
-        }
-
         _npcList.Add(npc);
+    }
+    public void AddSpecialNPC(NpcCharacter npc)
+    {
+        if (_debug)
+        {
+            Debug.Log($"<color=yellow> Added special npc {npc.ID}<color/>");
+        }
+        _specialCharacters[npc.ID] = npc; // Ensures fast insertion and prevents duplicate IDs 
     }
 
     public void RemoveNPC(SpecialCharacters id)

@@ -15,7 +15,7 @@ struct PersistentMessageScreenData
     }
 }
 
-public class MessagesScreen : MonoBehaviour
+public class MessagesScreen : PhoneApp
 {
 
     public List<MessagePrefab> _messageObjects = new();
@@ -35,39 +35,6 @@ public class MessagesScreen : MonoBehaviour
 
     public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
     public string SAVE_FILE_NAME { get => "Messages"; set => throw new System.NotImplementedException(); }
-
-
-    void Awake()
-    {
-        // LoadPersistentData();
-    }
-
-    // void OnEnable()
-    // {
-    //     PhoneNavigation.OnUpPressed += SelectPrevMsg;
-    //     PhoneNavigation.OnDownPressed += SelectNextMsg;
-    //     PhoneNavigation.OnSelectPressed += OpenFullChat;
-    //     PhoneNavigation.OnBackPressed += ExitFullChat;
-    //     PhoneNavigation.OnAcceptPressed += AcceptMessageRequest;
-    //     PhoneNavigation.OnRejectPressed += RejectMessageRequest;
-    // }
-
-    // void OnDisable()
-    // {
-    //     PhoneNavigation.OnUpPressed -= SelectPrevMsg;
-    //     PhoneNavigation.OnDownPressed -= SelectNextMsg;
-    //     PhoneNavigation.OnSelectPressed -= OpenFullChat;
-    //     PhoneNavigation.OnBackPressed -= ExitFullChat;
-    //     PhoneNavigation.OnAcceptPressed -= AcceptMessageRequest;
-    //     PhoneNavigation.OnRejectPressed -= RejectMessageRequest;
-    // }
-
-
-
-    void Start()
-    {
-        // ReloadSavedMessages();
-    }
 
 
     private void AcceptMessageRequest()
@@ -138,15 +105,4 @@ public class MessagesScreen : MonoBehaviour
         // ES3.Save(SAVE_FILE_NAME, data);
     }
 
-    // public void LoadPersistentData()
-    // {
-    //     // if (!ES3.FileExists(SAVE_FILE_NAME)) return;
-    //     PersistentMessageScreenData data = ES3.Load<PersistentMessageScreenData>(SAVE_FILE_NAME);
-    //     Debug.Log("Loaded messages" + data._messages.Count);
-    //     if (data._messages != null)
-    //     {
-    //         if (data._messages.Count == 0) return;
-    //         _savedMessages = data._messages;
-    //     }
-    // }
 }

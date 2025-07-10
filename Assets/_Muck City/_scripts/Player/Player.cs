@@ -330,6 +330,8 @@ public class Player : MonoBehaviour, IHavePersistentData
             _phoneModel.SetActive(true);
             UseAltControls(true, Phone.Instance);
             _vThirdPersonCamera.LockCamera = true;
+            _vThirdPersonInput.ShowCursor(true);
+            _vThirdPersonInput.LockCursor(true);
         }
 
         else
@@ -339,6 +341,8 @@ public class Player : MonoBehaviour, IHavePersistentData
             _vThirdPersonInput.SetLockBasicInput(false);
             UseAltControls(false);
             _vThirdPersonCamera.LockCamera = false;
+            _vThirdPersonInput.ShowCursor(false);
+            _vThirdPersonInput.LockCursor(false);
         }
 
         if (useBlur)
