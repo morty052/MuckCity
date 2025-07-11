@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.Tweening;
 using Invector.vCharacterController;
 using Sirenix.OdinInspector;
@@ -26,19 +27,20 @@ public class Phone : SpecialEquipment, IBrowsable
     public static Phone Instance { get; private set; }
 
 
-    [Header("EDITOR VARIABLES")]
-
     [TabGroup("Inputs")]
     public GenericInput _quickAcceptInput = new("C", "Y", "Y");
 
-    [TabGroup("Inputs")]
-    public GenericInput _quickRejectInput = new("C", "Y", "Y");
+    // [TabGroup("Inputs")]
+    // public GenericInput _quickRejectInput = new("C", "Y", "Y");
 
+    #region"components"
     [TabGroup("Components")]
     [SerializeField] Transform _homeScreenTransform;
 
     [TabGroup("Components")]
     [SerializeField] Transform _appScreensParent;
+    [TabGroup("Components")]
+    [SerializeField] Transform _statusBarTransform;
 
     [TabGroup("Components")]
     [SerializeField] Image _appIconPrefab;
@@ -50,18 +52,14 @@ public class Phone : SpecialEquipment, IBrowsable
     public Camera _phoneCamera;
 
     [TabGroup("Components")]
-    [SerializeField] private GameObject _newOrderAlert;
+    public StatusBar _statusBar;
 
     [TabGroup("Components")]
-    [SerializeField] private TextMeshProUGUI _newOrderDeliveryFeeText;
+    public NotificationSystem _notificationSystem;
 
+    #endregion
 
     public Action<string> OnInstallApp;
-    [TabGroup("Settings")]
-    [SerializeField] float _alertHiddenXPos = 1000f;
-
-    [TabGroup("Settings")]
-    [SerializeField] float _alertShownXPos = 0f;
 
     [TabGroup("Settings")]
     public bool _canQuickAcceptReject = false;
@@ -72,6 +70,7 @@ public class Phone : SpecialEquipment, IBrowsable
     [TabGroup("Settings")]
     [SerializeField] Pos _rightPos;
 
+    #region "Events"
     [TabGroup("Events")]
     public UnityEvent OnPhoneRing;
     [TabGroup("Events")]
@@ -90,7 +89,9 @@ public class Phone : SpecialEquipment, IBrowsable
     public UnityEvent OnEndInstantMessage;
     [TabGroup("Events")]
     public UnityEvent OnGenericButtonPress;
+    #endregion
 
+    #region "Debug"
     [TabGroup("Debug")]
     public bool _isPhoneActive = false;
 
@@ -120,6 +121,9 @@ public class Phone : SpecialEquipment, IBrowsable
     [SerializeField] private PhoneApp _activeRoute;
     [TabGroup("Debug")]
     [SerializeField] private bool _isTexting;
+    [SerializeField, TabGroup("Debug")] private bool _debug;
+
+    #endregion
 
 
 
@@ -128,6 +132,8 @@ public class Phone : SpecialEquipment, IBrowsable
         if (Instance == null)
         {
             Instance = this;
+            _statusBar = new(_statusBarTransform);
+            _notificationSystem = GetComponent<NotificationSystem>();
         }
         else if (Instance != this)
         {
@@ -138,12 +144,11 @@ public class Phone : SpecialEquipment, IBrowsable
 
     void Start()
     {
-        _newOrderAlert.transform.position = new Vector3(_alertHiddenXPos, _newOrderAlert.transform.position.y, _newOrderAlert.transform.position.z);
+        // _notificationCanvas.transform.position = new Vector3(_alertHiddenXPos, _notificationCanvas.transform.position.y, _notificationCanvas.transform.position.z);
         SetupAppsAndIcons();
         SetPhonePos(PhonePosition.CENTER);
+
     }
-
-
 
     void OnEnable()
     {
@@ -163,7 +168,7 @@ public class Phone : SpecialEquipment, IBrowsable
             if (_quickAcceptInput.GetButtonDown())
             {
                 _canQuickAcceptReject = false;
-                _newOrderAlert.SetActive(false);
+                _notificationSystem.HideNotification();
                 if (_currentDelivery.Value._chat != null)
                 {
                     OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
@@ -171,10 +176,10 @@ public class Phone : SpecialEquipment, IBrowsable
                 }
             }
 
-            if (_quickRejectInput.GetButtonDown())
-            {
+            // if (_quickRejectInput.GetButtonDown())
+            // {
 
-            }
+            // }
         }
     }
 
@@ -237,20 +242,6 @@ public class Phone : SpecialEquipment, IBrowsable
     {
         _isPhoneActive = !_isPhoneActive;
     }
-
-    // void OnPhoneButtonPress(Inputs input)
-    // {
-    //     if (!_isPhoneActive) return;
-    //     if (_currentApp == null)
-    //     {
-    //         UseHomePageNavigation(input);
-    //         return;
-    //     }
-    //     else
-    //     {
-    //         RelayInputToCurrentApp(input);
-    //     }
-    // }
 
 
     void UseHomePageNavigation(Inputs input)
@@ -356,21 +347,19 @@ public class Phone : SpecialEquipment, IBrowsable
             Debug.LogWarning("No DeliveryApp found in installed apps.");
         }
         _currentDelivery = data;
-        _newOrderDeliveryFeeText.text = data._deliveryFee.ToString();
-        _newOrderAlert.SetActive(true);
-        _newOrderAlert.transform.DOMoveX(_alertShownXPos, 0.5f).onComplete = () => { _canQuickAcceptReject = true; };
-        Invoke(nameof(HideDeliveryAlert), 3f);
+        // _notificationContentText.text = data._deliveryFee.ToString();
+        // _notificationCanvas.SetActive(true);
+        // _notificationCanvas.transform.DOMoveX(_alertShownXPos, 0.5f).onComplete = () => { _canQuickAcceptReject = true; };
+        // Invoke(nameof(HideDeliveryAlert), 3f);
+        _canQuickAcceptReject = true;
+        _notificationSystem.ShowNotification("New order", data._deliveryFee.ToString());
 
     }
 
     private void HideDeliveryAlert()
     {
-        _newOrderAlert.transform.DOMoveX(_alertHiddenXPos, 0.5f).OnComplete(() =>
-        {
-            _canQuickAcceptReject = false;
-            _newOrderAlert.SetActive(false);
-            _currentDelivery = null;
-        });
+        _canQuickAcceptReject = false;
+        _currentDelivery = null;
     }
 
     [Button, TabGroup("Debug")]
@@ -413,7 +402,11 @@ public class Phone : SpecialEquipment, IBrowsable
         }
     }
 
-
+    [Button, TabGroup("Debug")]
+    public void ShowAlert(string title, string content)
+    {
+        _notificationSystem.ShowNotification(title, content, HideDeliveryAlert);
+    }
     private void SelectApp()
     {
         if (_activeRoute != null)
@@ -434,24 +427,30 @@ public class Phone : SpecialEquipment, IBrowsable
         _activeRoute = Routes[_selectedAppIndex];
         _activeRoute._appMainScreen.gameObject.SetActive(true);
         _currentApp = _installedApps[_selectedAppIndex];
-        Debug.Log($"Selected app: {_currentApp.ID}");
+
+        _statusBar.ToggleBackButton();
+        if (_debug)
+        {
+            Debug.Log($"Selected app: {_currentApp.ID}");
+        }
+
     }
 
     //! EDITOR EVENT FUNCTION
     public void GoBack()
     {
         _currentApp.OnBackPressed();
+        if (_currentApp == null)
+        {
+            _statusBar.ToggleBackButton();
+        }
     }
     public void GoToHomePage()
     {
         _activeRoute._appMainScreen.gameObject.SetActive(false);
         _currentApp = null;
         _selectedAppIndex = 0;
-        // _activeRoute = Routes[0];
-        // _activeRoute.gameObject.SetActive(true);
     }
-
-
 
     public void InstallApp(PhoneApp app)
     {
@@ -501,77 +500,21 @@ public class Phone : SpecialEquipment, IBrowsable
         button.onClick.AddListener(() => { SetApp(phoneAppID); });
     }
 
-    // void Start()
-    // {
-    //     _selectedApp = _appIcons[_selectedAppIndex];
-    //     _selectedApp.ToggleActive(true);
-    //     _activeRoute = Routes[0];
-    // }
+}
 
+public class StatusBar
+{
+    public Transform _statusbar;
+    public GameObject _backButton;
+    public StatusBar(Transform statusbar)
+    {
+        _statusbar = statusbar;
+        _backButton = _statusbar.Find("Back Button").gameObject;
+    }
 
-    // void Update()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.LeftArrow))
-    //     {
-    //         UpdateAppSelector(true);
-
-    //     }
-
-    //     if (Input.GetKeyDown(KeyCode.RightArrow))
-    //     {
-    //         UpdateAppSelector(false);
-    //     }
-
-    //     if (Input.GetKeyDown(KeyCode.Mouse0))
-    //     {
-    //         SelectApp();
-    //     }
-    //     if (Input.GetKeyDown(KeyCode.Space))
-    //     {
-    //         GoToHomePage();
-    //     }
-    // }
-
-
-
-    // private void UpdateAppSelector(bool isPrev)
-    // {
-    //     if (!isPrev)
-    //     {
-    //         if (_selectedAppIndex == _appIcons.Count - 1)
-    //         {
-    //             //MOVE TO FIRST APP IF CANT GO FORWARD
-    //             _selectedAppIndex = 0;
-    //         }
-
-    //         else
-    //         {
-    //             //MOVE TO NEXT APP IF CAN GO FORWARD
-    //             _selectedAppIndex++;
-    //         }
-    //     }
-    //     else
-    //     {
-    //         // MOVE TO PREVIOUS APP IF CAN GO BACK
-    //         if (_selectedAppIndex > 0)
-    //         {
-    //             _selectedAppIndex--;
-    //         }
-    //         else
-    //         {
-    //             //MOVE TO LAST APP IF CANT GO BACK
-    //             _selectedAppIndex = _appIcons.Count - 1;
-    //         }
-    //     }
-
-    //     _selectedApp.ToggleActive(false);
-    //     _selectedApp = _appIcons[_selectedAppIndex];
-    //     _selectedApp.ToggleActive(true);
-
-    // }
-
-
-
-
+    public void ToggleBackButton()
+    {
+        _backButton.SetActive(!_backButton.activeSelf);
+    }
 }
 

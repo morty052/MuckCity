@@ -328,7 +328,7 @@ GameObject:
   - component: {fileID: 1614838442739145640}
   - component: {fileID: 408847625902400798}
   m_Layer: 21
-  m_Name: 'Order alert '
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -831,6 +831,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1496349165647969709}
   - component: {fileID: 8668024281094842964}
+  - component: {fileID: 3030618406159184309}
   m_Layer: 21
   m_Name: SmartPhone
   m_TagString: Untagged
@@ -885,31 +886,12 @@ MonoBehaviour:
     timeButtonWasPressed: 0
     lastTimeTheButtonWasPressed: 0
     inButtomTimer: 0
-  _quickRejectInput:
-    useInput: 1
-    isAxisInUse: 0
-    isUnityInput: 0
-    keyboard: C
-    keyboardAxis: 0
-    joystick: Y
-    joystickAxis: 0
-    mobile: Y
-    mobileAxis: 0
-    joystickAxisInvert: 0
-    keyboardAxisInvert: 0
-    mobileAxisInvert: 0
-    timeButtonWasPressed: 0
-    lastTimeTheButtonWasPressed: 0
-    inButtomTimer: 0
   _homeScreenTransform: {fileID: 6937032884351287276}
   _appScreensParent: {fileID: 4597515349105049101}
+  _statusBarTransform: {fileID: 6818680525226360409}
   _appIconPrefab: {fileID: 7063630722887417854, guid: f34d9baa5365feb4c82f29ef59a4e12a, type: 3}
   _phoneModel: {fileID: 3750036333505853783}
   _phoneCamera: {fileID: 6263543941687781263}
-  _newOrderAlert: {fileID: 3560605821466611599}
-  _newOrderDeliveryFeeText: {fileID: 4318229248911422492}
-  _alertHiddenXPos: -250
-  _alertShownXPos: 294.9999
   _canQuickAcceptReject: 0
   _centerPos:
     position: {x: 0.01, y: 1.32, z: 0.59}
@@ -1063,6 +1045,25 @@ MonoBehaviour:
   _selectedAppIndex: 0
   _activeRoute: {fileID: 0}
   _isTexting: 0
+  _debug: 0
+  _notificationSystem: {fileID: 0}
+--- !u!114 &3030618406159184309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2481641133637351852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a94a3b61ad81d140bb02f6e25ab5954, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _notificationCanvas: {fileID: 6337417415376878239}
+  _notificationTitle: {fileID: 408847625902400798}
+  _notificationContent: {fileID: 4318229248911422492}
+  _alertShownXPos: 0
+  _alertHiddenXPos: 1000
 --- !u!1 &2515892099664890833
 GameObject:
   m_ObjectHideFlags: 0
@@ -1306,7 +1307,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4203574129416710503
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1326,7 +1327,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 294.9999, y: 300}
-  m_SizeDelta: {x: 500, y: 200}
+  m_SizeDelta: {x: 500, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5580135597578234132
 CanvasRenderer:
@@ -1663,7 +1664,7 @@ GameObject:
   - component: {fileID: 2150288815057972025}
   - component: {fileID: 4318229248911422492}
   m_Layer: 21
-  m_Name: Deliver fee
+  m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2139,7 +2140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6855086422325834654
 RectTransform:
   m_ObjectHideFlags: 0
