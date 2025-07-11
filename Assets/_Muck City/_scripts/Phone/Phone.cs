@@ -437,6 +437,11 @@ public class Phone : SpecialEquipment, IBrowsable
         Debug.Log($"Selected app: {_currentApp.ID}");
     }
 
+    //! EDITOR EVENT FUNCTION
+    public void GoBack()
+    {
+        _currentApp.OnBackPressed();
+    }
     public void GoToHomePage()
     {
         _activeRoute._appMainScreen.gameObject.SetActive(false);
