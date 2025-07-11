@@ -1055,7 +1055,7 @@ MonoBehaviour:
   _isPhoneActive: 0
   _currentApp: {fileID: 0}
   _installedAppsPrefabs:
-  - {fileID: 474211397618942733, guid: 9264c5dd066ada04c8ce69ed6cde3c94, type: 3}
+  - {fileID: 5158439361289658462}
   - {fileID: -4242541331063905304, guid: d8459e5e1059de04386d90d96f8b2f0e, type: 3}
   _installedApps: []
   Routes: []

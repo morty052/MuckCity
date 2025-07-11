@@ -210,10 +210,7 @@ public class Phone : SpecialEquipment, IBrowsable
 
     void ShowPhone(bool useBlur)
     {
-        if (Player.Instance != null)
-        {
-            Player.Instance.ShowPhone(useBlur);
-        }
+        Player.Instance?.ShowPhone(useBlur);
     }
 
     void AcceptDelivery()
@@ -430,17 +427,14 @@ public class Phone : SpecialEquipment, IBrowsable
     }
     private void SetApp(AppNames id)
     {
-        if (_activeRoute != null)
-        {
-            //* Exit out of current app if already in app
-            _activeRoute._appMainScreen.gameObject.SetActive(false);
-        }
+        //* Exit out of current app if already in app
+        _activeRoute?._appMainScreen.gameObject.SetActive(false);
         PhoneApp phoneApp = _installedApps.Find(x => x.ID == id);
         _selectedAppIndex = Routes.IndexOf(phoneApp);
         _activeRoute = Routes[_selectedAppIndex];
         _activeRoute._appMainScreen.gameObject.SetActive(true);
         _currentApp = _installedApps[_selectedAppIndex];
-        Debug.Log($"Selected app: {_currentApp.AppName}");
+        Debug.Log($"Selected app: {_currentApp.ID}");
     }
 
     public void GoToHomePage()
@@ -499,7 +493,7 @@ public class Phone : SpecialEquipment, IBrowsable
     private void CreateButton(Image image, AppNames phoneAppID)
     {
         Button button = image.GetComponent<Button>();
-        button.onClick.AddListener(() => { Debug.Log($"Selected App is {phoneAppID}"); });
+        button.onClick.AddListener(() => { SetApp(phoneAppID); });
     }
 
     // void Start()
