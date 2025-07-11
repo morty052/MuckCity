@@ -1,4 +1,5 @@
-using MalbersAnimations;
+
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public enum AppType
@@ -6,7 +7,7 @@ public enum AppType
     INSTALLABLE,
     IN_BUILT
 }
-
+[InlineEditor]
 public class PhoneApp : Tradeable
 {
 

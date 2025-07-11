@@ -7,16 +7,11 @@ public class Message : MonoBehaviour
     public string _title;
     public string _body;
 
-    public string _senderId;
-
-    public bool _isFromMind = false;
 
     public AudioClip _audioClip;
 
     public TextMeshProUGUI _content;
 
-
-    public bool _read = false;
     public bool _isRejected = false;
 
     // public Message() { }

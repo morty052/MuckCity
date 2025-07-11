@@ -210,7 +210,10 @@ public class Phone : SpecialEquipment, IBrowsable
 
     void ShowPhone(bool useBlur)
     {
-        Player.Instance.ShowPhone(useBlur);
+        if (Player.Instance != null)
+        {
+            Player.Instance.ShowPhone(useBlur);
+        }
     }
 
     void AcceptDelivery()

@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 2883675936102496192}
   - component: {fileID: 7158520938893874361}
   m_Layer: 21
-  m_Name: Delivery App icon
+  m_Name: Messenger App icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,8 +179,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _indicator: {fileID: 0}
-  IconSprite: {fileID: 21300000, guid: e305d4ff6fcb66148a89b78f93cc03fa, type: 3}
-  AppID: 1
+  IconSprite: {fileID: 21300000, guid: fef8e252079f6f0469b7efca88f0f435, type: 3}
+  AppID: 2
 --- !u!1 &3399691726189340709
 GameObject:
   m_ObjectHideFlags: 0
@@ -687,7 +687,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7877520960716613348}
-  - component: {fileID: 2015904618359836115}
+  - component: {fileID: 474211397618942733}
   m_Layer: 21
   m_Name: Messenger App prefab
   m_TagString: Untagged
@@ -717,7 +717,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2015904618359836115
+--- !u!114 &474211397618942733
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -726,21 +726,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 9050295811740202177}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe8fb5d34ade82448abf5edaef61a2ba, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a64b94c11272c84f9d757d95eeffdc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _highlight: {fileID: 0}
   _itemData: {fileID: 0}
-  ID: 0
-  _type: 0
-  _appName: Pinga
+  ID: 1
+  _type: 1
+  _appName: 
   _appIcon: {fileID: 7158520938893874361}
   _appMainScreen: {fileID: 3787838909791116144}
-  _pendingDeliveries: 0
-  _selectedPreviewIndex: 0
-  _storedPreviews: []
-  _pendingDeliveriesText: {fileID: 6018628925801586848}
-  _deliveryInfoPage: {fileID: 5419715269254862393}
-  _deliveryPriceText: {fileID: 5781690259175259101}
-  _deliveryPreviewsParent: {fileID: 7663049840276646464}
-  _deliveryPreviewPrefab: {fileID: 1233286699986529558, guid: 155728255d465d8489c743f0c568b777, type: 3}
+  _fullScreenMessageView: {fileID: 0}
+  _contactPhoto: {fileID: 0}
+  _messagesParent: {fileID: 0}
+  _newMessagePrefab: {fileID: 0}
+  _responsePrefab: {fileID: 0}
+  _maxMessagesOnScreen: 3
+  _activeConvo: {fileID: 0}

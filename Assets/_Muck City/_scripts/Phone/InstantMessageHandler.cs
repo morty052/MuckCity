@@ -56,6 +56,7 @@ public class InstantMessageHandler : MonoBehaviour
     [TabGroup("Debug")] public Chat _activeConvo;
 
     [TabGroup("Debug")] public int _messagesOnScreen = 0;
+    [TabGroup("Debug")] public bool _canRespond = false;
 
 
     //*
@@ -108,7 +109,7 @@ public class InstantMessageHandler : MonoBehaviour
         _maxMessagesOnScreen = messagesFit;
     }
 
-
+    //! EDITOR EVENT FUNCTION
     [Button, TabGroup("Debug")]
     public void SetUpIm(Chat convo)
     {
@@ -168,11 +169,13 @@ public class InstantMessageHandler : MonoBehaviour
         return _activeNode.Connections.Any(x => x.ConnectionType == Connection.eConnectionType.Option);
     }
 
+    //! EDITOR EVENT FUNCTION
     public void SetActiveConvo(Chat convo)
     {
         _activeConvo = convo;
     }
 
+    //! EDITOR EVENT FUNCTION
     public void StartConvo()
     {
         Message message = Instantiate(_newMessagePrefab, _messagesParent);
@@ -185,17 +188,25 @@ public class InstantMessageHandler : MonoBehaviour
             _optionsTwoText.text = _activeNodeOptions.ElementAt(1).Text;
         }
 
+        //* ALLOW PLAYER TO RESPOND AFTER FIRST MESSAGE IS SHOWN
+        _canRespond = true;
+
     }
 
+    //! EDITOR EVENT FUNCTION
     [Button, TabGroup("Debug")]
     public void ProgressConvo(int choice)
     {
+        if (!_canRespond) return;
         // Debug.Log($"Selected {_activeNodeOptions.ElementAt(choice).Text}");
 
         ReplyMessage(_activeNodeOptions.ElementAt(choice).Text);
 
         //* Set LAST SELECTED OPTION TO OPTION AT INDEX OF CHOICE
         _lastSelectedOption = _activeNodeOptions.ElementAt(choice);
+
+        //* STOP PLAYER FROM RESPONDING UNTIL NEXT MESSAGE IS SHOWN
+        _canRespond = false;
 
         //* CHECK IF SELECTED OPTION HAS FURTHER DIALOGUE
         if (SelectedOptionHasSpeech())
@@ -233,7 +244,12 @@ public class InstantMessageHandler : MonoBehaviour
         {
             SetActiveOptions();
         }
+
+        //* ALLOW PLAYER TO RESPOND AFTER MESSAGE IS DISPLAYED
+        _canRespond = true;
     }
+
+
     public void ReplyMessage(string text)
     {
         Message message = Instantiate(_responsePrefab, _messagesParent);

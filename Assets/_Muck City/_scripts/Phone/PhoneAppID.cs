@@ -4,7 +4,7 @@ public enum PhoneAppID
 {
     NONE = 0,
     DELIVERY = 1,
-    MESSAGES = 2,
+    MESSENGER = 2,
     SETTINGS = 3,
     MAP = 4,
     CAMERA = 5,
