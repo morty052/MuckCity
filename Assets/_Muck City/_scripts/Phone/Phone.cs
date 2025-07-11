@@ -188,6 +188,12 @@ public class Phone : SpecialEquipment, IBrowsable
         OnStartInstantMessage?.Invoke();
         _isTexting = true;
     }
+    [Button, TabGroup("Debug")]
+    void DebugInstantMessage(Chat chat)
+    {
+        OnReceiveInstantMessage?.Invoke(chat);
+        StartInstantMessage();
+    }
 
     public override void Init()
     {

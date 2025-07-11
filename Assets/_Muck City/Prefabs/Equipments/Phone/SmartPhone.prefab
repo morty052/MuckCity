@@ -962,7 +962,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5394122260955464588}
         m_TargetAssemblyTypeName: InstantMessageHandler, Assembly-CSharp
-        m_MethodName: SetActiveConvo
+        m_MethodName: SetUpIm
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -977,7 +977,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5394122260955464588}
         m_TargetAssemblyTypeName: InstantMessageHandler, Assembly-CSharp
-        m_MethodName: ReplyMessage
+        m_MethodName: ProgressConvo
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2382,7 +2382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b2fb8a34d89a6b478465a0be7a27ad3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeConvo: {fileID: 0}
+  _activeConvo: {fileID: 11400000, guid: 08db74162ac0a8740bacb9c607d7e743, type: 2}
   _messagesParent: {fileID: 2865684509599732806}
   _optionsOneText: {fileID: 2009793018120223416}
   _optionsTwoText: {fileID: 4097259685367087659}

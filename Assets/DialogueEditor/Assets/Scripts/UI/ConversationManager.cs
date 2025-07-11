@@ -150,8 +150,7 @@ namespace DialogueEditor
             _activeConversation = conversation;
             m_conversation = conversation.Deserialize();
             m_conversation.OnDialogueFinished += _activeConversation.OnDialogueFinished;
-            if (OnConversationStarted != null)
-                OnConversationStarted.Invoke();
+            OnConversationStarted?.Invoke();
 
             TurnOnUI();
             m_currentSpeech = m_conversation.Root;

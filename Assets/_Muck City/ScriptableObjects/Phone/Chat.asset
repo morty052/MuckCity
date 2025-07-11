@@ -16,3 +16,4 @@ MonoBehaviour:
   - _message: Can you make it to medbay by 5
     _optionOne: Yeah, Where is medbay?
     _optionTwo: Only If you Add 10 bucks ?
+  _convo: {fileID: 967415334066115386, guid: 0236e1cf245c2a246ade3ee0b34e4ab7, type: 3}
