@@ -381,10 +381,20 @@ public class Phone : SpecialEquipment, IBrowsable
     {
         foreach (PhoneApp app in _installedAppsPrefabs)
         {
-            PhoneApp phoneApp = Instantiate(app, _appScreensParent);
+            PhoneApp phoneApp;
+            if (app._type == AppType.IN_BUILT)
+            {
+                phoneApp = app;
+            }
+            else
+            {
+                phoneApp = Instantiate(app, _appScreensParent);
+            }
+
             Sprite sprite = phoneApp.AppIcon.IconSprite;
             Image image = Instantiate(_appIconPrefab, _homeScreenTransform);
             image.sprite = sprite;
+            CreateButton(image, phoneApp.ID);
 
             // AppScreen appScreen = Instantiate(app._appMainScreen, _appScreensParent);
             // appScreen.transform.SetParent(_appScreensParent);
@@ -486,10 +496,11 @@ public class Phone : SpecialEquipment, IBrowsable
         }
     }
 
-    // private void HandleNewMessage(Message message)
-    // {
-    //     _messagesScreen.HandleNewMessage(message);
-    // }
+    private void CreateButton(Image image, AppNames phoneAppID)
+    {
+        Button button = image.GetComponent<Button>();
+        button.onClick.AddListener(() => { Debug.Log($"Selected App is {phoneAppID}"); });
+    }
 
     // void Start()
     // {

@@ -277,10 +277,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe8fb5d34ade82448abf5edaef61a2ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _highlight: {fileID: 0}
+  _itemData: {fileID: 0}
+  ID: 0
+  _type: 0
   _appName: Pinga
   _appIcon: {fileID: 6789468365421063840}
   _appMainScreen: {fileID: 5347518905343247395}
   _pendingDeliveries: 0
+  _selectedPreviewIndex: 0
+  _storedPreviews: []
   _pendingDeliveriesText: {fileID: 743303769545500692}
   _deliveryInfoPage: {fileID: 7558249340818376443}
   _deliveryPriceText: {fileID: 1282165942745622584}
@@ -738,11 +744,15 @@ PrefabInstance:
     - target: {fileID: 5086764376567304351, guid: f34d9baa5365feb4c82f29ef59a4e12a, type: 3}
       propertyPath: IconSprite
       value: 
-      objectReference: {fileID: 21300000, guid: e305d4ff6fcb66148a89b78f93cc03fa, type: 3}
+      objectReference: {fileID: 21300000, guid: 9bacc956c3e444240aaf8143a71d0eb9, type: 3}
     - target: {fileID: 6843104018459830739, guid: f34d9baa5365feb4c82f29ef59a4e12a, type: 3}
       propertyPath: m_Name
       value: Delivery App icon
       objectReference: {fileID: 0}
+    - target: {fileID: 7063630722887417854, guid: f34d9baa5365feb4c82f29ef59a4e12a, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9bacc956c3e444240aaf8143a71d0eb9, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
