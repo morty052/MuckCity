@@ -55,8 +55,6 @@ public class Phone : SpecialEquipment, IBrowsable
     [TabGroup("Components")]
     [SerializeField] private TextMeshProUGUI _newOrderDeliveryFeeText;
 
-    [TabGroup("Components")]
-    [SerializeField] private MessagesScreen _messagesScreen;
 
     public Action<string> OnInstallApp;
     [TabGroup("Settings")]
@@ -141,7 +139,7 @@ public class Phone : SpecialEquipment, IBrowsable
     void Start()
     {
         _newOrderAlert.transform.position = new Vector3(_alertHiddenXPos, _newOrderAlert.transform.position.y, _newOrderAlert.transform.position.z);
-        SetupAppIcons();
+        SetupAppsAndIcons();
         SetPhonePos(PhonePosition.CENTER);
     }
 
@@ -375,7 +373,8 @@ public class Phone : SpecialEquipment, IBrowsable
         });
     }
 
-    void SetupAppIcons()
+    [Button, TabGroup("Debug")]
+    void SetupAppsAndIcons()
     {
         foreach (PhoneApp app in _installedAppsPrefabs)
         {

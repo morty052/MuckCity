@@ -1,15 +1,30 @@
+using MalbersAnimations;
 using UnityEngine;
+
+public enum AppType
+{
+    INSTALLABLE,
+    IN_BUILT
+}
 
 public class PhoneApp : Tradeable
 {
+
+    [TabGroup("App Settings")]
+    public AppNames ID;
+    [TabGroup("App Settings")]
+    public AppType _type;
+    [TabGroup("App Settings")]
     [SerializeField] private string _appName;
+    [TabGroup("App Settings")]
     [SerializeField] private AppIcon _appIcon;
+    [TabGroup("App Settings")]
 
     public AppScreen _appMainScreen;
 
+
     public string AppName => _appName;
 
-    public AppNames ID;
     public AppIcon AppIcon => _appIcon;
 
     public virtual void OnSelectPressed()
