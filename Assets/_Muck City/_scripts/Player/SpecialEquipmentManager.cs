@@ -1,22 +1,25 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class SpecialEquipmentManager
 {
     public List<SpecialEquipmentID> specialEquipments = new();
+    private bool _debug;
 
-    public SpecialEquipmentManager()
+    public SpecialEquipmentManager(bool debug = false)
     {
-
+        _debug = debug;
     }
 
     public void AddSpecialEquipment(SpecialEquipmentID specialEquipment)
     {
         if (specialEquipments.Contains(specialEquipment)) return;
-        Debug.Log($"Adding {specialEquipment} from SpecialEquipment/{specialEquipment}/{specialEquipment}");
+        if (_debug)
+        {
+            Debug.Log($"Adding {specialEquipment} from SpecialEquipment/{specialEquipment}/{specialEquipment}");
+        }
         specialEquipments.Add(specialEquipment);
         SpecialEquipmentSO specialEquipmentSO = Resources.Load<SpecialEquipmentSO>($"SpecialEquipment/{specialEquipment}/{specialEquipment}");
         Debug.Log(specialEquipmentSO.name);

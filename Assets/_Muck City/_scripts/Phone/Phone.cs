@@ -161,25 +161,39 @@ public class Phone : SpecialEquipment, IBrowsable
         GameEventsManager.OnDeliveryAddedEvent -= HandleNewDeliveryAdded;
     }
 
-    void Update()
+    // void Update()
+    // {
+    //     if (_canQuickAcceptReject)
+    //     {
+    //         if (_quickAcceptInput.GetButtonDown())
+    //         {
+    //             _canQuickAcceptReject = false;
+    //             _notificationSystem.HideNotification();
+    //             if (_currentDelivery.Value._chat != null)
+    //             {
+    //                 OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
+    //                 StartInstantMessage();
+    //             }
+    //         }
+
+    //         // if (_quickRejectInput.GetButtonDown())
+    //         // {
+
+    //         // }
+    //     }
+    // }
+
+    public void QuickInspectDelivery()
     {
         if (_canQuickAcceptReject)
         {
-            if (_quickAcceptInput.GetButtonDown())
+            _canQuickAcceptReject = false;
+            _notificationSystem.HideNotification();
+            if (_currentDelivery.Value._chat != null)
             {
-                _canQuickAcceptReject = false;
-                _notificationSystem.HideNotification();
-                if (_currentDelivery.Value._chat != null)
-                {
-                    OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
-                    StartInstantMessage();
-                }
+                OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
+                StartInstantMessage();
             }
-
-            // if (_quickRejectInput.GetButtonDown())
-            // {
-
-            // }
         }
     }
 
@@ -347,13 +361,8 @@ public class Phone : SpecialEquipment, IBrowsable
             Debug.LogWarning("No DeliveryApp found in installed apps.");
         }
         _currentDelivery = data;
-        // _notificationContentText.text = data._deliveryFee.ToString();
-        // _notificationCanvas.SetActive(true);
-        // _notificationCanvas.transform.DOMoveX(_alertShownXPos, 0.5f).onComplete = () => { _canQuickAcceptReject = true; };
-        // Invoke(nameof(HideDeliveryAlert), 3f);
         _canQuickAcceptReject = true;
         _notificationSystem.ShowNotification("New order", data._deliveryFee.ToString(), "Reply", ResetDeliveryState);
-
     }
 
     private void ResetDeliveryState()

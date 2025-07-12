@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DialogueEditor;
-using ImprovedTimers;
 using Invector;
 using Invector.vCamera;
 using Invector.vCharacterController;
@@ -39,7 +37,8 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Inputs")]
     public GenericInput _interactionInput = new("E", "Y", "Y");
     [TabGroup("Inputs")]
-
+    public GenericInput _acceptInput = new("Y", "Y", "Y");
+    [TabGroup("Inputs")]
     public GenericInput _showPhoneInput = new("C", "Y", "Y");
     [TabGroup("Inputs")]
 
@@ -186,6 +185,7 @@ public class Player : MonoBehaviour, IHavePersistentData
         }
 
         _interactionSystem.Dispose();
+        _altInput.Dispose();
     }
 
     void Awake()
@@ -265,6 +265,14 @@ public class Player : MonoBehaviour, IHavePersistentData
                 // Debug.Log("Two");
                 ConversationManager.Instance.m_currentSelectedIndex = 1;
                 ConversationManager.Instance.PressSelectedOption();
+            }
+        }
+
+        if (_acceptInput.GetButtonDown())
+        {
+            if (Phone.Instance._canQuickAcceptReject)
+            {
+                Phone.Instance.QuickInspectDelivery();
             }
         }
 

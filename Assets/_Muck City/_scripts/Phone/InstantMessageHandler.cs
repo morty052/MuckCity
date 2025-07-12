@@ -66,6 +66,7 @@ public class InstantMessageHandler : MonoBehaviour
     private OptionNode _lastSelectedOption;
 
     Action OnAddMessageToScreen;
+    [SerializeField, TabGroup("Debug")] private bool _debug;
 
     void Awake()
     {
@@ -104,7 +105,10 @@ public class InstantMessageHandler : MonoBehaviour
         float messageHeight = messageTransform.rect.height;
 
         int messagesFit = Mathf.FloorToInt(parentHeight / messageHeight);
-        Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
+        if (_debug)
+        {
+            Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
+        }
 
         _maxMessagesOnScreen = messagesFit;
     }

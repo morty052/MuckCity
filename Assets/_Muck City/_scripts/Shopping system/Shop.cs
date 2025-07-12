@@ -15,6 +15,7 @@ public class Shop : Interactable, IFindable
     [SerializeField] protected GameObject _shopUi;
 
     Action<int> _onShopItemButtonPressed;
+    [SerializeField] private bool _debug;
 
     // bool _canInteract;
 
@@ -40,7 +41,10 @@ public class Shop : Interactable, IFindable
 
     private void OnShopItemButtonPressed(int obj)
     {
-        Debug.Log("OnShopItemButtonPressed " + _tradeables[obj].name);
+        if (_debug)
+        {
+            Debug.Log("OnShopItemButtonPressed " + _tradeables[obj].name);
+        }
         BuyItem(obj);
     }
 
@@ -72,8 +76,7 @@ public class Shop : Interactable, IFindable
     {
         Debug.Log("Player exited shop");
         _shopUi.SetActive(false);
-        // Player.Instance.UnlockPlayerControls();
-        // HudManager.Instance.ShowInteractPrompt();
+        Player.Instance.SetInteractableObject(null);
     }
 
     void AddFunctionToButton(ShopItemButton button, int index)
@@ -82,7 +85,6 @@ public class Shop : Interactable, IFindable
         button.InitVisuals(_tradeables[index]);
         btn.onClick.AddListener(() =>
         {
-            Debug.Log("Button clicked");
             _onShopItemButtonPressed?.Invoke(index);
         });
 
