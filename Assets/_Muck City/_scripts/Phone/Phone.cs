@@ -352,11 +352,11 @@ public class Phone : SpecialEquipment, IBrowsable
         // _notificationCanvas.transform.DOMoveX(_alertShownXPos, 0.5f).onComplete = () => { _canQuickAcceptReject = true; };
         // Invoke(nameof(HideDeliveryAlert), 3f);
         _canQuickAcceptReject = true;
-        _notificationSystem.ShowNotification("New order", data._deliveryFee.ToString());
+        _notificationSystem.ShowNotification("New order", data._deliveryFee.ToString(), "Reply", ResetDeliveryState);
 
     }
 
-    private void HideDeliveryAlert()
+    private void ResetDeliveryState()
     {
         _canQuickAcceptReject = false;
         _currentDelivery = null;
@@ -403,9 +403,9 @@ public class Phone : SpecialEquipment, IBrowsable
     }
 
     [Button, TabGroup("Debug")]
-    public void ShowAlert(string title, string content)
+    public void ShowAlert(string title, string content, string promptText = null)
     {
-        _notificationSystem.ShowNotification(title, content, HideDeliveryAlert);
+        _notificationSystem.ShowNotification(title, content, promptText, ResetDeliveryState);
     }
     private void SelectApp()
     {
