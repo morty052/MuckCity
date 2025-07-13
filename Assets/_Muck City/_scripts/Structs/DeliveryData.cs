@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +14,6 @@ public struct DeliveryData
     public Dictionary<Substance, int> _deliverables;
 
     public Chat _chat;
-
 
     public DeliveryData(string deliveryId, int deliveryFee, Locations deliveryArea, Vector3 deliveryLocation, Dictionary<Substance, int> deliverables, Chat chat)
     {

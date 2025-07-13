@@ -210,6 +210,11 @@ public class Phone : SpecialEquipment, IBrowsable
         OnReceiveInstantMessage?.Invoke(chat);
         StartInstantMessage();
     }
+    public void ReceiveInstantMessage(Chat chat)
+    {
+        OnReceiveInstantMessage?.Invoke(chat);
+        StartInstantMessage();
+    }
 
     public override void Init()
     {

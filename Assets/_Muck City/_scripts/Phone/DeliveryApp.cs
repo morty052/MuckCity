@@ -34,10 +34,7 @@ public class DeliveryApp : PhoneApp
         // GameEventsManager.OnDeliveryAddedEvent -= HandleNewDelivery;
     }
 
-    // void Start()
-    // {
-    //     GameEventsManager.OnDeliveryAddedEvent += HandleNewDelivery;
-    // }
+
 
     private void OnDeliveryCompleted(DeliveryData data)
     {
@@ -62,7 +59,6 @@ public class DeliveryApp : PhoneApp
             _selectedPreviewIndex = _storedPreviews.Count - 1;
         }
     }
-
 
     public override void OnDownPressed()
     {
@@ -98,7 +94,6 @@ public class DeliveryApp : PhoneApp
 
     }
 
-
     public override void OnBackPressed()
     {
         if (_deliveryInfoPage.gameObject.activeSelf)
@@ -112,7 +107,6 @@ public class DeliveryApp : PhoneApp
         }
     }
 
-
     public void HandleNewDelivery(DeliveryData data)
     {
         _pendingDeliveries++;
@@ -122,4 +116,6 @@ public class DeliveryApp : PhoneApp
         preview.Init(data);
         _storedPreviews.Add(preview);
     }
+
+
 }

@@ -112,10 +112,10 @@ public class MessengerApp : PhoneApp
 
     #endregion
 
-    public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
     [SerializeField, TabGroup("Debug")] private bool _debug;
     [TabGroup("Debug")] public int _magnifiedMessagesOnScreen = 0;
 
+    public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
     bool IsViewingExpandedChat => _fullScreenMessageView.activeSelf;
     void Awake()
     {
@@ -154,117 +154,6 @@ public class MessengerApp : PhoneApp
         }
     }
 
-
-    //! EDITOR EVENT FUNCTION
-    public void StartConvo()
-    {
-        StartMagnifiedConvo();
-        Message message = Instantiate(_newMessagePrefab, _messagesParent);
-        message.gameObject.SetActive(true);
-        message._content.text = _activeNode.Text;
-        OnAddMessageToScreen?.Invoke();
-        //* ALLOW PLAYER TO RESPOND AFTER FIRST MESSAGE IS SHOWN
-        _canRespond = true;
-
-        //* SET ACTIVE APP ON PHONE TO MESSENGER APP
-        Phone.Instance.SetApp(ID);
-
-        _isTexting = true;
-    }
-
-    public override void OnBackPressed()
-    {
-        // This method can be overridden by derived classes to handle selection events
-        Debug.Log("On Back pressed");
-        if (!IsViewingExpandedChat)
-        {
-            Phone.Instance.GoToHomePage();
-        }
-
-        else
-        {
-            if (_canEndChat)
-            {
-                if (_magnifiedMessagesUi.gameObject.activeSelf)
-                {
-                    _magnifiedMessagesUi.gameObject.SetActive(false);
-                }
-                _fullScreenMessageView.SetActive(false);
-            }
-        }
-
-    }
-    public override void OnAcceptPressed()
-    {
-        // This method can be overridden by derived classes to handle selection events
-        Debug.Log("On Accept pressed");
-        if (_isTexting)
-        {
-            ProgressConvo(0);
-        }
-    }
-    public override void OnRejectPressed()
-    {
-        // This method can be overridden by derived classes to handle selection events
-        Debug.Log("On Reject pressed");
-        if (_isTexting)
-        {
-            ProgressConvo(1);
-        }
-    }
-    // [Button, TabGroup("Debug")]
-    // void CalculateScreenSpace()
-    // {
-    //     RectTransform parentTransform = _messagesParent.GetComponent<RectTransform>();
-    //     RectTransform messageTransform = _newMessagePrefab.GetComponent<RectTransform>();
-
-    //     float parentHeight = parentTransform.rect.height;
-
-    //     float messageHeight = messageTransform.rect.height;
-
-    //     int messagesFit = Mathf.FloorToInt(parentHeight / messageHeight);
-    //     Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
-
-    //     _maxMessagesOnScreen = messagesFit;
-    // }
-
-    //! EDITOR EVENT FUNCTION
-
-    void CalculateScreenSpace()
-    {
-        RectTransform parentTransform = _magnifiedMessagesParent.GetComponent<RectTransform>();
-        RectTransform messageTransform = _newMagnifiedMessagePrefab.GetComponent<RectTransform>();
-
-        float parentHeight = parentTransform.rect.height;
-
-        float messageHeight = messageTransform.rect.height;
-
-        int messagesFit = Mathf.FloorToInt(parentHeight / messageHeight);
-        if (_debug)
-        {
-            Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
-        }
-
-        _maxMagnifiedMessagesOnScreen = messagesFit;
-    }
-
-    [Button, TabGroup("Debug")]
-    public void SetUpIm(Chat convo)
-    {
-        Conversation conversation = convo.GetSpeechNodes();
-
-        _rootNode = conversation.Root;
-        _activeNode = _rootNode;
-
-        // GetActiveSpeechNode();
-        if (_activeNode.Connections.Count > 0)
-        {
-            SetActiveOptions();
-        }
-
-        AddChatToPreviewList(convo);
-    }
-
     public void SetActiveOptions()
     {
         //* CLEAR CURRENT OPTIONS IF ALREADY PRESENT
@@ -288,7 +177,6 @@ public class MessengerApp : PhoneApp
         _optionsTwoText.text = _activeNodeOptions.ElementAt(1).Text;
 
     }
-
     public string DisplayActiveSpeechNode()
     {
         Message message = Instantiate(_newMessagePrefab, _messagesParent);
@@ -309,57 +197,17 @@ public class MessengerApp : PhoneApp
         return _activeNode.Connections.Any(x => x.ConnectionType == Connection.eConnectionType.Option);
     }
 
-    //! EDITOR EVENT FUNCTION
-    public void SetActiveConvo(Chat convo)
+    private void OnCompleteChat()
     {
-        _activeConvo = convo;
+        Debug.Log("Completed chat");
     }
 
-
-
-    //! EDITOR EVENT FUNCTION
-    [Button, TabGroup("Debug")]
-    public void ProgressConvo(int choice)
-    {
-        if (!_canRespond) return;
-        OptionNode chosenOption = _activeNodeOptions.ElementAt(choice);
-        // Debug.Log($"Selected {_activeNodeOptions.ElementAt(choice).Text}");
-
-        ReplyMessage(chosenOption.Text);
-        ShowMagnifiedReply(chosenOption.Text);
-
-        //* SET CONTENT OF USER REPLY AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE
-        UpdateChatPreview(chosenOption.Text, true);
-
-        //* Set LAST SELECTED OPTION TO OPTION AT INDEX OF CHOICE
-        _lastSelectedOption = chosenOption;
-
-        //* STOP PLAYER FROM RESPONDING UNTIL NEXT MESSAGE IS SHOWN
-        _canRespond = false;
-
-        //* CHECK IF SELECTED OPTION HAS FURTHER DIALOGUE
-        if (SelectedOptionHasSpeech())
-        {
-            Invoke(nameof(ShowNextMessage), 2f);
-        }
-
-        else
-        {
-            Invoke(nameof(EndConvo), 3f);
-        }
-    }
-    [Button, TabGroup("Debug")]
-    public void DebugScreenMovement()
-    {
-        float messageHeight = _newMessagePrefab.GetComponent<RectTransform>().rect.height;
-        _messagesParent.transform.localPosition = new Vector3(_messagesParent.transform.localPosition.x, _messagesParent.transform.localPosition.y + messageHeight, _messagesParent.transform.localPosition.z);
-        Debug.Log(messageHeight);
-    }
     private void EndConvo()
     {
         _optionsUi.SetActive(false);
         _endChatUi.SetActive(true);
         _canEndChat = true;
+        _activeConvo.Complete();
         Debug.Log("Done");
     }
 
@@ -400,11 +248,6 @@ public class MessengerApp : PhoneApp
         OnAddMessageToScreen?.Invoke();
     }
 
-    public void OpenChat()
-    {
-        _fullScreenMessageView.SetActive(true);
-        _magnifiedMessagesUi.gameObject.SetActive(true);
-    }
     public void OpenChat(InstantMessage chat)
     {
         _fullScreenMessageView.SetActive(true);
@@ -429,6 +272,189 @@ public class MessengerApp : PhoneApp
             OnAddMessageToScreen?.Invoke();
         }
     }
+
+
+    #region "Overrides"
+    public override void OnBackPressed()
+    {
+        // This method can be overridden by derived classes to handle selection events
+        Debug.Log("On Back pressed");
+        if (!IsViewingExpandedChat)
+        {
+            Phone.Instance.GoToHomePage();
+        }
+
+        else
+        {
+            if (_canEndChat)
+            {
+                if (_magnifiedMessagesUi.gameObject.activeSelf)
+                {
+                    _magnifiedMessagesUi.gameObject.SetActive(false);
+                }
+                _fullScreenMessageView.SetActive(false);
+            }
+        }
+
+    }
+    public override void OnAcceptPressed()
+    {
+        // This method can be overridden by derived classes to handle selection events
+        Debug.Log("On Accept pressed");
+        if (_isTexting)
+        {
+            ProgressConvo(0);
+        }
+    }
+    public override void OnRejectPressed()
+    {
+        // This method can be overridden by derived classes to handle selection events
+        Debug.Log("On Reject pressed");
+        if (_isTexting)
+        {
+            ProgressConvo(1);
+        }
+    }
+
+    #endregion
+
+
+    // [Button, TabGroup("Debug")]
+    // void CalculateScreenSpace()
+    // {
+    //     RectTransform parentTransform = _messagesParent.GetComponent<RectTransform>();
+    //     RectTransform messageTransform = _newMessagePrefab.GetComponent<RectTransform>();
+
+    //     float parentHeight = parentTransform.rect.height;
+
+    //     float messageHeight = messageTransform.rect.height;
+
+    //     int messagesFit = Mathf.FloorToInt(parentHeight / messageHeight);
+    //     Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
+
+    //     _maxMessagesOnScreen = messagesFit;
+    // }
+
+    //! EDITOR EVENT FUNCTION
+
+    void CalculateScreenSpace()
+    {
+        RectTransform parentTransform = _magnifiedMessagesParent.GetComponent<RectTransform>();
+        RectTransform messageTransform = _newMagnifiedMessagePrefab.GetComponent<RectTransform>();
+
+        float parentHeight = parentTransform.rect.height;
+
+        float messageHeight = messageTransform.rect.height;
+
+        int messagesFit = Mathf.FloorToInt(parentHeight / messageHeight);
+        if (_debug)
+        {
+            Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
+        }
+
+        _maxMagnifiedMessagesOnScreen = messagesFit;
+    }
+
+
+    #region "Editor Event Functions"
+
+    //! EDITOR EVENT FUNCTIONS
+    public void OpenChat()
+    {
+        _fullScreenMessageView.SetActive(true);
+        _magnifiedMessagesUi.gameObject.SetActive(true);
+    }
+    //! EDITOR EVENT FUNCTION
+    public void SetActiveConvo(Chat convo)
+    {
+        _activeConvo = convo;
+    }
+
+    //! EDITOR EVENT FUNCTION
+    [Button, TabGroup("Debug")]
+    public void SetUpIm(Chat convo)
+    {
+        Conversation conversation = convo.GetSpeechNodes();
+
+        _rootNode = conversation.Root;
+        _activeNode = _rootNode;
+
+        SetActiveConvo(convo);
+        // GetActiveSpeechNode();
+        if (_activeNode.Connections.Count > 0)
+        {
+            SetActiveOptions();
+        }
+
+        AddChatToPreviewList(convo);
+        convo.Oncomplete += OnCompleteChat;
+    }
+
+    //! EDITOR EVENT FUNCTION
+    public void StartConvo()
+    {
+        //* HANDLE START MAGNIFIED CONVO
+        StartMagnifiedConvo();
+
+        //* ADD FIRST MESSAGE TO REGULAR CHAT
+        Message message = Instantiate(_newMessagePrefab, _messagesParent);
+
+        message.gameObject.SetActive(true);
+        message._content.text = _activeNode.Text;
+        OnAddMessageToScreen?.Invoke();
+        //* ALLOW PLAYER TO RESPOND AFTER FIRST MESSAGE IS SHOWN
+        _canRespond = true;
+
+        //* SET ACTIVE APP ON PHONE TO MESSENGER APP
+        Phone.Instance.SetApp(ID);
+
+        _isTexting = true;
+    }
+
+    //! EDITOR EVENT FUNCTION
+    [Button, TabGroup("Debug")]
+    public void ProgressConvo(int choice)
+    {
+        if (!_canRespond) return;
+        OptionNode chosenOption = _activeNodeOptions.ElementAt(choice);
+        // Debug.Log($"Selected {_activeNodeOptions.ElementAt(choice).Text}");
+
+        ReplyMessage(chosenOption.Text);
+        ShowMagnifiedReply(chosenOption.Text);
+
+        //* SET CONTENT OF USER REPLY AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE
+        UpdateChatPreview(chosenOption.Text, true);
+
+        //* Set LAST SELECTED OPTION TO OPTION AT INDEX OF CHOICE
+        _lastSelectedOption = chosenOption;
+
+        //* STOP PLAYER FROM RESPONDING UNTIL NEXT MESSAGE IS SHOWN
+        _canRespond = false;
+
+        //* CHECK IF SELECTED OPTION HAS FURTHER DIALOGUE
+        if (SelectedOptionHasSpeech())
+        {
+            Invoke(nameof(ShowNextMessage), 2f);
+        }
+
+        else
+        {
+            Invoke(nameof(EndConvo), 3f);
+        }
+    }
+
+    #endregion
+
+    #region "Debug"
+    [Button, TabGroup("Debug")]
+    public void DebugScreenMovement()
+    {
+        float messageHeight = _newMessagePrefab.GetComponent<RectTransform>().rect.height;
+        _messagesParent.transform.localPosition = new Vector3(_messagesParent.transform.localPosition.x, _messagesParent.transform.localPosition.y + messageHeight, _messagesParent.transform.localPosition.z);
+        Debug.Log(messageHeight);
+    }
+
+    #endregion
 
     #region "Magnified messages Handling"
     public void StartMagnifiedConvo()

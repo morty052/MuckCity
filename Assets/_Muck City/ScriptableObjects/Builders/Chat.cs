@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DialogueEditor;
 using UnityEngine;
@@ -8,6 +9,12 @@ public class Chat : ScriptableObject
     public string _senderName;
     public NPCConversation _convo;
 
+    public Action Oncomplete;
+
+    public void Complete()
+    {
+        Oncomplete?.Invoke();
+    }
 
     public Conversation GetSpeechNodes()
     {
