@@ -70,7 +70,7 @@ public class MessengerApp : PhoneApp
 
     [TabGroup("Debug"), SerializeField] private int _messagesOnScreen = 0;
     [TabGroup("Debug")] public bool _canRespond = false;
-
+    Action OnAddMessageToScreen;
     #endregion
 
     #region "Non Inspector values"
@@ -80,30 +80,50 @@ public class MessengerApp : PhoneApp
     private OptionNode _lastSelectedOption;
     #endregion
 
-    public Transform _messagesPreviewParent;
-    public Message _messagePreviewPrefab;
+    #region "Magnified Messages"
+    Action OnAddMessageToLargeScreen;
+
+    [TabGroup("Magnified Components")] public Transform _magnifiedMessagesUi;
+    [TabGroup("Magnified Components")] public Transform _magnifiedMessagesParent;
+
+    [TabGroup("Magnified Components")]
+    [SerializeField, TabGroup("Magnified Components")] TextMeshProUGUI _optionsOneText;
+
+    [SerializeField, TabGroup("Magnified Components")] TextMeshProUGUI _optionsTwoText;
+
+    [TabGroup("Magnified Components")] public Message _newMagnifiedMessagePrefab;
+    [TabGroup("Magnified Components")] public Message _magnifiedResponsePrefab;
+
+    [TabGroup("Magnified Settings")] public int _maxMagnifiedMessagesOnScreen = 0;
+
+    #endregion
+
+    #region "message Preview"
+    [SerializeField, TabGroup("Preview Components")] Transform _messagesPreviewParent;
+    [SerializeField, TabGroup("Preview Components")] Message _messagePreviewPrefab;
     public List<InstantMessage> chats;
 
     public InstantMessage _activeChat;
-    MessengerApp _messengerApp;
 
-    Action OnAddMessageToScreen;
+    #endregion
 
     public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
-
-
+    [SerializeField, TabGroup("Debug")] private bool _debug;
+    [TabGroup("Debug")] public int _magnifiedMessagesOnScreen = 0;
     void Awake()
     {
-        _messengerApp = GetComponentInParent<MessengerApp>();
+        CalculateScreenSpace();
     }
 
     void OnEnable()
     {
         OnAddMessageToScreen += AddMessageToScreen;
+        OnAddMessageToLargeScreen += AddMessageToLargeScreen;
     }
     void OnDisable()
     {
         OnAddMessageToScreen -= AddMessageToScreen;
+        OnAddMessageToLargeScreen -= AddMessageToLargeScreen;
     }
 
     private void AddMessageToScreen()
@@ -117,24 +137,53 @@ public class MessengerApp : PhoneApp
         }
     }
 
+    private void AddMessageToLargeScreen()
+    {
+        _magnifiedMessagesOnScreen++;
+        if (_magnifiedMessagesOnScreen >= _maxMagnifiedMessagesOnScreen)
+        {
+            float messageHeight = _newMagnifiedMessagePrefab.GetComponent<RectTransform>().rect.height;
+            _magnifiedMessagesParent.transform.DOLocalMoveY(_magnifiedMessagesParent.transform.localPosition.y + messageHeight, 1f);
+        }
+    }
 
-    [Button, TabGroup("Debug")]
+
+    // [Button, TabGroup("Debug")]
+    // void CalculateScreenSpace()
+    // {
+    //     RectTransform parentTransform = _messagesParent.GetComponent<RectTransform>();
+    //     RectTransform messageTransform = _newMessagePrefab.GetComponent<RectTransform>();
+
+    //     float parentHeight = parentTransform.rect.height;
+
+    //     float messageHeight = messageTransform.rect.height;
+
+    //     int messagesFit = Mathf.FloorToInt(parentHeight / messageHeight);
+    //     Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
+
+    //     _maxMessagesOnScreen = messagesFit;
+    // }
+
+    //! EDITOR EVENT FUNCTION
+
     void CalculateScreenSpace()
     {
-        RectTransform parentTransform = _messagesParent.GetComponent<RectTransform>();
-        RectTransform messageTransform = _newMessagePrefab.GetComponent<RectTransform>();
+        RectTransform parentTransform = _magnifiedMessagesParent.GetComponent<RectTransform>();
+        RectTransform messageTransform = _newMagnifiedMessagePrefab.GetComponent<RectTransform>();
 
         float parentHeight = parentTransform.rect.height;
 
         float messageHeight = messageTransform.rect.height;
 
         int messagesFit = Mathf.FloorToInt(parentHeight / messageHeight);
-        Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
+        if (_debug)
+        {
+            Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
+        }
 
-        _maxMessagesOnScreen = messagesFit;
+        _maxMagnifiedMessagesOnScreen = messagesFit;
     }
 
-    //! EDITOR EVENT FUNCTION
     [Button, TabGroup("Debug")]
     public void SetUpIm(Chat convo)
     {
@@ -167,8 +216,12 @@ public class MessengerApp : PhoneApp
 
             //* SET OPTIONS AS THE ACTIVE OPTIONS FOR ACTIVE SPEECH NODE
             _activeNodeOptions.Add(connection.OptionNode);
-            // Debug.Log($"Option {i} {connection.OptionNode.Text}");
+
+
         }
+        //* UPDATE OPTIONS TEXT
+        _optionsOneText.text = _activeNodeOptions.ElementAt(0).Text;
+        _optionsTwoText.text = _activeNodeOptions.ElementAt(1).Text;
 
     }
 
@@ -201,6 +254,7 @@ public class MessengerApp : PhoneApp
     //! EDITOR EVENT FUNCTION
     public void StartConvo()
     {
+        StartMagnifiedConvo();
         Message message = Instantiate(_newMessagePrefab, _messagesParent);
         message.gameObject.SetActive(true);
         message._content.text = _activeNode.Text;
@@ -218,6 +272,7 @@ public class MessengerApp : PhoneApp
         // Debug.Log($"Selected {_activeNodeOptions.ElementAt(choice).Text}");
 
         ReplyMessage(chosenOption.Text);
+        ShowMagnifiedReply(chosenOption.Text);
 
         //* SET CONTENT OF USER REPLY AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE
         UpdateChatPreview(chosenOption.Text, true);
@@ -254,6 +309,7 @@ public class MessengerApp : PhoneApp
 
     void ShowNextMessage()
     {
+
         //* GET SPEECH FOR SELECTED 
         SpeechConnection speechConnection = _lastSelectedOption.Connections.First(x => x.ConnectionType == Connection.eConnectionType.Speech) as SpeechConnection;
 
@@ -263,7 +319,8 @@ public class MessengerApp : PhoneApp
         //* DISPLAY THE NEW SPEECH
         DisplayActiveSpeechNode();
 
-
+        //* DISPLAY THE NEW MAGNIFIED SPEECH
+        DisplayMagnifiedActiveSpeechNode();
 
         //* IF SPEECH HAS OPTIONS DISPLAY THEM
         if (ActiveSpeechHasOptions())
@@ -287,10 +344,10 @@ public class MessengerApp : PhoneApp
         OnAddMessageToScreen?.Invoke();
     }
 
-
     public void OpenChat()
     {
         _fullScreenMessageView.SetActive(true);
+        _magnifiedMessagesUi.gameObject.SetActive(true);
     }
     public void OpenChat(InstantMessage chat)
     {
@@ -317,7 +374,42 @@ public class MessengerApp : PhoneApp
         }
     }
 
+    #region "Magnified messages Handling"
+    public void StartMagnifiedConvo()
+    {
+        Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
+        message.gameObject.SetActive(true);
+        message._content.text = _activeNode.Text;
+        OnAddMessageToLargeScreen?.Invoke();
+        if (ActiveSpeechHasOptions())
+        {
+            _optionsOneText.text = _activeNodeOptions.ElementAt(0).Text;
+            _optionsTwoText.text = _activeNodeOptions.ElementAt(1).Text;
+        }
 
+    }
+
+
+    public string DisplayMagnifiedActiveSpeechNode()
+    {
+        Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
+        message.gameObject.SetActive(true);
+        message._content.text = _activeNode.Text;
+        OnAddMessageToLargeScreen?.Invoke();
+        return _activeNode.Text;
+    }
+    public void ShowMagnifiedReply(string text)
+    {
+        Message message = Instantiate(_magnifiedResponsePrefab, _magnifiedMessagesParent);
+        message._content.text = text;
+
+        message.gameObject.SetActive(true);
+
+        OnAddMessageToLargeScreen?.Invoke();
+        _optionsOneText.text = "";
+        _optionsTwoText.text = "";
+    }
+    #endregion
 
     #region "MessagePreview Handling"
 

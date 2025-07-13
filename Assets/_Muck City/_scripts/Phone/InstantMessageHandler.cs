@@ -14,22 +14,10 @@ using UnityUtils;
 
 public class InstantMessageHandler : MonoBehaviour
 {
-    [TabGroup("Components")] public Transform _messagesParent;
 
-    [TabGroup("Components")]
-    [SerializeField, TabGroup("Components")] TextMeshProUGUI _optionsOneText;
-
-
-    [SerializeField, TabGroup("Components")] TextMeshProUGUI _optionsTwoText;
-
-
-    [TabGroup("Components")] public Message _newMessagePrefab;
-    [TabGroup("Components")] public Message _responsePrefab;
-
-    [TabGroup("Settings")] public int _maxMessagesOnScreen = 0;
     [TabGroup("Debug")] public Chat _activeConvo;
 
-    [TabGroup("Debug")] public int _messagesOnScreen = 0;
+    [TabGroup("Debug")] public int _magnifiedMessagesOnScreen = 0;
     [TabGroup("Debug")] public bool _canRespond = false;
 
 
@@ -39,32 +27,46 @@ public class InstantMessageHandler : MonoBehaviour
     private HashSet<OptionNode> _activeNodeOptions = new();
     private OptionNode _lastSelectedOption;
 
-    [SerializeField] UnityEvent<string, bool> OnUpdateChat;
     [SerializeField, TabGroup("Debug")] private bool _debug;
-    Action OnAddMessageToScreen;
 
-    void Awake()
-    {
-        CalculateScreenSpace();
-    }
+    #region "Magnified Messages"
+    Action OnAddMessageToLargeScreen;
 
-    void OnEnable()
-    {
-        OnAddMessageToScreen += AddMessageToScreen;
-    }
-    void OnDisable()
-    {
-        OnAddMessageToScreen -= AddMessageToScreen;
-    }
+    [TabGroup("Components")] public Transform _magnifiedMessagesParent;
+
+    [TabGroup("Components")]
+    [SerializeField, TabGroup("Components")] TextMeshProUGUI _optionsOneText;
+
+    [SerializeField, TabGroup("Components")] TextMeshProUGUI _optionsTwoText;
+
+    [TabGroup("Components")] public Message _newMagnifiedMessagePrefab;
+    [TabGroup("Components")] public Message _magnifiedResponsePrefab;
+
+    [TabGroup("Settings")] public int _maxMagnifiedMessagesOnScreen = 0;
+
+    #endregion
+    // void Awake()
+    // {
+    //     CalculateScreenSpace();
+    // }
+
+    // void OnEnable()
+    // {
+    //     OnAddMessageToLargeScreen += AddMessageToScreen;
+    // }
+    // void OnDisable()
+    // {
+    //     OnAddMessageToLargeScreen -= AddMessageToScreen;
+    // }
 
     private void AddMessageToScreen()
     {
         //* INCREMENT MESSAGES ON SCREEN
-        _messagesOnScreen++;
-        if (_messagesOnScreen >= _maxMessagesOnScreen)
+        _magnifiedMessagesOnScreen++;
+        if (_magnifiedMessagesOnScreen >= _maxMagnifiedMessagesOnScreen)
         {
-            float messageHeight = _newMessagePrefab.GetComponent<RectTransform>().rect.height;
-            _messagesParent.transform.DOLocalMoveY(_messagesParent.transform.localPosition.y + messageHeight, 1f);
+            float messageHeight = _newMagnifiedMessagePrefab.GetComponent<RectTransform>().rect.height;
+            _magnifiedMessagesParent.transform.DOLocalMoveY(_magnifiedMessagesParent.transform.localPosition.y + messageHeight, 1f);
         }
     }
 
@@ -72,8 +74,8 @@ public class InstantMessageHandler : MonoBehaviour
     [Button, TabGroup("Debug")]
     void CalculateScreenSpace()
     {
-        RectTransform parentTransform = _messagesParent.GetComponent<RectTransform>();
-        RectTransform messageTransform = _newMessagePrefab.GetComponent<RectTransform>();
+        RectTransform parentTransform = _magnifiedMessagesParent.GetComponent<RectTransform>();
+        RectTransform messageTransform = _newMagnifiedMessagePrefab.GetComponent<RectTransform>();
 
         float parentHeight = parentTransform.rect.height;
 
@@ -85,7 +87,7 @@ public class InstantMessageHandler : MonoBehaviour
             Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
         }
 
-        _maxMessagesOnScreen = messagesFit;
+        _maxMagnifiedMessagesOnScreen = messagesFit;
     }
 
     //! EDITOR EVENT FUNCTION
@@ -130,10 +132,10 @@ public class InstantMessageHandler : MonoBehaviour
 
     public string DisplayActiveSpeechNode()
     {
-        Message message = Instantiate(_newMessagePrefab, _messagesParent);
+        Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
         message.gameObject.SetActive(true);
         message._content.text = _activeNode.Text;
-        OnAddMessageToScreen?.Invoke();
+        OnAddMessageToLargeScreen?.Invoke();
         return _activeNode.Text;
     }
 
@@ -157,10 +159,10 @@ public class InstantMessageHandler : MonoBehaviour
     //! EDITOR EVENT FUNCTION
     public void StartConvo()
     {
-        Message message = Instantiate(_newMessagePrefab, _messagesParent);
+        Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
         message.gameObject.SetActive(true);
         message._content.text = _activeNode.Text;
-        OnAddMessageToScreen?.Invoke();
+        OnAddMessageToLargeScreen?.Invoke();
         if (ActiveSpeechHasOptions())
         {
             _optionsOneText.text = _activeNodeOptions.ElementAt(0).Text;
@@ -183,7 +185,7 @@ public class InstantMessageHandler : MonoBehaviour
         ReplyMessage(chosenOption.Text);
 
         //* BROADCAST USERS CHOSEN OPTION AS STRING
-        OnUpdateChat?.Invoke(chosenOption.Text, true);
+        // OnUpdateChat?.Invoke(chosenOption.Text, true);
 
         //* Set LAST SELECTED OPTION TO OPTION AT INDEX OF CHOICE
         _lastSelectedOption = chosenOption;
@@ -232,18 +234,18 @@ public class InstantMessageHandler : MonoBehaviour
         _canRespond = true;
 
         //* BROADCAST CONTENT OF SPEECH AS STRING
-        OnUpdateChat?.Invoke(_activeNode.Text, false);
+        // OnUpdateChat?.Invoke(_activeNode.Text, false);
     }
 
 
     public void ReplyMessage(string text)
     {
-        Message message = Instantiate(_responsePrefab, _messagesParent);
+        Message message = Instantiate(_magnifiedResponsePrefab, _magnifiedMessagesParent);
         message._content.text = text;
 
         message.gameObject.SetActive(true);
 
-        OnAddMessageToScreen?.Invoke();
+        OnAddMessageToLargeScreen?.Invoke();
         _optionsOneText.text = "";
         _optionsTwoText.text = "";
     }

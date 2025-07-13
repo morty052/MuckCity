@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 731718186940702700}
   - component: {fileID: 2051523193043357354}
   m_Layer: 21
-  m_Name: Response
+  m_Name: Magnified Response
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

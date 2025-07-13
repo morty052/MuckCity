@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 5275126796800126656}
   - component: {fileID: 5230060243936193517}
   m_Layer: 21
-  m_Name: Message
+  m_Name: Magnified Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -294,7 +294,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5275126796800126656
 CanvasRenderer:
@@ -316,11 +316,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c113cb7b0fe41e945ab1e1e6fd55b3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _title: 
-  _body: 
-  _senderId: 
-  _isFromMind: 0
   _audioClip: {fileID: 0}
+  _title: {fileID: 0}
   _content: {fileID: 6137551513764641954}
-  _read: 0
+  _underLine: {fileID: 0}
   _isRejected: 0
