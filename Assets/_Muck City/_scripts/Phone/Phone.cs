@@ -120,7 +120,7 @@ public class Phone : SpecialEquipment, IBrowsable
     [TabGroup("Debug")]
     [SerializeField] private PhoneApp _activeRoute;
     [TabGroup("Debug")]
-    [SerializeField] private bool _isTexting;
+
     [SerializeField, TabGroup("Debug")] private bool _debug;
 
     #endregion
@@ -203,7 +203,6 @@ public class Phone : SpecialEquipment, IBrowsable
         // SetApp(AppNames.MESSENGER_APP);
         ShowPhone(true);
         OnStartInstantMessage?.Invoke();
-        _isTexting = true;
     }
     [Button, TabGroup("Debug")]
     void DebugInstantMessage(Chat chat)
@@ -292,18 +291,6 @@ public class Phone : SpecialEquipment, IBrowsable
                 break;
             case Inputs.BACK:
                 GoToHomePage();
-                break;
-            case Inputs.ACCEPT:
-                if (_isTexting)
-                {
-                    OnSendInstantMessage?.Invoke(0);
-                }
-                break;
-            case Inputs.REJECT:
-                if (_isTexting)
-                {
-                    OnSendInstantMessage?.Invoke(1);
-                }
                 break;
             default:
                 break;
@@ -427,7 +414,7 @@ public class Phone : SpecialEquipment, IBrowsable
         _currentApp = _installedApps[_selectedAppIndex];
         Debug.Log($"Selected app: {_currentApp.AppName}");
     }
-    private void SetApp(AppNames id)
+    public void SetApp(AppNames id)
     {
         //* Exit out of current app if already in app
         _activeRoute?._appMainScreen.gameObject.SetActive(false);

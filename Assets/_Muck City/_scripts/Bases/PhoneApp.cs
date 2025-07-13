@@ -64,6 +64,7 @@ public class PhoneApp : Tradeable
     {
         // This method can be overridden by derived classes to handle selection events
         Debug.Log("On Accept pressed");
+
     }
     public virtual void OnRejectPressed()
     {

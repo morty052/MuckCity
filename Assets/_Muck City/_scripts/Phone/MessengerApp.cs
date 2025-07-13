@@ -66,6 +66,9 @@ public class MessengerApp : PhoneApp
     [TabGroup("Components")] public Message _responsePrefab;
 
     [SerializeField, TabGroup("Settings")] private int _maxMessagesOnScreen = 0;
+
+    [SerializeField] private bool _isTexting;
+    [SerializeField, TabGroup("Settings")] private bool _canEndChat;
     [TabGroup("Debug")] public Chat _activeConvo;
 
     [TabGroup("Debug"), SerializeField] private int _messagesOnScreen = 0;
@@ -90,6 +93,8 @@ public class MessengerApp : PhoneApp
     [SerializeField, TabGroup("Magnified Components")] TextMeshProUGUI _optionsOneText;
 
     [SerializeField, TabGroup("Magnified Components")] TextMeshProUGUI _optionsTwoText;
+    [SerializeField, TabGroup("Magnified Components")] GameObject _endChatUi;
+    [SerializeField, TabGroup("Magnified Components")] GameObject _optionsUi;
 
     [TabGroup("Magnified Components")] public Message _newMagnifiedMessagePrefab;
     [TabGroup("Magnified Components")] public Message _magnifiedResponsePrefab;
@@ -110,6 +115,8 @@ public class MessengerApp : PhoneApp
     public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
     [SerializeField, TabGroup("Debug")] private bool _debug;
     [TabGroup("Debug")] public int _magnifiedMessagesOnScreen = 0;
+
+    bool IsViewingExpandedChat => _fullScreenMessageView.activeSelf;
     void Awake()
     {
         CalculateScreenSpace();
@@ -148,6 +155,63 @@ public class MessengerApp : PhoneApp
     }
 
 
+    //! EDITOR EVENT FUNCTION
+    public void StartConvo()
+    {
+        StartMagnifiedConvo();
+        Message message = Instantiate(_newMessagePrefab, _messagesParent);
+        message.gameObject.SetActive(true);
+        message._content.text = _activeNode.Text;
+        OnAddMessageToScreen?.Invoke();
+        //* ALLOW PLAYER TO RESPOND AFTER FIRST MESSAGE IS SHOWN
+        _canRespond = true;
+
+        //* SET ACTIVE APP ON PHONE TO MESSENGER APP
+        Phone.Instance.SetApp(ID);
+
+        _isTexting = true;
+    }
+
+    public override void OnBackPressed()
+    {
+        // This method can be overridden by derived classes to handle selection events
+        Debug.Log("On Back pressed");
+        if (!IsViewingExpandedChat)
+        {
+            Phone.Instance.GoToHomePage();
+        }
+
+        else
+        {
+            if (_canEndChat)
+            {
+                if (_magnifiedMessagesUi.gameObject.activeSelf)
+                {
+                    _magnifiedMessagesUi.gameObject.SetActive(false);
+                }
+                _fullScreenMessageView.SetActive(false);
+            }
+        }
+
+    }
+    public override void OnAcceptPressed()
+    {
+        // This method can be overridden by derived classes to handle selection events
+        Debug.Log("On Accept pressed");
+        if (_isTexting)
+        {
+            ProgressConvo(0);
+        }
+    }
+    public override void OnRejectPressed()
+    {
+        // This method can be overridden by derived classes to handle selection events
+        Debug.Log("On Reject pressed");
+        if (_isTexting)
+        {
+            ProgressConvo(1);
+        }
+    }
     // [Button, TabGroup("Debug")]
     // void CalculateScreenSpace()
     // {
@@ -251,17 +315,7 @@ public class MessengerApp : PhoneApp
         _activeConvo = convo;
     }
 
-    //! EDITOR EVENT FUNCTION
-    public void StartConvo()
-    {
-        StartMagnifiedConvo();
-        Message message = Instantiate(_newMessagePrefab, _messagesParent);
-        message.gameObject.SetActive(true);
-        message._content.text = _activeNode.Text;
-        OnAddMessageToScreen?.Invoke();
-        //* ALLOW PLAYER TO RESPOND AFTER FIRST MESSAGE IS SHOWN
-        _canRespond = true;
-    }
+
 
     //! EDITOR EVENT FUNCTION
     [Button, TabGroup("Debug")]
@@ -303,7 +357,9 @@ public class MessengerApp : PhoneApp
     }
     private void EndConvo()
     {
-        // gameObject.SetActive(false);
+        _optionsUi.SetActive(false);
+        _endChatUi.SetActive(true);
+        _canEndChat = true;
         Debug.Log("Done");
     }
 
