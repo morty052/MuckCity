@@ -5,8 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Chat", menuName = "ScriptableObjects/Phone/Chat")]
 public class Chat : ScriptableObject
 {
-    public List<InstantMessage> _dialogue;
-
+    public string _senderName;
     public NPCConversation _convo;
 
 

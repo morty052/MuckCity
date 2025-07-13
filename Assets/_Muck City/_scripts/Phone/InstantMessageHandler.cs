@@ -6,40 +6,14 @@ using DialogueEditor;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityUtils;
 
-[System.Serializable]
-public struct InstantMessage
-{
-    public string _message;
-    public string _optionOne;
-    public string _optionTwo;
-    public InstantMessage(string message, string optionOne, string optionTwo)
-    {
-        _message = message;
-        _optionOne = optionOne;
-        _optionTwo = optionTwo;
-    }
-}
-[System.Serializable]
-public class IM
-{
-    public SpeechNode _rootNode;
-    public ConversationNode _activeNode;
-    private HashSet<OptionNode> _activeNodeOptions;
-    private OptionNode _lastSelectedNode;
-    public IM(SpeechNode message)
-    {
-        _rootNode = message;
-        _activeNodeOptions = new();
-    }
 
-}
+
 
 public class InstantMessageHandler : MonoBehaviour
 {
-
-
     [TabGroup("Components")] public Transform _messagesParent;
 
     [TabGroup("Components")]
@@ -65,8 +39,9 @@ public class InstantMessageHandler : MonoBehaviour
     private HashSet<OptionNode> _activeNodeOptions = new();
     private OptionNode _lastSelectedOption;
 
-    Action OnAddMessageToScreen;
+    [SerializeField] UnityEvent<string, bool> OnUpdateChat;
     [SerializeField, TabGroup("Debug")] private bool _debug;
+    Action OnAddMessageToScreen;
 
     void Awake()
     {
@@ -202,12 +177,16 @@ public class InstantMessageHandler : MonoBehaviour
     public void ProgressConvo(int choice)
     {
         if (!_canRespond) return;
-        // Debug.Log($"Selected {_activeNodeOptions.ElementAt(choice).Text}");
 
-        ReplyMessage(_activeNodeOptions.ElementAt(choice).Text);
+        OptionNode chosenOption = _activeNodeOptions.ElementAt(choice);
+        //* DISPLAY USERS CHOSEN OPTION IN CHAT AS NEW TEXT
+        ReplyMessage(chosenOption.Text);
+
+        //* BROADCAST USERS CHOSEN OPTION AS STRING
+        OnUpdateChat?.Invoke(chosenOption.Text, true);
 
         //* Set LAST SELECTED OPTION TO OPTION AT INDEX OF CHOICE
-        _lastSelectedOption = _activeNodeOptions.ElementAt(choice);
+        _lastSelectedOption = chosenOption;
 
         //* STOP PLAYER FROM RESPONDING UNTIL NEXT MESSAGE IS SHOWN
         _canRespond = false;
@@ -251,6 +230,9 @@ public class InstantMessageHandler : MonoBehaviour
 
         //* ALLOW PLAYER TO RESPOND AFTER MESSAGE IS DISPLAYED
         _canRespond = true;
+
+        //* BROADCAST CONTENT OF SPEECH AS STRING
+        OnUpdateChat?.Invoke(_activeNode.Text, false);
     }
 
 

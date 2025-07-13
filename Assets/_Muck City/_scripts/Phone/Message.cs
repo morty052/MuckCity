@@ -1,18 +1,20 @@
 using TMPro;
 using UnityEngine;
+using UnityUtils;
 
 
 public class Message : MonoBehaviour
 {
-    public string _title;
-    public string _body;
-
 
     public AudioClip _audioClip;
 
+    public TextMeshProUGUI _title;
     public TextMeshProUGUI _content;
+    public GameObject _underLine;
 
     public bool _isRejected = false;
+
+    bool IsUsingUnderLine => _underLine.activeSelf;
 
     // public Message() { }
 
@@ -45,6 +47,29 @@ public class Message : MonoBehaviour
     // }
 
 
+    public void UseUnderLine()
+    {
+        _underLine.SetActive(true);
+    }
+
+    public void SetMessage(string content)
+    {
+
+        _content.text = content;
+    }
+    public void SetMessage(string title = null, string content = null)
+    {
+        if (title.IsNullOrEmpty())
+        {
+            _title.text = "Unknown Sender";
+        }
+        else
+        {
+            _title.text = title;
+        }
+        _content.text = content;
+
+    }
 
     public void PlayVoiceMessage()
     {

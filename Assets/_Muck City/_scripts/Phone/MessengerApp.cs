@@ -9,35 +9,58 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-struct PersistentMessageScreenData
-{
-    public List<Message> _messages;
 
-    public PersistentMessageScreenData(List<Message> messages)
+public struct MessageContentStruct
+{
+    public string _content;
+    public bool _playerSentMessage;
+
+    public MessageContentStruct(string message, bool playerSentMessage)
     {
-        _messages = messages;
+        _content = message;
+        _playerSentMessage = playerSentMessage;
+    }
+
+}
+
+[Serializable]
+public class InstantMessage
+{
+    public string _senderName;
+    public HashSet<MessageContentStruct> _messages = new();
+
+    public Message _messagePreview;
+
+    public int ID;
+    public InstantMessage(string senderName, string content, Message messagePrefab, bool firstMessageIsPlayerMessage = false)
+    {
+        _senderName = senderName;
+        //! INITIAL MESSAGE IN LIST ALWAYS SET TO NOT PLAYER MESSAGE FOR NOW
+        _messages.Add(new(content, false));
+        _messagePreview = messagePrefab;
+        _messagePreview.SetMessage(_senderName, _messages.ElementAt(0)._content);
+    }
+    public void SetID(int id)
+    {
+        ID = id;
+    }
+    public void UpdateChat(string latestMessage, bool isPlayerText)
+    {
+        MessageContentStruct im = new(latestMessage, isPlayerText);
+        _messages.Add(im);
+
+        //* DISPLAY MESSAGE AS CURRENT CHAT PREVIEW MESSAGE
+        _messagePreview.SetMessage(latestMessage);
     }
 }
 
 public class MessengerApp : PhoneApp
 {
 
-    // public List<MessagePrefab> _messageObjects = new();
-    // public List<Message> _savedMessages = new();
-    // [SerializeField] GameObject _messagePrefab;
-    // [SerializeField] GameObject _messagesHome;
-    // [SerializeField] GameObject _fullChat;
-    // [SerializeField] Transform _newMessagesParentTransform;
-
-    // [SerializeField] private TextMeshProUGUI _activeMessageTitle;
-    // [SerializeField] private TextMeshProUGUI _activeMessageBody;
-
-    // MessagePrefab ActiveMessage => _messageObjects[_activeMessageIndex];
+    #region "inspector values"
     [SerializeField, TabGroup("Components")] private GameObject _fullScreenMessageView;
     [SerializeField, TabGroup("Components")] private Image _contactPhoto;
     [TabGroup("Components")] public Transform _messagesParent;
-
-
 
     [TabGroup("Components")] public Message _newMessagePrefab;
     [TabGroup("Components")] public Message _responsePrefab;
@@ -48,16 +71,31 @@ public class MessengerApp : PhoneApp
     [TabGroup("Debug"), SerializeField] private int _messagesOnScreen = 0;
     [TabGroup("Debug")] public bool _canRespond = false;
 
-    //*
+    #endregion
+
+    #region "Non Inspector values"
     public SpeechNode _rootNode;
     public ConversationNode _activeNode;
     private HashSet<OptionNode> _activeNodeOptions = new();
     private OptionNode _lastSelectedOption;
+    #endregion
+
+    public Transform _messagesPreviewParent;
+    public Message _messagePreviewPrefab;
+    public List<InstantMessage> chats;
+
+    public InstantMessage _activeChat;
+    MessengerApp _messengerApp;
 
     Action OnAddMessageToScreen;
 
     public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
-    public string SAVE_FILE_NAME { get => "Messages"; set => throw new System.NotImplementedException(); }
+
+
+    void Awake()
+    {
+        _messengerApp = GetComponentInParent<MessengerApp>();
+    }
 
     void OnEnable()
     {
@@ -96,7 +134,7 @@ public class MessengerApp : PhoneApp
         _maxMessagesOnScreen = messagesFit;
     }
 
-
+    //! EDITOR EVENT FUNCTION
     [Button, TabGroup("Debug")]
     public void SetUpIm(Chat convo)
     {
@@ -111,6 +149,7 @@ public class MessengerApp : PhoneApp
             SetActiveOptions();
         }
 
+        AddChatToPreviewList(convo);
     }
 
     public void SetActiveOptions()
@@ -153,11 +192,13 @@ public class MessengerApp : PhoneApp
         return _activeNode.Connections.Any(x => x.ConnectionType == Connection.eConnectionType.Option);
     }
 
+    //! EDITOR EVENT FUNCTION
     public void SetActiveConvo(Chat convo)
     {
         _activeConvo = convo;
     }
 
+    //! EDITOR EVENT FUNCTION
     public void StartConvo()
     {
         Message message = Instantiate(_newMessagePrefab, _messagesParent);
@@ -168,16 +209,21 @@ public class MessengerApp : PhoneApp
         _canRespond = true;
     }
 
+    //! EDITOR EVENT FUNCTION
     [Button, TabGroup("Debug")]
     public void ProgressConvo(int choice)
     {
         if (!_canRespond) return;
+        OptionNode chosenOption = _activeNodeOptions.ElementAt(choice);
         // Debug.Log($"Selected {_activeNodeOptions.ElementAt(choice).Text}");
 
-        ReplyMessage(_activeNodeOptions.ElementAt(choice).Text);
+        ReplyMessage(chosenOption.Text);
+
+        //* SET CONTENT OF USER REPLY AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE
+        UpdateChatPreview(chosenOption.Text, true);
 
         //* Set LAST SELECTED OPTION TO OPTION AT INDEX OF CHOICE
-        _lastSelectedOption = _activeNodeOptions.ElementAt(choice);
+        _lastSelectedOption = chosenOption;
 
         //* STOP PLAYER FROM RESPONDING UNTIL NEXT MESSAGE IS SHOWN
         _canRespond = false;
@@ -227,6 +273,9 @@ public class MessengerApp : PhoneApp
 
         //* ALLOW PLAYER TO RESPOND AFTER MESSAGE IS DISPLAYED
         _canRespond = true;
+
+        //* SET CONTENT OF SPEECH AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE
+        UpdateChatPreview(_activeNode.Text, false);
     }
     public void ReplyMessage(string text)
     {
@@ -243,72 +292,83 @@ public class MessengerApp : PhoneApp
     {
         _fullScreenMessageView.SetActive(true);
     }
-    // private void AcceptMessageRequest()
-    // {
-    //     if (ActiveMessage._message._isRejected)
-    //     {
-    //         Debug.Log("message already rejected");
-    //         return;
-    //     }
-    //     // ActiveMessage._message._request.StartRequest();
-    // }
+    public void OpenChat(InstantMessage chat)
+    {
+        _fullScreenMessageView.SetActive(true);
 
-    // private void RejectMessageRequest()
-    // {
-    //     ActiveMessage._message._isRejected = true;
-    //     // ActiveMessage._message._request.Reject();
-    // }
-    // public void HandleNewMessage(Message message)
-    // {
-    //     MessagePrefab messagePrefab = Instantiate(_messagePrefab, _newMessagesParentTransform).GetComponent<MessagePrefab>();
-    //     messagePrefab.InitMessage(message);
-    //     _messageObjects.Add(messagePrefab);
-    //     _savedMessages.Add(message);
-    //     // TriggerAutoSave();
-    // }
+        for (int i = 0; i < chat._messages.Count; i++)
+        {
+            MessageContentStruct message = chat._messages.ElementAt(i);
+            if (message._playerSentMessage != true)
+            {
+                Message userMessage = Instantiate(_newMessagePrefab, _messagesParent);
+                userMessage.gameObject.SetActive(true);
+                userMessage._content.text = message._content;
+            }
 
-    // void SelectNextMsg()
-    // {
-    //     _activeMessageIndex = (_activeMessageIndex + 1) % _messageObjects.Count;
-    //     Debug.Log("active message index" + _activeMessageIndex);
-    // }
+            else
+            {
+                Message aiMessage = Instantiate(_responsePrefab, _messagesParent);
+                aiMessage.gameObject.SetActive(true);
+                aiMessage._content.text = message._content;
+            }
 
-    // void SelectPrevMsg()
-    // {
-    //     _activeMessageIndex = (_activeMessageIndex - 1) % _messageObjects.Count;
-    //     Debug.Log("active message index" + _activeMessageIndex);
-    // }
+            OnAddMessageToScreen?.Invoke();
+        }
+    }
 
 
-    // public void OpenFullChat()
-    // {
-    //     _activeMessageBody.text = ActiveMessage._bodyPreview.text;
-    //     _activeMessageTitle.text = ActiveMessage._title.text;
-    //     _messagesHome.SetActive(false);
-    //     _fullChat.SetActive(true);
-    // }
-    // public void ExitFullChat()
-    // {
-    //     _fullChat.SetActive(false);
-    //     _messagesHome.SetActive(true);
 
-    // }
+    #region "MessagePreview Handling"
 
-    // void ReloadSavedMessages()
-    // {
-    //     foreach (Message savedMessage in _savedMessages)
-    //     {
-    //         MessagePrefab messagePrefab = Instantiate(_messagePrefab, _newMessagesParentTransform).GetComponent<MessagePrefab>();
-    //         messagePrefab.InitMessage(savedMessage);
-    //         _messageObjects.Add(messagePrefab);
-    //     }
-    // }
+    [Button, TabGroup("Debug")]
+    public void AddChatToPreviewList(Chat convo)
+    {
+        Conversation conversation = convo.GetSpeechNodes();
+        Message messagePreview = Instantiate(_messagePreviewPrefab, _messagesPreviewParent);
 
-    // public void TriggerAutoSave()
-    // {
-    //     PersistentMessageScreenData data = new(_savedMessages);
-    //     Debug.Log("saved messages" + data._messages.Count);
-    //     // ES3.Save(SAVE_FILE_NAME, data);
-    // }
+        //* ACTIVATE DIVIDER UNDER MESSAGE FOR UI PURPOSE
+        messagePreview.UseUnderLine();
+        //* FIRST  MESSAGE IN CHAT ALWAYS AI MESSAGE 
+        InstantMessage chat = new(convo._senderName, conversation.Root.Text, messagePreview);
 
+        //* SET LATEST RECEIVED MESSAGE AS ACTIVE CHAT TO UPDATE WHEN ANY NEW MESSAGES COME IN
+        _activeChat = chat;
+
+        //* ADD INSTANT MESSAGE TO USER MESSAGES LIST
+        chats.Add(chat);
+
+        //* UPDATE ID OF INSTANT MESSAGE TO CURRENT LENGTH OF CHATS AFTER ADDING
+        _activeChat.SetID(chats.Count - 1);
+
+        //* MAKE MESSAGE PREFAB BUTTON OPEN INSTANT MESSAGE CORRESPONDING TO ID
+        AddExpandFuncToButton(messagePreview, chats.Count - 1);
+    }
+
+
+    public void UpdateChatPreview(string latestMessage, bool isPlayerText)
+    {
+        _activeChat.UpdateChat(latestMessage, isPlayerText);
+    }
+
+    public bool ChatExists()
+    {
+        return false;
+    }
+
+    void AddExpandFuncToButton(Message message, int chatIndex)
+    {
+        message.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            OpenChat(chatIndex);
+        });
+    }
+
+    private void OpenChat(int chatIndex)
+    {
+        InstantMessage instantMessage = chats[chatIndex];
+        OpenChat(instantMessage);
+    }
+
+    #endregion
 }
