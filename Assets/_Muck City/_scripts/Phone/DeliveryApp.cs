@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityUtils;
@@ -20,21 +21,28 @@ public class DeliveryApp : PhoneApp
     [SerializeField] GameObject _deliveryPreviewsParent;
     [SerializeField] DeliveryDisplayButton _deliveryPreviewPrefab;
 
+    [TabGroup("Debug")]
+    public DeliveryData? _currentDelivery;
 
-    void OnEnable()
+    public override void Init()
     {
-        // GameEventsManager.OnDeliveryAddedEvent += HandleNewDelivery;
+        base.Init();
+        GameEventsManager.OnDeliveryAddedEvent += HandleNewDelivery;
         GameEventsManager.OnDeliveryPointReachedEvent += OnDeliveryCompleted;
+        Debug.Log($"<color=orange> Delivery App Started </color>");
     }
+
 
     void OnDisable()
     {
-
         GameEventsManager.OnDeliveryPointReachedEvent -= OnDeliveryCompleted;
-        // GameEventsManager.OnDeliveryAddedEvent -= HandleNewDelivery;
+        GameEventsManager.OnDeliveryAddedEvent -= HandleNewDelivery;
     }
 
-
+    void AcceptDelivery()
+    {
+        GameEventsManager.Instance.OnDeliveryAccepted(_currentDelivery.Value);
+    }
 
     private void OnDeliveryCompleted(DeliveryData data)
     {
@@ -107,14 +115,43 @@ public class DeliveryApp : PhoneApp
         }
     }
 
+    public override void DoQuickAction()
+    {
+        QuickInspectDelivery();
+    }
+
+    private void ResetDeliveryState()
+    {
+        // _canQuickAcceptReject = false;
+        _currentDelivery = null;
+        Player.Instance._activeQuickAction = null;
+    }
+    public void QuickInspectDelivery()
+    {
+        // _canQuickAcceptReject = false;
+        _notificationSystem.HideNotification();
+        if (_currentDelivery.Value._chat != null)
+        {
+            Phone.Instance.OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
+            Phone.Instance.StartInstantMessage();
+        }
+    }
+
+
+
     public void HandleNewDelivery(DeliveryData data)
     {
+        Debug.Log($"<color=orange> Delivery Received </color>");
+        _currentDelivery = data;
         _pendingDeliveries++;
         _pendingDeliveriesText.text = _pendingDeliveries.ToString();
-        // Debug.Log("Found DeliveryApp, handling new delivery." + _pendingDeliveries);
+
         DeliveryDisplayButton preview = Instantiate(_deliveryPreviewPrefab, _deliveryPreviewsParent.transform);
         preview.Init(data);
         _storedPreviews.Add(preview);
+        Player.Instance._activeQuickAction = this;
+
+        _notificationSystem.ShowNotification("New order", data._deliveryFee.ToString(), "Reply", ResetDeliveryState);
     }
 
 

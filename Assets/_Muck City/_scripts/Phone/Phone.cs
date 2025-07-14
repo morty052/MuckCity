@@ -144,22 +144,22 @@ public class Phone : SpecialEquipment, IBrowsable
 
     void Start()
     {
-        // _notificationCanvas.transform.position = new Vector3(_alertHiddenXPos, _notificationCanvas.transform.position.y, _notificationCanvas.transform.position.z);
         SetupAppsAndIcons();
         SetPhonePos(PhonePosition.CENTER);
-
     }
 
-    void OnEnable()
-    {
+    // void OnEnable()
+    // {
+    //     if (IsAppInstalled<DeliveryApp>())
+    //     {
+    //         GameEventsManager.OnDeliveryAddedEvent += HandleNewDeliveryAdded;
+    //     }
+    // }
 
-        GameEventsManager.OnDeliveryAddedEvent += HandleNewDeliveryAdded;
-    }
-
-    void OnDisable()
-    {
-        GameEventsManager.OnDeliveryAddedEvent -= HandleNewDeliveryAdded;
-    }
+    // void OnDisable()
+    // {
+    //     GameEventsManager.OnDeliveryAddedEvent -= HandleNewDeliveryAdded;
+    // }
 
     // void Update()
     // {
@@ -183,27 +183,24 @@ public class Phone : SpecialEquipment, IBrowsable
     //     }
     // }
 
-    public void QuickInspectDelivery()
-    {
-        if (_canQuickAcceptReject)
-        {
-            _canQuickAcceptReject = false;
-            _notificationSystem.HideNotification();
-            if (_currentDelivery.Value._chat != null)
-            {
-                OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
-                StartInstantMessage();
-            }
-        }
-    }
+    // public void QuickInspectDelivery()
+    // {
+    //     _canQuickAcceptReject = false;
+    //     _notificationSystem.HideNotification();
+    //     if (_currentDelivery.Value._chat != null)
+    //     {
+    //         OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
+    //         StartInstantMessage();
+    //     }
+    // }
 
     [Button, TabGroup("Debug")]
-    void StartInstantMessage()
+    public void StartInstantMessage()
     {
-        // SetApp(AppNames.MESSENGER_APP);
         ShowPhone(true);
         OnStartInstantMessage?.Invoke();
     }
+
     [Button, TabGroup("Debug")]
     void DebugInstantMessage(Chat chat)
     {
@@ -236,10 +233,10 @@ public class Phone : SpecialEquipment, IBrowsable
         Player.Instance?.ShowPhone(useBlur);
     }
 
-    void AcceptDelivery()
-    {
-        GameEventsManager.Instance.OnDeliveryAccepted(_currentDelivery.Value);
-    }
+    // void AcceptDelivery()
+    // {
+    //     GameEventsManager.Instance.OnDeliveryAccepted(_currentDelivery.Value);
+    // }
 
 
     [Button, TabGroup("Debug")]
@@ -339,22 +336,32 @@ public class Phone : SpecialEquipment, IBrowsable
         }
     }
 
-    private void HandleNewDeliveryAdded(DeliveryData data)
+    // private void HandleNewDeliveryAdded(DeliveryData data)
+    // {
+
+    //     // DeliveryApp deliveryApp = _installedApps.Find(app => app is DeliveryApp) as DeliveryApp;
+
+    //     if (IsAppInstalled<DeliveryApp>(out PhoneApp deliveryApp))
+    //     {
+    //         ((DeliveryApp)deliveryApp).HandleNewDelivery(data);
+    //     }
+    //     else
+    //     {
+    //         Debug.LogWarning("No DeliveryApp found in installed apps.");
+    //     }
+    //     _currentDelivery = data;
+    //     _canQuickAcceptReject = true;
+    //     _notificationSystem.ShowNotification("New order", data._deliveryFee.ToString(), "Reply", ResetDeliveryState);
+    // }
+    public bool IsAppInstalled<T>(out PhoneApp app) where T : PhoneApp
     {
-
-        DeliveryApp deliveryApp = _installedApps.Find(app => app is DeliveryApp) as DeliveryApp;
-        if (deliveryApp != null)
-        {
-
-            deliveryApp.HandleNewDelivery(data);
-        }
-        else
-        {
-            Debug.LogWarning("No DeliveryApp found in installed apps.");
-        }
-        _currentDelivery = data;
-        _canQuickAcceptReject = true;
-        _notificationSystem.ShowNotification("New order", data._deliveryFee.ToString(), "Reply", ResetDeliveryState);
+        app = _installedApps.Find(x => x is T);
+        return app != null;
+    }
+    public bool IsAppInstalled<T>() where T : PhoneApp
+    {
+        PhoneApp app = _installedApps.Find(x => x is T);
+        return app != null;
     }
 
     private void ResetDeliveryState()
@@ -378,13 +385,17 @@ public class Phone : SpecialEquipment, IBrowsable
                 phoneApp = Instantiate(app, _appScreensParent);
             }
 
+            //* GET APP ICON
             Sprite sprite = phoneApp.AppIcon.IconSprite;
+            //* INSTANTIATE APP ICON
             Image image = Instantiate(_appIconPrefab, _homeScreenTransform);
             image.sprite = sprite;
+
+            //* MAKE APP ICON OPEN APP ON CLICK
             CreateButton(image, phoneApp.ID);
 
-            // AppScreen appScreen = Instantiate(app._appMainScreen, _appScreensParent);
-            // appScreen.transform.SetParent(_appScreensParent);
+            //* Allow Phone App To Set itself up even if disabled
+            phoneApp.Init();
 
             RectTransform rectTransform = phoneApp.GetComponent<RectTransform>();
 
@@ -397,8 +408,12 @@ public class Phone : SpecialEquipment, IBrowsable
             rectTransform.localScale = Vector3.one;
             rectTransform.localRotation = Quaternion.identity;
             rectTransform.localPosition = Vector3.zero;
+
+            //* APP MAIN SCREEN TO AVOID OVERLAP
             phoneApp._appMainScreen.gameObject.SetActive(false);
             _installedApps.Add(phoneApp);
+
+            //* ADD APPS TO ROUTES
             Routes.Add(phoneApp);
         }
     }

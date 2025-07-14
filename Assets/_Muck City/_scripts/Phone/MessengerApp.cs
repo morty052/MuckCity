@@ -208,7 +208,6 @@ public class MessengerApp : PhoneApp
         _endChatUi.SetActive(true);
         _canEndChat = true;
         _activeConvo.Complete();
-        Debug.Log("Done");
     }
 
     void ShowNextMessage()

@@ -8,7 +8,7 @@ public enum AppType
     IN_BUILT
 }
 [InlineEditor]
-public class PhoneApp : Tradeable
+public class PhoneApp : Tradeable, IDoQuickAction
 {
 
     [TabGroup("App Settings")]
@@ -27,6 +27,19 @@ public class PhoneApp : Tradeable
     public string AppName => _appName;
 
     public AppIcon AppIcon => _appIcon;
+
+    [TabGroup("Components")]
+    public NotificationSystem _notificationSystem;
+
+    void Awake()
+    {
+        _notificationSystem = GetComponentInParent<NotificationSystem>();
+    }
+
+    public virtual void Init()
+    {
+        _notificationSystem = GetComponentInParent<NotificationSystem>();
+    }
 
     public virtual void OnSelectPressed()
     {
@@ -75,6 +88,11 @@ public class PhoneApp : Tradeable
     public override void OnBuy(ShopItemSO shopItemSO)
     {
         Phone.Instance.InstallApp(this);
+    }
+
+    public virtual void DoQuickAction()
+    {
+        throw new System.NotImplementedException();
     }
 
     // public void OnSell()

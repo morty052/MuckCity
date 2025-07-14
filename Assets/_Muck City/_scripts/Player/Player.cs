@@ -13,7 +13,10 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 
-
+public interface IDoQuickAction
+{
+    public void DoQuickAction();
+}
 
 public class Player : MonoBehaviour, IHavePersistentData
 {
@@ -126,8 +129,6 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Phone")]
     public Observer<bool> _isPhoneShowing = new(false);
 
-
-
     [TabGroup("Storage")]
     public BackPack _hotStorage;
 
@@ -152,7 +153,7 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     public bool IsUnderGround => transform.position.y < _underGroundThreshold;
 
-
+    public IDoQuickAction _activeQuickAction;
     void OnEnable()
     {
         GameEventsManager.OnConversationStartedEvent += OnEnterConversation;
@@ -270,10 +271,11 @@ public class Player : MonoBehaviour, IHavePersistentData
 
         if (_acceptInput.GetButtonDown())
         {
-            if (Phone.Instance._canQuickAcceptReject)
-            {
-                Phone.Instance.QuickInspectDelivery();
-            }
+            // if (Phone.Instance._canQuickAcceptReject)
+            // {
+            //     Phone.Instance.QuickInspectDelivery();
+            // }
+            _activeQuickAction?.DoQuickAction();
         }
 
         if (_exitInput.GetButtonDown())
