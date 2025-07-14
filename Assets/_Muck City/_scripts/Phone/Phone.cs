@@ -148,7 +148,7 @@ public class Phone : SpecialEquipment, IBrowsable
     void Start()
     {
         SetupAppsAndIcons();
-        SetPhonePos(PhonePosition.CENTER);
+        SetPhonePos(PhonePosition.CENTER, false);
     }
 
     // void OnEnable()
@@ -246,7 +246,7 @@ public class Phone : SpecialEquipment, IBrowsable
 
 
     [Button, TabGroup("Debug")]
-    public void SetPhonePos(PhonePosition pos)
+    public void SetPhonePos(PhonePosition pos, bool hideUi = true)
     {
         if (pos == PhonePosition.RIGHT)
         {
@@ -255,7 +255,10 @@ public class Phone : SpecialEquipment, IBrowsable
         if (pos == PhonePosition.CENTER)
         {
             _phoneModel.transform.SetLocalPositionAndRotation(_centerPos.position, Quaternion.Euler(_centerPos.rotation));
-            HudManager.Instance.OnToggleUi();
+            if (hideUi)
+            {
+                HudManager.Instance.OnToggleUi();
+            }
         }
     }
 
