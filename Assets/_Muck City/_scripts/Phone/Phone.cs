@@ -273,6 +273,7 @@ public class Phone : SpecialEquipment, IBrowsable
         switch (input)
         {
             case Inputs.LEFT:
+                _appIcons[_selectedAppIndex].ToggleActive(false);
                 // MOVE TO PREVIOUS APP IF CAN GO BACK
                 if (_selectedAppIndex > 0)
                 {
@@ -283,8 +284,10 @@ public class Phone : SpecialEquipment, IBrowsable
                     //MOVE TO LAST APP IF CANT GO BACK
                     _selectedAppIndex = _appIcons.Count - 1;
                 }
+                _appIcons[_selectedAppIndex].ToggleActive(true);
                 break;
             case Inputs.RIGHT:
+                _appIcons[_selectedAppIndex].ToggleActive(false);
                 if (_selectedAppIndex == _appIcons.Count - 1)
                 {
                     //MOVE TO FIRST APP IF CANT GO FORWARD
@@ -296,6 +299,7 @@ public class Phone : SpecialEquipment, IBrowsable
                     //MOVE TO NEXT APP IF CAN GO FORWARD
                     _selectedAppIndex++;
                 }
+                _appIcons[_selectedAppIndex].ToggleActive(true);
                 break;
             case Inputs.SELECT:
                 SelectApp();
@@ -400,6 +404,9 @@ public class Phone : SpecialEquipment, IBrowsable
             Image image = Instantiate(_appIconPrefab, _homeScreenTransform);
             image.sprite = sprite;
 
+            //* ADD APP ICON TO APP ICONS LIST
+            _appIcons.Add(image.GetComponent<AppIcon>());
+
             //* MAKE APP ICON OPEN APP ON CLICK
             CreateButton(image, phoneApp.ID);
 
@@ -424,6 +431,9 @@ public class Phone : SpecialEquipment, IBrowsable
 
             //* ADD APPS TO ROUTES
             Routes.Add(phoneApp);
+
+            //* Highlight first App in list
+            _appIcons[_selectedAppIndex].ToggleActive(true);
         }
     }
 
