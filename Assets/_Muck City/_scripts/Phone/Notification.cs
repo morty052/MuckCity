@@ -73,4 +73,18 @@ public class Notification : MonoBehaviour
         //* SCALE IN
         gameObject.transform.DOScale(Vector3.one, 0.3f);
     }
+
+    public void HideNotification(Action callBack = null)
+    {
+        callBack?.Invoke();
+        gameObject.transform.DOScale(Vector3.zero, 0.3f).OnComplete(() =>
+        {
+            if (_promptObject.activeSelf)
+            {
+                _promptObject.SetActive(false);
+            }
+            gameObject.SetActive(false);
+
+        });
+    }
 }

@@ -112,7 +112,7 @@ public class MessengerApp : PhoneApp
 
     #endregion
 
-    [SerializeField, TabGroup("Debug")] private bool _debug;
+
     [TabGroup("Debug")] public int _magnifiedMessagesOnScreen = 0;
 
     public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }

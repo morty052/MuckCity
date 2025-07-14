@@ -26,10 +26,6 @@ public class Phone : SpecialEquipment, IBrowsable
 {
     public static Phone Instance { get; private set; }
 
-
-    [TabGroup("Inputs")]
-    public GenericInput _quickAcceptInput = new("C", "Y", "Y");
-
     // [TabGroup("Inputs")]
     // public GenericInput _quickRejectInput = new("C", "Y", "Y");
 
@@ -51,16 +47,18 @@ public class Phone : SpecialEquipment, IBrowsable
     [TabGroup("Components")]
     public Camera _phoneCamera;
 
+    [SerializeField, TabGroup("Components")]
+    private GameObject _externalCanvas;
+
     [TabGroup("Components")]
     public StatusBar _statusBar;
 
     [TabGroup("Components")]
-    public NotificationSystem _notificationSystem;
+    public ActionPrompt _actionPrompt;
 
     #endregion
 
-    public Action<string> OnInstallApp;
-
+    #region "Settings"
     [TabGroup("Settings")]
     public bool _canQuickAcceptReject = false;
 
@@ -69,6 +67,7 @@ public class Phone : SpecialEquipment, IBrowsable
 
     [TabGroup("Settings")]
     [SerializeField] Pos _rightPos;
+    #endregion
 
     #region "Events"
     [TabGroup("Events")]
@@ -123,9 +122,13 @@ public class Phone : SpecialEquipment, IBrowsable
 
     [SerializeField, TabGroup("Debug")] private bool _debug;
 
+
+
     #endregion
 
-
+    [HideInInspector]
+    public NotificationSystem _notificationSystem;
+    public Action<string> OnInstallApp;
 
     void Awake()
     {
@@ -230,7 +233,7 @@ public class Phone : SpecialEquipment, IBrowsable
 
     void ShowPhone(bool useBlur)
     {
-        Player.Instance?.ShowPhone(useBlur);
+        Player.Instance?.TogglePhone(useBlur);
     }
 
     // void AcceptDelivery()
@@ -395,7 +398,7 @@ public class Phone : SpecialEquipment, IBrowsable
             CreateButton(image, phoneApp.ID);
 
             //* Allow Phone App To Set itself up even if disabled
-            phoneApp.Init();
+            phoneApp.Init(_notificationSystem, _externalCanvas, _actionPrompt);
 
             RectTransform rectTransform = phoneApp.GetComponent<RectTransform>();
 
@@ -409,7 +412,7 @@ public class Phone : SpecialEquipment, IBrowsable
             rectTransform.localRotation = Quaternion.identity;
             rectTransform.localPosition = Vector3.zero;
 
-            //* APP MAIN SCREEN TO AVOID OVERLAP
+            //* DISABLE APP MAIN SCREEN TO AVOID OVERLAP
             phoneApp._appMainScreen.gameObject.SetActive(false);
             _installedApps.Add(phoneApp);
 
@@ -434,7 +437,7 @@ public class Phone : SpecialEquipment, IBrowsable
         _currentApp = _installedApps[_selectedAppIndex];
         Debug.Log($"Selected app: {_currentApp.AppName}");
     }
-    public void SetApp(AppNames id)
+    public void SetApp(AppNames id, bool showPhone = false)
     {
         //* Exit out of current app if already in app
         _activeRoute?._appMainScreen.gameObject.SetActive(false);
@@ -448,6 +451,11 @@ public class Phone : SpecialEquipment, IBrowsable
         if (_debug)
         {
             Debug.Log($"Selected app: {_currentApp.ID}");
+        }
+
+        if (showPhone)
+        {
+            ShowPhone(true);
         }
 
     }
@@ -516,6 +524,18 @@ public class Phone : SpecialEquipment, IBrowsable
         button.onClick.AddListener(() => { SetApp(phoneAppID); });
     }
 
+    // public void UseActionPrompt(string promptOne, string promptTwo)
+    // {
+    //     _externalCanvas.SetActive(true);
+    //     _actionPrompt.UseActionPrompt(promptOne, promptTwo);
+    //     _actionPrompt.gameObject.SetActive(true);
+    // }
+
+    // public void DisposeActionPrompt()
+    // {
+    //     _externalCanvas.SetActive(false);
+    //     _actionPrompt.gameObject.SetActive(false);
+    // }
 }
 
 public class StatusBar

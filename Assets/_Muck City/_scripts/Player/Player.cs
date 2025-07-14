@@ -241,7 +241,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     {
         if (_showPhoneInput.GetButtonDown())
         {
-            ShowPhone();
+            TogglePhone();
         }
         if (_interactionInput.GetButtonDown())
         {
@@ -332,7 +332,7 @@ public class Player : MonoBehaviour, IHavePersistentData
             _lastInteractable.Interact();
         }
     }
-    public void ShowPhone(bool useBlur = true)
+    public void TogglePhone(bool useBlur = true)
     {
         if (!_phoneCamera.gameObject.activeSelf)
         {

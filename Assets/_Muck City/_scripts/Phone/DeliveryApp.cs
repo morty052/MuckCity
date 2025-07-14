@@ -24,17 +24,7 @@ public class DeliveryApp : PhoneApp
     [TabGroup("Debug")]
     public DeliveryData? _currentDelivery;
 
-    public override void Init()
-    {
-        base.Init();
-        GameEventsManager.OnDeliveryAddedEvent += HandleNewDelivery;
-        GameEventsManager.OnDeliveryPointReachedEvent += OnDeliveryCompleted;
-        if (_debug)
-        {
-            Debug.Log($"<color=orange> Delivery App Started </color>");
-        }
-    }
-
+    bool IsViewingDelivery => _deliveryInfoPage.gameObject.activeSelf;
 
     void OnDisable()
     {
@@ -57,6 +47,22 @@ public class DeliveryApp : PhoneApp
         _pendingDeliveriesText.text = _pendingDeliveries.ToString();
     }
 
+    #region "overrides"
+    public override void OnInit()
+    {
+
+        GameEventsManager.OnDeliveryAddedEvent += HandleNewDelivery;
+        GameEventsManager.OnDeliveryPointReachedEvent += OnDeliveryCompleted;
+        if (_debug)
+        {
+            Debug.Log($"<color=orange> Delivery App Started </color>");
+        }
+    }
+
+    public override void DoQuickAction()
+    {
+        QuickInspectDelivery();
+    }
     public override void OnUpPressed()
     {
         // MOVE TO PREVIOUS APP IF CAN GO BACK
@@ -96,13 +102,17 @@ public class DeliveryApp : PhoneApp
     }
     public override void OnAcceptPressed()
     {
-        Debug.Log($"selected preview fee is {_storedPreviews[_selectedPreviewIndex]._deliveryFee}");
-        GameEventsManager.Instance.OnDeliveryAccepted(_storedPreviews[_selectedPreviewIndex]._data);
-        if (_deliveryInfoPage.gameObject.activeSelf)
+        if (_debug)
         {
-            _deliveryInfoPage.gameObject.SetActive(false);
+            Debug.Log($"selected preview fee is {_storedPreviews[_selectedPreviewIndex]._deliveryFee}");
         }
-
+        if (IsViewingDelivery)
+        {
+            GameEventsManager.Instance.OnDeliveryAccepted(_storedPreviews[_selectedPreviewIndex]._data);
+            DisposeActionPrompt(true);
+            // _deliveryInfoPage.gameObject.SetActive(false);
+            // AcceptDelivery();
+        }
     }
 
     public override void OnBackPressed()
@@ -118,10 +128,7 @@ public class DeliveryApp : PhoneApp
         }
     }
 
-    public override void DoQuickAction()
-    {
-        QuickInspectDelivery();
-    }
+    #endregion
 
     private void ResetDeliveryState()
     {
@@ -133,14 +140,15 @@ public class DeliveryApp : PhoneApp
     {
         // _canQuickAcceptReject = false;
         _notificationSystem.HideNotification();
-        if (_currentDelivery.Value._chat != null)
-        {
-            Phone.Instance.OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
-            Phone.Instance.StartInstantMessage();
-        }
+        _deliveryInfoPage.gameObject.SetActive(true);
+        Phone.Instance.SetApp(ID, true);
+        DisplayActionPrompt("Accept", "Ignore");
+        // if (_currentDelivery.Value._chat != null)
+        // {
+        //     Phone.Instance.OnReceiveInstantMessage?.Invoke(_currentDelivery.Value._chat);
+        //     Phone.Instance.StartInstantMessage();
+        // }
     }
-
-
 
     public void HandleNewDelivery(DeliveryData data)
     {
@@ -155,10 +163,12 @@ public class DeliveryApp : PhoneApp
         DeliveryDisplayButton preview = Instantiate(_deliveryPreviewPrefab, _deliveryPreviewsParent.transform);
         preview.Init(data);
         _storedPreviews.Add(preview);
-        Player.Instance._activeQuickAction = this;
+
+
+        // Player.Instance._activeQuickAction = this;
+        UseQuickAction();
 
         _notificationSystem.ShowNotification("New order", data._deliveryFee.ToString(), "Reply", ResetDeliveryState);
     }
-
 
 }

@@ -29,19 +29,26 @@ public class PhoneApp : Tradeable, IDoQuickAction
 
     public AppIcon AppIcon => _appIcon;
 
-    [TabGroup("Components")]
-    public NotificationSystem _notificationSystem;
-    [TabGroup("Components")]
-    public GameObject _notificationObject;
+    [HideInInspector]
+    protected NotificationSystem _notificationSystem;
+    [HideInInspector]
+    protected GameObject _externalCanvas;
 
-    void Awake()
+    public ActionPrompt _actionPrompt;
+
+
+    public virtual void Init(NotificationSystem notificationSystem, GameObject externalCanvas, ActionPrompt actionPrompt)
     {
-        _notificationSystem = GetComponentInParent<NotificationSystem>();
+        _notificationSystem = notificationSystem;
+        _externalCanvas = externalCanvas;
+        _actionPrompt = actionPrompt;
+
+        //* FUNCTION CALLED TO ALLOW INDIVIDUAL PHONE APPS DO THEIR UNIQUE SETUP
+        OnInit();
     }
-
-    public virtual void Init()
+    public virtual void OnInit()
     {
-        _notificationSystem = GetComponentInParent<NotificationSystem>();
+
     }
 
     public virtual void OnSelectPressed()
@@ -98,8 +105,23 @@ public class PhoneApp : Tradeable, IDoQuickAction
         throw new System.NotImplementedException();
     }
 
-    // public void OnSell()
-    // {
-    //     throw new System.NotImplementedException();
-    // }
+    public virtual void UseQuickAction()
+    {
+        Player.Instance._activeQuickAction = this;
+    }
+    protected virtual void DisplayActionPrompt(string promptOne, string promptTwo)
+    {
+        _externalCanvas.SetActive(true);
+        _actionPrompt.UseActionPrompt(promptOne, promptTwo);
+        _actionPrompt.gameObject.SetActive(true);
+    }
+    protected virtual void DisposeActionPrompt(bool hidePhoneToo)
+    {
+        _externalCanvas.SetActive(false);
+        _actionPrompt.gameObject.SetActive(false);
+        if (hidePhoneToo)
+        {
+            Player.Instance.TogglePhone();
+        }
+    }
 }

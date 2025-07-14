@@ -11,8 +11,6 @@ public class NotificationSystem : MonoBehaviour
 {
     public Transform _notificationCanvas;
     public Notification _notificationObject;
-    public Transform _promptObject;
-
 
     public async void DelayedInvoke(Action callback, int delay)
     {
@@ -52,14 +50,9 @@ public class NotificationSystem : MonoBehaviour
 
     public void HideNotification()
     {
-        _notificationObject.gameObject.transform.DOScale(Vector3.zero, 0.3f).OnComplete(() =>
-        {
-            if (_promptObject.gameObject.activeSelf)
-            {
-                _promptObject.gameObject.SetActive(false);
-            }
-            _notificationObject.gameObject.SetActive(false);
-        });
+        //* STOPS EXTERNAL CANVAS FROM BEING HIDDEN WHEN NOTIFICATION IS CLOSED BEFORE ITS REGULAR SCREEN TIME
+        if (!_notificationObject.gameObject.activeSelf) return;
+        _notificationObject.HideNotification(() => _notificationCanvas.gameObject.SetActive(false));
     }
 }
 
