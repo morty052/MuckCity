@@ -1,21 +1,17 @@
 using System;
 using System.Threading.Tasks;
 using DG.Tweening;
-using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
+
+
 
 public class NotificationSystem : MonoBehaviour
 {
     public Transform _notificationCanvas;
-    public Transform _notificationObject;
+    public Notification _notificationObject;
     public Transform _promptObject;
-    public Image _promptButton;
-    public TextMeshProUGUI _notificationTitle;
-    public TextMeshProUGUI _notificationContent;
-    public TextMeshProUGUI _promptText;
 
 
     public async void DelayedInvoke(Action callback, int delay)
@@ -30,22 +26,26 @@ public class NotificationSystem : MonoBehaviour
         _notificationCanvas.gameObject.SetActive(true);
 
         //*UPDATE NOTIFICATION TITLEs
-        _notificationTitle.text = title;
+        // _notificationTitle.text = title;
 
         //* UPDATE NOTIFICATION CONTENT
-        _notificationContent.text = content;
+        // _notificationContent.text = content;
 
         //* SHOW PROMPT WITH NOTIFICATION IF AVAILABLE
-        if (promptText != null)
-        {
-            _promptText.text = promptText;
-            _promptObject.gameObject.SetActive(true);
-        }
+        // if (promptText != null)
+        // {
+        //     _promptText.text = promptText;
+        //     _promptObject.gameObject.SetActive(true);
+        // }
 
         //* SHOW MAIN NOTIFICATION OBJECT
-        _notificationObject.gameObject.SetActive(true);
+        // _notificationObject.gameObject.SetActive(true);
+
+        _notificationObject.SetNotification(title, content, promptText);
+
         //* SCALE IN
-        _notificationObject.gameObject.transform.DOScale(Vector3.one, 0.3f);
+        // _notificationObject.gameObject.transform.DOScale(Vector3.one, 0.3f);
+
         //* SCALE OUT AFTER DELAY AND CALL CALLBACK IF ANY
         DelayedInvoke(() => { HideNotification(); callback?.Invoke(); }, 3);
     }

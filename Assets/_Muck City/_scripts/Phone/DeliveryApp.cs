@@ -29,7 +29,10 @@ public class DeliveryApp : PhoneApp
         base.Init();
         GameEventsManager.OnDeliveryAddedEvent += HandleNewDelivery;
         GameEventsManager.OnDeliveryPointReachedEvent += OnDeliveryCompleted;
-        Debug.Log($"<color=orange> Delivery App Started </color>");
+        if (_debug)
+        {
+            Debug.Log($"<color=orange> Delivery App Started </color>");
+        }
     }
 
 
@@ -141,7 +144,10 @@ public class DeliveryApp : PhoneApp
 
     public void HandleNewDelivery(DeliveryData data)
     {
-        Debug.Log($"<color=orange> Delivery Received </color>");
+        if (_debug)
+        {
+            Debug.Log($"<color=orange> Delivery Received </color>");
+        }
         _currentDelivery = data;
         _pendingDeliveries++;
         _pendingDeliveriesText.text = _pendingDeliveries.ToString();

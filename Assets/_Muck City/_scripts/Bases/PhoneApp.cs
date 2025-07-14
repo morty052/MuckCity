@@ -20,9 +20,10 @@ public class PhoneApp : Tradeable, IDoQuickAction
     [TabGroup("App Settings")]
     [SerializeField] private AppIcon _appIcon;
     [TabGroup("App Settings")]
-
     public AppScreen _appMainScreen;
 
+    [TabGroup("App Settings")]
+    public bool _debug;
 
     public string AppName => _appName;
 
@@ -30,6 +31,8 @@ public class PhoneApp : Tradeable, IDoQuickAction
 
     [TabGroup("Components")]
     public NotificationSystem _notificationSystem;
+    [TabGroup("Components")]
+    public GameObject _notificationObject;
 
     void Awake()
     {
