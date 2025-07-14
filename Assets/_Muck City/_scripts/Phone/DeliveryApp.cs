@@ -26,10 +26,14 @@ public class DeliveryApp : PhoneApp
 
     bool IsViewingDelivery => _deliveryInfoPage.gameObject.activeSelf;
 
-    void OnDisable()
+    public override void OnDisablePhone()
     {
         GameEventsManager.OnDeliveryPointReachedEvent -= OnDeliveryCompleted;
         GameEventsManager.OnDeliveryAddedEvent -= HandleNewDelivery;
+        if (_debug)
+        {
+            Debug.Log("Delivery App Disabled");
+        }
     }
 
     void AcceptDelivery()

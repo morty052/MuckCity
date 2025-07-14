@@ -159,10 +159,7 @@ public class Phone : SpecialEquipment, IBrowsable
     //     }
     // }
 
-    // void OnDisable()
-    // {
-    //     GameEventsManager.OnDeliveryAddedEvent -= HandleNewDeliveryAdded;
-    // }
+
 
     // void Update()
     // {
@@ -196,7 +193,13 @@ public class Phone : SpecialEquipment, IBrowsable
     //         StartInstantMessage();
     //     }
     // }
-
+    void OnDisable()
+    {
+        for (int i = 0; i < _installedApps.Count; i++)
+        {
+            _installedApps[i].OnDisablePhone();
+        }
+    }
     [Button, TabGroup("Debug")]
     public void StartInstantMessage()
     {

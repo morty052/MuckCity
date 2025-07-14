@@ -1,4 +1,5 @@
 
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -123,5 +124,10 @@ public class PhoneApp : Tradeable, IDoQuickAction
         {
             Player.Instance.TogglePhone();
         }
+    }
+
+    public virtual void OnDisablePhone()
+    {
+        throw new NotImplementedException();
     }
 }

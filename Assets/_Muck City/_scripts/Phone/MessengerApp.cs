@@ -127,10 +127,14 @@ public class MessengerApp : PhoneApp
         OnAddMessageToScreen += AddMessageToScreen;
         OnAddMessageToLargeScreen += AddMessageToLargeScreen;
     }
-    void OnDisable()
+    public override void OnDisablePhone()
     {
         OnAddMessageToScreen -= AddMessageToScreen;
         OnAddMessageToLargeScreen -= AddMessageToLargeScreen;
+        if (_debug)
+        {
+            Debug.Log("Messenger App Disabled");
+        }
     }
 
     private void AddMessageToScreen()
