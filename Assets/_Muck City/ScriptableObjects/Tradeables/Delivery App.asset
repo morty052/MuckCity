@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: Delivery App
   _icon: {fileID: 0}
   _price: 0
-  _tradeable: {fileID: -4242541331063905304, guid: d8459e5e1059de04386d90d96f8b2f0e, type: 3}
+  _tradeable: {fileID: 8936089448328219834, guid: d8459e5e1059de04386d90d96f8b2f0e, type: 3}
   _itemReference:
     id: 0
     name: 

@@ -51,6 +51,18 @@ public class PhoneApp : Tradeable, IDoQuickAction
     {
 
     }
+    protected void HidePhone()
+    {
+        Player.Instance.TogglePhone();
+        if (_externalCanvas.activeSelf)
+        {
+            _externalCanvas.SetActive(false);
+        }
+        if (_actionPrompt.gameObject.activeSelf)
+        {
+            _actionPrompt.gameObject.SetActive(false);
+        }
+    }
 
     public virtual void OnSelectPressed()
     {

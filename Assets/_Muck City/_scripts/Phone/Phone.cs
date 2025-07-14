@@ -216,7 +216,7 @@ public class Phone : SpecialEquipment, IBrowsable
     public void ReceiveInstantMessage(Chat chat)
     {
         OnReceiveInstantMessage?.Invoke(chat);
-        StartInstantMessage();
+        // StartInstantMessage();
     }
 
     public override void Init()
@@ -428,9 +428,9 @@ public class Phone : SpecialEquipment, IBrowsable
     }
 
     [Button, TabGroup("Debug")]
-    public void ShowAlert(string title, string content, string promptText = null)
+    public void ShowAlert(string content, string promptText = null)
     {
-        _notificationSystem.ShowNotification(title, content, promptText, ResetDeliveryState);
+        _notificationSystem.ShowNotification(null, content, promptText, ResetDeliveryState);
     }
     private void SelectApp()
     {

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class Notification : MonoBehaviour
 {
     public Image _icon;
-    public TextMeshProUGUI _title;
+    // public TextMeshProUGUI _title;
     public TextMeshProUGUI _content;
     public TextMeshProUGUI _promptText;
     public GameObject _promptObject;
@@ -46,21 +46,13 @@ public class Notification : MonoBehaviour
 
     }
 
-    public void ShowNotification(string title, string content, string promptText = null, Action callback = null)
+
+    public void SetNotification(Sprite icon, string content, string promptText = null)
     {
-
-        //*UPDATE NOTIFICATION TITLES
-        _title.text = title;
-
-        //* UPDATE NOTIFICATION CONTENT
-        _content.text = content;
-
-
-    }
-
-    public void SetNotification(string title, string content, string promptText = null)
-    {
-        _title.text = title;
+        if (icon != null)
+        {
+            _icon.sprite = icon;
+        }
         _content.text = content;
 
         //* SHOW PROMPT WITH NOTIFICATION IF AVAILABLE
@@ -70,12 +62,15 @@ public class Notification : MonoBehaviour
             _promptObject.SetActive(true);
         }
 
+        gameObject.SetActive(true);
         //* SCALE IN
         gameObject.transform.DOScale(Vector3.one, 0.3f);
     }
 
     public void HideNotification(Action callBack = null)
     {
+        //* STOPS EXTERNAL CANVAS FROM BEING HIDDEN WHEN NOTIFICATION IS CLOSED BEFORE ITS REGULAR SCREEN TIME
+        if (!gameObject.activeSelf) return;
         callBack?.Invoke();
         gameObject.transform.DOScale(Vector3.zero, 0.3f).OnComplete(() =>
         {

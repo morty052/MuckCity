@@ -21,6 +21,7 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
     public SaveAble SAVE_ID => SaveAble.CREDITS;
 
     private SocialCreditData _socialCreditData;
+    [SerializeField] bool _debug;
 
     private void Awake()
     {
@@ -72,7 +73,10 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
     {
         SocialCredit += data._deliveryFee;
         _socialCreditText.text = SocialCredit.ToString();
-        Debug.Log("Received delivery fee: " + data._deliveryFee + " social credit: " + SocialCredit);
+        if (_debug)
+        {
+            Debug.Log("Received delivery fee: " + data._deliveryFee + " social credit: " + SocialCredit);
+        }
     }
 
     public void TriggerAutoSave()
@@ -85,7 +89,10 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
         };
 
         AutoSaveManager.Autosave(SAVE_ID, data);
-        Debug.Log("saved social credit data: " + _lastSavedCredit);
+        if (_debug)
+        {
+            Debug.Log("saved social credit data: " + _lastSavedCredit);
+        }
     }
 
     public bool CanBuy(int price)
@@ -136,6 +143,9 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
         };
 
         AutoSaveManager.Autosave(SAVE_ID, data);
-        Debug.Log("saved social credit data: " + _lastSavedCredit);
+        if (_debug)
+        {
+            Debug.Log("saved social credit data: " + _lastSavedCredit);
+        }
     }
 }

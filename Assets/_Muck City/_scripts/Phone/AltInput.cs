@@ -18,7 +18,7 @@ public enum Inputs
 }
 
 
-public class AltInput
+public class AltInput : MonoBehaviour
 {
 
     public InputActionAsset _input;
@@ -47,43 +47,28 @@ public class AltInput
 
     public IBrowsable _activeBrowsable;
 
-    public AltInput(InputActionAsset inputActions)
+    // public AltInput(InputActionAsset inputActions)
+    // {
+    //     _input = inputActions;
+    //     InitInputs();
+    //     _input.FindActionMap("Phone").Enable();
+    // }
+
+    void OnEnable()
     {
-        _input = inputActions;
         InitInputs();
         _input.FindActionMap("Phone").Enable();
     }
 
 
-    public void Dispose()
+    public void OnDisable()
     {
         _input.FindActionMap("Phone").Disable();
 
     }
 
 
-    void InitInputs()
-    {
-        _selectInput = InputSystem.actions.FindAction("Select");
-        _upInput = InputSystem.actions.FindAction("Up");
-        _downInput = InputSystem.actions.FindAction("Down");
-        _leftInput = InputSystem.actions.FindAction("Left");
-        _rightInput = InputSystem.actions.FindAction("Right");
-        _backInput = InputSystem.actions.FindAction("Back");
-        _acceptInput = InputSystem.actions.FindAction("Accept");
-        _rejectInput = InputSystem.actions.FindAction("Reject");
-        _exitInput = InputSystem.actions.FindAction("Exit");
-        _buyInput = InputSystem.actions.FindAction("Buy");
-        _inspectInput = InputSystem.actions.FindAction("Inspect");
-    }
-
-
-    public void ToggleUseInput(bool state)
-    {
-        _isUsingAltInput = state;
-    }
-
-    public void Update()
+    void Update()
     {
         if (!_isUsingAltInput) return;
         if (_selectInput.WasPressedThisFrame())
@@ -141,10 +126,31 @@ public class AltInput
         }
 
         HandleBuyButton();
-
-
-
     }
+
+
+    void InitInputs()
+    {
+        _selectInput = InputSystem.actions.FindAction("Select");
+        _upInput = InputSystem.actions.FindAction("Up");
+        _downInput = InputSystem.actions.FindAction("Down");
+        _leftInput = InputSystem.actions.FindAction("Left");
+        _rightInput = InputSystem.actions.FindAction("Right");
+        _backInput = InputSystem.actions.FindAction("Back");
+        _acceptInput = InputSystem.actions.FindAction("Accept");
+        _rejectInput = InputSystem.actions.FindAction("Reject");
+        _exitInput = InputSystem.actions.FindAction("Exit");
+        _buyInput = InputSystem.actions.FindAction("Buy");
+        _inspectInput = InputSystem.actions.FindAction("Inspect");
+    }
+
+
+    public void ToggleUseInput(bool state)
+    {
+        _isUsingAltInput = state;
+    }
+
+
 
 
 

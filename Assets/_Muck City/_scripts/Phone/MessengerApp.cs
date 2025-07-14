@@ -390,6 +390,7 @@ public class MessengerApp : PhoneApp
         }
 
         AddChatToPreviewList(convo);
+        _notificationSystem.ShowNotification(AppIcon.IconSprite, _activeNode.Text);
         convo.Oncomplete += OnCompleteChat;
     }
 

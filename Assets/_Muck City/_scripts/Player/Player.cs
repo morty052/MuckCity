@@ -186,7 +186,6 @@ public class Player : MonoBehaviour, IHavePersistentData
         }
 
         _interactionSystem.Dispose();
-        _altInput.Dispose();
     }
 
     void Awake()
@@ -200,7 +199,7 @@ public class Player : MonoBehaviour, IHavePersistentData
             _itemManager = GetComponent<vItemManager>();
             _inventory = GetComponentInChildren<vInventory>();
 
-            _altInput = new(_inputAsset);
+            _altInput = GetComponent<AltInput>();
 
 
             LoadPersistentData();
@@ -233,10 +232,10 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     }
 
-    void Update()
-    {
-        _altInput.Update();
-    }
+    // void Update()
+    // {
+    //     _altInput.Update();
+    // }
     private void CheckForTriggerAction()
     {
         if (_showPhoneInput.GetButtonDown())
