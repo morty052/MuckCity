@@ -81,5 +81,7 @@ namespace DialogueEditor
 
         /// <summary> UnityEvent, to betriggered when this Option is chosen. </summary>
         public UnityEngine.Events.UnityEvent Event;
+
+        public EffectName _effect;
     }
 }

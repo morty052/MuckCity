@@ -5,7 +5,9 @@ using UnityEngine;
 public enum EffectName
 {
     InitWayPointEffect,
-    DecreasePriceEffect
+    DecreasePriceEffect,
+    ReduceTrust,
+    IncreaseTrust
 }
 
 [CreateAssetMenu(fileName = "DecisionData", menuName = "ScriptableObjects/DecisionData")]
@@ -38,6 +40,7 @@ public abstract class DecisionEffect
 [Serializable]
 public class InitWayPointEffect : DecisionEffect
 {
+    public Pos _waypoint;
 
     public override void Execute()
     {

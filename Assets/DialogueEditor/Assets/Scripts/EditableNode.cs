@@ -48,6 +48,7 @@ namespace DialogueEditor
         // ----
         // Serialized Node data
         [DataMember] public string Text;
+        [DataMember] public EffectName _id;
         [DataMember] public List<EditableConnection> Connections;
         [DataMember] public List<int> parentUIDs;
         [DataMember] public List<EditableSetParamAction> ParamActions;
@@ -97,7 +98,7 @@ namespace DialogueEditor
             {
                 parents[i].DeleteConnectionChild(this);
             }
-        }    
+        }
 
         public void DeleteConnectionChild(EditableConversationNode node)
         {

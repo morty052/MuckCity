@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Pool;
 
 
 
@@ -38,7 +39,7 @@ public class InstantMessage
         //! INITIAL MESSAGE IN LIST ALWAYS SET TO NOT PLAYER MESSAGE FOR NOW
         _messages.Add(new(content, false));
         _messagePreview = messagePrefab;
-        _messagePreview.SetMessage(_senderName, _messages.ElementAt(0)._content);
+        _messagePreview.SetMessage(_messages.ElementAt(0)._content);
     }
     public void SetID(int id)
     {
@@ -50,7 +51,7 @@ public class InstantMessage
         _messages.Add(im);
 
         //* DISPLAY MESSAGE AS CURRENT CHAT PREVIEW MESSAGE
-        _messagePreview.SetMessage(latestMessage);
+        _messagePreview.SetMessage(_senderName, latestMessage);
     }
 }
 
@@ -73,6 +74,7 @@ public class MessengerApp : PhoneApp
 
     [TabGroup("Debug"), SerializeField] private int _messagesOnScreen = 0;
     [TabGroup("Debug")] public bool _canRespond = false;
+    [TabGroup("Debug")] public HashSet<EffectName> _chatEffects = new();
     Action OnAddMessageToScreen;
     #endregion
 
@@ -81,6 +83,8 @@ public class MessengerApp : PhoneApp
     public ConversationNode _activeNode;
     private HashSet<OptionNode> _activeNodeOptions = new();
     private OptionNode _lastSelectedOption;
+
+    [SerializeField] private int _optionId = 0;
     #endregion
 
     #region "Magnified Messages"
@@ -117,10 +121,37 @@ public class MessengerApp : PhoneApp
 
     public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
     bool IsViewingExpandedChat => _fullScreenMessageView.activeSelf;
-    void Awake()
+
+    IObjectPool<Message> _messagePool;
+    IObjectPool<Message> _responsePool;
+    IObjectPool<Message> _previewPool;
+    IObjectPool<Message> _magnifiedMessagePool;
+    IObjectPool<Message> _magnifiedResponsePool;
+
+
+
+    Message GetMessage()
     {
-        CalculateScreenSpace();
+        return _messagePool.Get();
     }
+
+    Message GetResponse()
+    {
+        return _responsePool.Get();
+    }
+    Message GetPreview()
+    {
+        return _previewPool.Get();
+    }
+    Message GetMagnifiedMessage()
+    {
+        return _magnifiedMessagePool.Get();
+    }
+    Message GetMagnifiedResponse()
+    {
+        return _magnifiedResponsePool.Get();
+    }
+
 
     void OnEnable()
     {
@@ -174,7 +205,8 @@ public class MessengerApp : PhoneApp
             //* SET OPTIONS AS THE ACTIVE OPTIONS FOR ACTIVE SPEECH NODE
             _activeNodeOptions.Add(connection.OptionNode);
 
-
+            // connection.OptionNode._effect = _optionId;
+            // _optionId++;
         }
         //* UPDATE OPTIONS TEXT
         _optionsOneText.text = _activeNodeOptions.ElementAt(0).Text;
@@ -183,9 +215,12 @@ public class MessengerApp : PhoneApp
     }
     public string DisplayActiveSpeechNode()
     {
-        Message message = Instantiate(_newMessagePrefab, _messagesParent);
+        // Message message = Instantiate(_newMessagePrefab, _messagesParent);
+
+        Message message = GetMessage();
+        message.transform.SetParent(_messagesParent);
         message.gameObject.SetActive(true);
-        message._content.text = _activeNode.Text;
+        message.SetMessage(_activeNode.Text);
         OnAddMessageToScreen?.Invoke();
         return _activeNode.Text;
     }
@@ -212,6 +247,12 @@ public class MessengerApp : PhoneApp
         _endChatUi.SetActive(true);
         _canEndChat = true;
         _activeConvo.Complete();
+        _activeConvo = null;
+        _optionId = 0;
+        for (int i = 0; i < _chatEffects.Count; i++)
+        {
+            Debug.Log(_chatEffects.ElementAt(i));
+        }
     }
 
     void ShowNextMessage()
@@ -243,10 +284,11 @@ public class MessengerApp : PhoneApp
     }
     public void ReplyMessage(string text)
     {
-        Message message = Instantiate(_responsePrefab, _messagesParent);
-        message._content.text = text;
-
+        // Message message = Instantiate(_responsePrefab, _messagesParent);
+        Message message = GetResponse();
         message.gameObject.SetActive(true);
+        message.SetMessage(text);
+
 
         OnAddMessageToScreen?.Invoke();
     }
@@ -260,22 +302,28 @@ public class MessengerApp : PhoneApp
             MessageContentStruct message = chat._messages.ElementAt(i);
             if (message._playerSentMessage != true)
             {
-                Message userMessage = Instantiate(_newMessagePrefab, _messagesParent);
-                userMessage.gameObject.SetActive(true);
-                userMessage._content.text = message._content;
+                // Message userMessage = Instantiate(_newMessagePrefab, _messagesParent);
+                // userMessage.gameObject.SetActive(true);
+                Message userMessage = GetMessage();
+                userMessage.SetMessage(message._content);
             }
 
             else
             {
-                Message aiMessage = Instantiate(_responsePrefab, _messagesParent);
-                aiMessage.gameObject.SetActive(true);
-                aiMessage._content.text = message._content;
+                // Message aiMessage = Instantiate(_responsePrefab, _messagesParent);
+                // aiMessage.gameObject.SetActive(true);
+                Message aiMessage = GetResponse();
+                aiMessage.SetMessage(message._content);
             }
 
             OnAddMessageToScreen?.Invoke();
         }
     }
 
+    public void ResetState()
+    {
+        Player.Instance._activeQuickAction = null;
+    }
 
     #region "Overrides"
     public override void OnBackPressed()
@@ -317,6 +365,59 @@ public class MessengerApp : PhoneApp
         {
             ProgressConvo(1);
         }
+    }
+
+    public override void DoQuickAction()
+    {
+        _notificationSystem.HideNotification();
+        StartConvo();
+        OpenChat();
+        Phone.Instance.SetApp(ID, true);
+    }
+
+    public override void OnInit()
+    {
+        _messagePool = new ObjectPool<Message>(
+             () => Instantiate(_newMessagePrefab, _messagesParent),
+             message =>
+             {
+                 message.gameObject.SetActive(true);
+             },
+             message => message.gameObject.SetActive(false),
+             message => Destroy(message.gameObject),
+             false, 10, 30
+         );
+        _responsePool = new ObjectPool<Message>(
+            () => Instantiate(_responsePrefab, _messagesParent),
+            message => message.gameObject.SetActive(true),
+            message => message.gameObject.SetActive(false),
+            message => Destroy(message.gameObject),
+            false, 10, 30
+        );
+
+        _previewPool = new ObjectPool<Message>(
+            () => Instantiate(_messagePreviewPrefab, _messagesPreviewParent),
+            message => message.gameObject.SetActive(true),
+            message => message.gameObject.SetActive(false),
+            message => Destroy(message.gameObject),
+            false, 10, 30
+        );
+        _magnifiedMessagePool = new ObjectPool<Message>(
+            () => Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent),
+            message => message.gameObject.SetActive(true),
+            message => message.gameObject.SetActive(false),
+            message => Destroy(message.gameObject),
+            false, 10, 30
+        );
+        _magnifiedResponsePool = new ObjectPool<Message>(
+            () => Instantiate(_magnifiedResponsePrefab, _magnifiedMessagesParent),
+            message => message.gameObject.SetActive(true),
+            message => message.gameObject.SetActive(false),
+            message => Destroy(message.gameObject),
+            false, 10, 30
+        );
+
+        // CalculateScreenSpace();
     }
 
     #endregion
@@ -390,8 +491,10 @@ public class MessengerApp : PhoneApp
         }
 
         AddChatToPreviewList(convo);
-        _notificationSystem.ShowNotification(AppIcon.IconSprite, _activeNode.Text);
-        convo.Oncomplete += OnCompleteChat;
+        //* SHOW NOTIFICATION OF NEW CONVO
+        UseQuickAction();
+        _notificationSystem.ShowNotification(AppIcon.IconSprite, _activeNode.Text, "Reply", ResetState);
+        // convo.Oncomplete += OnCompleteChat;
     }
 
     //! EDITOR EVENT FUNCTION
@@ -401,10 +504,12 @@ public class MessengerApp : PhoneApp
         StartMagnifiedConvo();
 
         //* ADD FIRST MESSAGE TO REGULAR CHAT
-        Message message = Instantiate(_newMessagePrefab, _messagesParent);
+        // Message message = Instantiate(_newMessagePrefab, _messagesParent);
+
+        Message message = GetMessage();
 
         message.gameObject.SetActive(true);
-        message._content.text = _activeNode.Text;
+        message.SetMessage(_activeNode.Text);
         OnAddMessageToScreen?.Invoke();
         //* ALLOW PLAYER TO RESPOND AFTER FIRST MESSAGE IS SHOWN
         _canRespond = true;
@@ -421,7 +526,14 @@ public class MessengerApp : PhoneApp
     {
         if (!_canRespond) return;
         OptionNode chosenOption = _activeNodeOptions.ElementAt(choice);
+
+        if (_debug)
+        {
+            Debug.Log($"Tied Effect id {chosenOption._effect} Option text {chosenOption.Text}");
+        }
         // Debug.Log($"Selected {_activeNodeOptions.ElementAt(choice).Text}");
+
+        _chatEffects.Add(chosenOption._effect);
 
         ReplyMessage(chosenOption.Text);
         ShowMagnifiedReply(chosenOption.Text);
@@ -463,9 +575,10 @@ public class MessengerApp : PhoneApp
     #region "Magnified messages Handling"
     public void StartMagnifiedConvo()
     {
-        Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
-        message.gameObject.SetActive(true);
-        message._content.text = _activeNode.Text;
+        // Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
+        Message message = GetMagnifiedMessage();
+        // message.gameObject.SetActive(true);
+        message.SetMessage(_activeNode.Text);
         OnAddMessageToLargeScreen?.Invoke();
         if (ActiveSpeechHasOptions())
         {
@@ -478,18 +591,21 @@ public class MessengerApp : PhoneApp
 
     public string DisplayMagnifiedActiveSpeechNode()
     {
-        Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
-        message.gameObject.SetActive(true);
-        message._content.text = _activeNode.Text;
+        // Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
+        Message message = GetMagnifiedMessage();
+        // message.gameObject.SetActive(true);
+        message.SetMessage(_activeNode.Text);
         OnAddMessageToLargeScreen?.Invoke();
         return _activeNode.Text;
     }
     public void ShowMagnifiedReply(string text)
     {
-        Message message = Instantiate(_magnifiedResponsePrefab, _magnifiedMessagesParent);
-        message._content.text = text;
+        // Message message = Instantiate(_magnifiedResponsePrefab, _magnifiedMessagesParent);
 
-        message.gameObject.SetActive(true);
+        Message message = GetMagnifiedResponse();
+        message.SetMessage(text);
+
+        // message.gameObject.SetActive(true);
 
         OnAddMessageToLargeScreen?.Invoke();
         _optionsOneText.text = "";
@@ -503,7 +619,9 @@ public class MessengerApp : PhoneApp
     public void AddChatToPreviewList(Chat convo)
     {
         Conversation conversation = convo.GetSpeechNodes();
-        Message messagePreview = Instantiate(_messagePreviewPrefab, _messagesPreviewParent);
+        // Message messagePreview = Instantiate(_messagePreviewPrefab, _messagesPreviewParent);
+
+        Message messagePreview = GetPreview();
 
         //* ACTIVATE DIVIDER UNDER MESSAGE FOR UI PURPOSE
         messagePreview.UseUnderLine();

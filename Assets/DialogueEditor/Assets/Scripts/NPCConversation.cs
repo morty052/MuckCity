@@ -418,6 +418,7 @@ namespace DialogueEditor
             OptionNode option = new OptionNode();
             option.Text = editableNode.Text;
             option.TMPFont = editableNode.TMPFont;
+            option._effect = editableNode._id;
 
             CopyParamActions(editableNode, option);
 

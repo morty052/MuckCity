@@ -12,8 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d9ab89e9949de44391466f6ec4806cb, type: 3}
   m_Name: Chat
   m_EditorClassIdentifier: 
-  _dialogue:
-  - _message: Can you make it to medbay by 5
-    _optionOne: Yeah, Where is medbay?
-    _optionTwo: Only If you Add 10 bucks ?
+  _senderName: 
   _convo: {fileID: 967415334066115386, guid: 0236e1cf245c2a246ade3ee0b34e4ab7, type: 3}
+  _effects:
+  - rid: 3260592171342364872
+  references:
+    version: 2
+    RefIds:
+    - rid: 3260592171342364872
+      type: {class: InitWayPointEffect, ns: , asm: Assembly-CSharp}
+      data:
+        _waypoint:
+          position: {x: 0, y: 0, z: 0}
+          rotation: {x: 0, y: 0, z: 0}

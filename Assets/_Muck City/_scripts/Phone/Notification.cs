@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class Notification : MonoBehaviour
 {
     public Image _icon;
@@ -40,12 +41,6 @@ public class Notification : MonoBehaviour
         sizeDelta.y = totalLineheight + _iconHeight;
         rectTransform.sizeDelta = sizeDelta;
     }
-
-    public void SetText()
-    {
-
-    }
-
 
     public void SetNotification(Sprite icon, string content, string promptText = null)
     {

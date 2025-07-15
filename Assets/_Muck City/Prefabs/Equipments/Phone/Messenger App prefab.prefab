@@ -45,7 +45,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4521753880405619766}
-  - component: {fileID: 9113106092072359888}
+  - component: {fileID: 5180449926886874089}
   m_Layer: 21
   m_Name: Bg
   m_TagString: Untagged
@@ -74,7 +74,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 77.46, y: 125.170006}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &9113106092072359888
+--- !u!114 &5180449926886874089
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -83,7 +83,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 324883344829828676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -92,12 +92,14 @@ MonoBehaviour:
     m_Top: 5
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 78, y: 30}
-  m_Spacing: {x: 0, y: 5}
-  m_Constraint: 1
-  m_ConstraintCount: 1
+  m_Spacing: 2
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &359068384017761764
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,7 +557,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1989010123725816707}
-  - component: {fileID: 5819670201177724148}
+  - component: {fileID: 4495408681117323970}
   m_Layer: 21
   m_Name: Messages parent
   m_TagString: Untagged
@@ -583,7 +585,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5819670201177724148
+--- !u!114 &4495408681117323970
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -596,7 +598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 2
+    m_Left: 0
     m_Right: 0
     m_Top: 5
     m_Bottom: 0
@@ -604,9 +606,9 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 73, y: 20}
-  m_Spacing: {x: 0, y: 2}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 1
+  m_ConstraintCount: 1
 --- !u!1 &3449636946645255071
 GameObject:
   m_ObjectHideFlags: 0
@@ -709,11 +711,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4075a896658b60144a632df72052e0cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _messagesParent: {fileID: 1989010123725816707}
-  _messagePreviewPrefab: {fileID: 6790482215781797749, guid: ef37735895dd2c74195f97c3453e3034, type: 3}
-  _activeChat:
-    _senderName: 
-    _messagePreview: {fileID: 0}
+  phoneTriggerType: 0
+  _chat: {fileID: 0}
 --- !u!1 &4081600825687226041
 GameObject:
   m_ObjectHideFlags: 0
@@ -1157,15 +1156,37 @@ MonoBehaviour:
   _appName: Pinga
   _appIcon: {fileID: 9021202317598106165}
   _appMainScreen: {fileID: 3787838909791116144}
+  _debug: 0
+  _actionPrompt: {fileID: 0}
   _fullScreenMessageView: {fileID: 2022771567961267511}
   _contactPhoto: {fileID: 0}
   _messagesParent: {fileID: 4521753880405619766}
   _newMessagePrefab: {fileID: 6772978364059879396, guid: 00ba857443d6ea040b01dd8b4a333b92, type: 3}
   _responsePrefab: {fileID: 8475499277846524976, guid: 0464938bbc871694a89c5737b9ccca52, type: 3}
   _maxMessagesOnScreen: 4
+  _isTexting: 0
+  _canEndChat: 0
   _activeConvo: {fileID: 0}
   _messagesOnScreen: 0
   _canRespond: 0
+  _optionId: 0
+  _magnifiedMessagesUi: {fileID: 0}
+  _magnifiedMessagesParent: {fileID: 0}
+  _optionsOneText: {fileID: 0}
+  _optionsTwoText: {fileID: 0}
+  _endChatUi: {fileID: 0}
+  _optionsUi: {fileID: 0}
+  _newMagnifiedMessagePrefab: {fileID: 0}
+  _magnifiedResponsePrefab: {fileID: 0}
+  _maxMagnifiedMessagesOnScreen: 0
+  _messagesPreviewParent: {fileID: 0}
+  _messagePreviewPrefab: {fileID: 0}
+  chats: []
+  _activeChat:
+    _senderName: 
+    _messagePreview: {fileID: 0}
+    ID: 0
+  _magnifiedMessagesOnScreen: 0
 --- !u!1001 &2340062890133518318
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1363,6 +1384,10 @@ PrefabInstance:
     - target: {fileID: 6564457952020584821, guid: ef37735895dd2c74195f97c3453e3034, type: 3}
       propertyPath: m_Name
       value: Message Preview (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6564457952020584821, guid: ef37735895dd2c74195f97c3453e3034, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

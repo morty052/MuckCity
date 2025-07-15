@@ -196,7 +196,7 @@ public class DeliveryApp : PhoneApp
         UseQuickAction();
 
         //* SHOW NOTIFICATION AND DISABLE QUICK QUICK INSPECT WHEN IT IS HIDDEN
-        _notificationSystem.ShowNotification(AppIcon.IconSprite, $"New order {data._deliveryFee} Credits", "Reply", ResetDeliveryState);
+        _notificationSystem.ShowNotification(AppIcon.IconSprite, $"New order {data._deliveryFee} Credits", "View", ResetDeliveryState);
     }
 
     private void CreateButton(DeliveryDisplayButton image, int index)

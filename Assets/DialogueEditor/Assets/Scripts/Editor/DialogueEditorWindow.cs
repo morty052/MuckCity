@@ -15,7 +15,7 @@ namespace DialogueEditor
                 Connection
             }
 
-            public abstract eType Type { get; }           
+            public abstract eType Type { get; }
         }
 
         public class SelectableUINode : SelectableUI
@@ -45,7 +45,7 @@ namespace DialogueEditor
             Regular,
             PlacingOption,
             PlacingSpeech,
-            ConnectingNode,         
+            ConnectingNode,
             draggingPanel,
         }
 
@@ -174,7 +174,7 @@ namespace DialogueEditor
 #endif
         }
 
-        
+
 
         public void RecreateUI(EditableConversation conversation)
         {
@@ -625,7 +625,7 @@ namespace DialogueEditor
                     GUILayout.BeginHorizontal();
 
                     float paramNameWidth = panelWidth * 0.6f;
-                    CurrentAsset.ParameterList[i].ParameterName = GUILayout.TextField(CurrentAsset.ParameterList[i].ParameterName, 
+                    CurrentAsset.ParameterList[i].ParameterName = GUILayout.TextField(CurrentAsset.ParameterList[i].ParameterName,
                         EditableParameter.MAX_NAME_SIZE, GUILayout.Width(paramNameWidth), GUILayout.ExpandWidth(false));
 
                     if (CurrentAsset.ParameterList[i] is EditableBoolParameter)
@@ -793,6 +793,10 @@ namespace DialogueEditor
 
                         GUILayout.Label("TMP Font", EditorStyles.boldLabel);
                         node.TMPFont = (TMPro.TMP_FontAsset)EditorGUILayout.ObjectField(node.TMPFont, typeof(TMPro.TMP_FontAsset), false);
+                        EditorGUILayout.Space();
+                        // Replace the integer field with an enum popup for setting the ID
+                        // Assume you have an enum called OptionIdEnum defined somewhere accessible
+                        node._id = (EffectName)EditorGUILayout.EnumPopup("Set ID", node._id);
                         EditorGUILayout.Space();
 
 
@@ -1434,7 +1438,7 @@ namespace DialogueEditor
                 pos.x > panelResizerRect.x - panelResizerRect.width - PANEL_RESIZER_PADDING &&
                 pos.x < panelResizerRect.x + panelResizerRect.width + PANEL_RESIZER_PADDING &&
                 pos.y > panelResizerRect.y &&
-                panelResizerRect.y < panelResizerRect.y + panelResizerRect.height);        
+                panelResizerRect.y < panelResizerRect.y + panelResizerRect.height);
         }
 
         public bool NodeContainsSetParamAction(EditableConversationNode node, string parameterName)
