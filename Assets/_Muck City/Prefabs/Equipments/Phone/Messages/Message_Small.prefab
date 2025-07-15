@@ -323,3 +323,4 @@ MonoBehaviour:
   _isRejected: 0
   _debug: 0
   _bottomPadding: 5
+  _isPlayerMessage: 0

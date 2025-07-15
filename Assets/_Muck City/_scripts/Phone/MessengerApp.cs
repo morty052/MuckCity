@@ -127,7 +127,15 @@ public class MessengerApp : PhoneApp
     IObjectPool<Message> _previewPool;
     IObjectPool<Message> _magnifiedMessagePool;
     IObjectPool<Message> _magnifiedResponsePool;
+    [SerializeField] private ScrollRect _scrollRect;
 
+    // Scroll down by 10% (0.1f)
+    [Button("Scroll")]
+    public void ScrollDownByAmount(float amount = 0.1f)
+    {
+        float newPos = Mathf.Clamp01(_scrollRect.verticalNormalizedPosition - amount);
+        _scrollRect.verticalNormalizedPosition = newPos;
+    }
 
 
     Message GetMessage()
@@ -279,7 +287,7 @@ public class MessengerApp : PhoneApp
         //* ALLOW PLAYER TO RESPOND AFTER MESSAGE IS DISPLAYED
         _canRespond = true;
 
-        //* SET CONTENT OF SPEECH AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE
+        //* SET CONTENT OF SPEECH AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE AS AI MESSAGE
         UpdateChatPreview(_activeNode.Text, false);
     }
     public void ReplyMessage(string text)
@@ -306,6 +314,7 @@ public class MessengerApp : PhoneApp
                 // userMessage.gameObject.SetActive(true);
                 Message userMessage = GetMessage();
                 userMessage.SetMessage(message._content);
+                // OnAddMessageToScreen?.Invoke();
             }
 
             else
@@ -314,17 +323,37 @@ public class MessengerApp : PhoneApp
                 // aiMessage.gameObject.SetActive(true);
                 Message aiMessage = GetResponse();
                 aiMessage.SetMessage(message._content);
+                // OnAddMessageToScreen?.Invoke();
             }
 
-            OnAddMessageToScreen?.Invoke();
         }
+
+
+
+
     }
 
     public void ResetState()
     {
         Player.Instance._activeQuickAction = null;
     }
-
+    private void ClearLatestExpandedChat()
+    {
+        for (int i = 0; i < _messagesParent.transform.childCount; i++)
+        {
+            Message message = _messagesParent.transform.GetChild(i).GetComponent<Message>();
+            if (message._isPlayerMessage)
+            {
+                _messagePool.Release(message);
+            }
+            else
+            {
+                _responsePool.Release(message);
+            }
+        }
+        // _messagesParent.transform.localPosition = new(_messagesParent.transform.localPosition.x, 0, _messagesParent.transform.localPosition.z);
+        _messagesParent.transform.localPosition = new Vector3(_messagesParent.transform.localPosition.x, 0f, _messagesParent.transform.localPosition.z);
+    }
     #region "Overrides"
     public override void OnBackPressed()
     {
@@ -344,10 +373,14 @@ public class MessengerApp : PhoneApp
                     _magnifiedMessagesUi.gameObject.SetActive(false);
                 }
                 _fullScreenMessageView.SetActive(false);
+                ClearLatestExpandedChat();
             }
         }
 
     }
+
+
+
     public override void OnAcceptPressed()
     {
         // This method can be overridden by derived classes to handle selection events
@@ -490,6 +523,7 @@ public class MessengerApp : PhoneApp
             SetActiveOptions();
         }
 
+        //* CREATE FIRST MESSAGE PREVIEW
         AddChatToPreviewList(convo);
         //* SHOW NOTIFICATION OF NEW CONVO
         UseQuickAction();
@@ -538,7 +572,7 @@ public class MessengerApp : PhoneApp
         ReplyMessage(chosenOption.Text);
         ShowMagnifiedReply(chosenOption.Text);
 
-        //* SET CONTENT OF USER REPLY AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE
+        //* SET CONTENT OF USER REPLY AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE AS USER MESSAGE
         UpdateChatPreview(chosenOption.Text, true);
 
         //* Set LAST SELECTED OPTION TO OPTION AT INDEX OF CHOICE

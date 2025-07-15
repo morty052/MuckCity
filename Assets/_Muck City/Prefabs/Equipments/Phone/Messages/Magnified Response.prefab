@@ -239,6 +239,7 @@ MonoBehaviour:
   _isRejected: 0
   _debug: 0
   _bottomPadding: 5
+  _isPlayerMessage: 1
 --- !u!1 &8940533618701975379
 GameObject:
   m_ObjectHideFlags: 0
