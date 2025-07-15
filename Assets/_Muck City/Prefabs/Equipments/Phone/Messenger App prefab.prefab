@@ -1181,7 +1181,7 @@ MonoBehaviour:
   _appName: Pinga
   _appIcon: {fileID: 9021202317598106165}
   _appMainScreen: {fileID: 3787838909791116144}
-  _debug: 0
+  _debug: 1
   _actionPrompt: {fileID: 0}
   _fullScreenMessageView: {fileID: 2022771567961267511}
   _contactPhoto: {fileID: 0}

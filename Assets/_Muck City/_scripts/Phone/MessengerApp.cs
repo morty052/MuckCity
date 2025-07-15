@@ -69,8 +69,8 @@ public class MessengerApp : PhoneApp
     [SerializeField, TabGroup("Components")] private Image _contactPhoto;
     [TabGroup("Components")] public Transform _messagesParent;
 
-    [TabGroup("Components")] public Message _newMessagePrefab;
-    [TabGroup("Components")] public Message _responsePrefab;
+    [TabGroup("Components")] public Message _incomingMessagePrefab;
+    [TabGroup("Components")] public Message _outgoingMessagePrefab;
 
     [SerializeField, TabGroup("Settings")] private int _maxMessagesOnScreen = 0;
 
@@ -106,8 +106,8 @@ public class MessengerApp : PhoneApp
     [SerializeField, TabGroup("Magnified Components")] GameObject _endChatUi;
     [SerializeField, TabGroup("Magnified Components")] GameObject _optionsUi;
 
-    [TabGroup("Magnified Components")] public Message _newMagnifiedMessagePrefab;
-    [TabGroup("Magnified Components")] public Message _magnifiedResponsePrefab;
+    [TabGroup("Magnified Components")] public Message _magnifiedIncomingMessagePrefab;
+    [TabGroup("Magnified Components")] public Message _magnifiedOutgoingMessagePrefab;
 
     [TabGroup("Magnified Settings")] public int _maxMagnifiedMessagesOnScreen = 0;
 
@@ -128,11 +128,11 @@ public class MessengerApp : PhoneApp
     public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
     bool IsViewingExpandedChat => _fullScreenMessageView.activeSelf;
 
-    IObjectPool<Message> _messagePool;
-    IObjectPool<Message> _responsePool;
+    IObjectPool<Message> _incomingMessagePool;
+    IObjectPool<Message> _outGoingMessagePool;
     IObjectPool<Message> _previewPool;
-    IObjectPool<Message> _magnifiedMessagePool;
-    IObjectPool<Message> _magnifiedResponsePool;
+    IObjectPool<Message> _magnifiedIncomingMessagePool;
+    IObjectPool<Message> _magnifiedOutgoingPool;
     [SerializeField] private ScrollRect _scrollRect;
 
     // Scroll down by 10% (0.1f)
@@ -144,14 +144,14 @@ public class MessengerApp : PhoneApp
     }
 
 
-    Message GetMessage()
+    Message GetIncomingMessagePrefab()
     {
-        return _messagePool.Get();
+        return _incomingMessagePool.Get();
     }
 
-    Message GetResponse()
+    Message GetOutGoingMessagePrefab()
     {
-        return _responsePool.Get();
+        return _outGoingMessagePool.Get();
     }
     Message GetPreview()
     {
@@ -159,11 +159,11 @@ public class MessengerApp : PhoneApp
     }
     Message GetMagnifiedMessage()
     {
-        return _magnifiedMessagePool.Get();
+        return _magnifiedIncomingMessagePool.Get();
     }
     Message GetMagnifiedResponse()
     {
-        return _magnifiedResponsePool.Get();
+        return _magnifiedOutgoingPool.Get();
     }
 
 
@@ -188,7 +188,7 @@ public class MessengerApp : PhoneApp
         _messagesOnScreen++;
         if (_messagesOnScreen >= _maxMessagesOnScreen)
         {
-            float messageHeight = _newMessagePrefab.GetComponent<RectTransform>().rect.height;
+            float messageHeight = _incomingMessagePrefab.GetComponent<RectTransform>().rect.height;
             _messagesParent.transform.DOLocalMoveY(_messagesParent.transform.localPosition.y + messageHeight, 1f);
         }
     }
@@ -198,7 +198,7 @@ public class MessengerApp : PhoneApp
         _magnifiedMessagesOnScreen++;
         if (_magnifiedMessagesOnScreen >= _maxMagnifiedMessagesOnScreen)
         {
-            float messageHeight = _newMagnifiedMessagePrefab.GetComponent<RectTransform>().rect.height;
+            float messageHeight = _magnifiedIncomingMessagePrefab.GetComponent<RectTransform>().rect.height;
             _magnifiedMessagesParent.transform.DOLocalMoveY(_magnifiedMessagesParent.transform.localPosition.y + messageHeight, 1f);
         }
     }
@@ -231,7 +231,7 @@ public class MessengerApp : PhoneApp
     {
         // Message message = Instantiate(_newMessagePrefab, _messagesParent);
 
-        Message message = GetMessage();
+        Message message = GetIncomingMessagePrefab();
         message.transform.SetParent(_messagesParent);
         message.gameObject.SetActive(true);
         message.SetMessage(_activeNode.Text);
@@ -300,7 +300,7 @@ public class MessengerApp : PhoneApp
     public void ReplyMessage(string text)
     {
         // Message message = Instantiate(_responsePrefab, _messagesParent);
-        Message message = GetResponse();
+        Message message = GetOutGoingMessagePrefab();
         message.gameObject.SetActive(true);
         message.SetMessage(text);
 
@@ -314,30 +314,35 @@ public class MessengerApp : PhoneApp
         _fullScreenMessageView.SetActive(true);
         if (chat._hasPendingMessages)
         {
-            Debug.Log($"<color=orange> Exposition not finished for selected convo {chat._messages[0]._content}</color> ");
+            if (_debug)
+            {
+
+                Debug.Log($"<color=orange> Exposition not finished for selected convo {chat._messages[0]._content}</color> ");
+            }
             SetUpOpenedMessage(chat._chat);
         }
 
         for (int i = 0; i < chat._messages.Count; i++)
         {
             MessageContentStruct message = chat._messages[i];
-            if (message._playerSentMessage)
+            Message messageItem;
+            if (!message._playerSentMessage)
             {
-                Message userMessage = GetResponse();
-                userMessage.SetMessage(message._content);
+                messageItem = GetIncomingMessagePrefab();
             }
 
             else
             {
-                Message aiMessage = GetMessage();
-                aiMessage.SetMessage(message._content);
+                messageItem = GetOutGoingMessagePrefab();
                 // OnAddMessageToScreen?.Invoke();
             }
 
-            if (_debug)
-            {
-                Debug.Log($"Index: {i} IsPlayerMessage: {message._playerSentMessage} Content: {message._content}");
-            }
+            messageItem.SetMessage(message._content);
+
+            // if (_debug)
+            // {
+            //     Debug.Log($"Index: {i} IsPlayerMessage: {message._playerSentMessage} Content: {message._content}");
+            // }
 
         }
         ShowChatUi();
@@ -352,13 +357,13 @@ public class MessengerApp : PhoneApp
         for (int i = 0; i < _messagesParent.transform.childCount; i++)
         {
             Message message = _messagesParent.transform.GetChild(i).GetComponent<Message>();
-            if (message._isPlayerMessage)
+            if (!message._isPlayerMessage)
             {
-                _messagePool.Release(message);
+                _incomingMessagePool.Release(message);
             }
             else
             {
-                _responsePool.Release(message);
+                _outGoingMessagePool.Release(message);
             }
         }
         // _messagesParent.transform.localPosition = new(_messagesParent.transform.localPosition.x, 0, _messagesParent.transform.localPosition.z);
@@ -447,8 +452,8 @@ public class MessengerApp : PhoneApp
 
     public override void OnInit()
     {
-        _messagePool = new ObjectPool<Message>(
-             () => Instantiate(_newMessagePrefab, _messagesParent),
+        _incomingMessagePool = new ObjectPool<Message>(
+             () => Instantiate(_incomingMessagePrefab, _messagesParent),
              message =>
              {
                  message.gameObject.SetActive(true);
@@ -457,8 +462,8 @@ public class MessengerApp : PhoneApp
              message => Destroy(message.gameObject),
              false, 10, 30
          );
-        _responsePool = new ObjectPool<Message>(
-            () => Instantiate(_responsePrefab, _messagesParent),
+        _outGoingMessagePool = new ObjectPool<Message>(
+            () => Instantiate(_outgoingMessagePrefab, _messagesParent),
             message => message.gameObject.SetActive(true),
             message => message.gameObject.SetActive(false),
             message => Destroy(message.gameObject),
@@ -472,15 +477,15 @@ public class MessengerApp : PhoneApp
             message => Destroy(message.gameObject),
             false, 10, 30
         );
-        _magnifiedMessagePool = new ObjectPool<Message>(
-            () => Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent),
+        _magnifiedIncomingMessagePool = new ObjectPool<Message>(
+            () => Instantiate(_magnifiedIncomingMessagePrefab, _magnifiedMessagesParent),
             message => message.gameObject.SetActive(true),
             message => message.gameObject.SetActive(false),
             message => Destroy(message.gameObject),
             false, 10, 30
         );
-        _magnifiedResponsePool = new ObjectPool<Message>(
-            () => Instantiate(_magnifiedResponsePrefab, _magnifiedMessagesParent),
+        _magnifiedOutgoingPool = new ObjectPool<Message>(
+            () => Instantiate(_magnifiedOutgoingMessagePrefab, _magnifiedMessagesParent),
             message => message.gameObject.SetActive(true),
             message => message.gameObject.SetActive(false),
             message => Destroy(message.gameObject),
@@ -514,7 +519,7 @@ public class MessengerApp : PhoneApp
     void CalculateScreenSpace()
     {
         RectTransform parentTransform = _magnifiedMessagesParent.GetComponent<RectTransform>();
-        RectTransform messageTransform = _newMagnifiedMessagePrefab.GetComponent<RectTransform>();
+        RectTransform messageTransform = _magnifiedIncomingMessagePrefab.GetComponent<RectTransform>();
 
         float parentHeight = parentTransform.rect.height;
 
@@ -577,7 +582,7 @@ public class MessengerApp : PhoneApp
         //* ADD FIRST MESSAGE TO REGULAR CHAT
         // Message message = Instantiate(_newMessagePrefab, _messagesParent);
 
-        Message message = GetMessage();
+        Message message = GetIncomingMessagePrefab();
 
         message.gameObject.SetActive(true);
         message.SetMessage(_activeNode.Text);
@@ -636,7 +641,7 @@ public class MessengerApp : PhoneApp
     [Button, TabGroup("Debug")]
     public void DebugScreenMovement()
     {
-        float messageHeight = _newMessagePrefab.GetComponent<RectTransform>().rect.height;
+        float messageHeight = _incomingMessagePrefab.GetComponent<RectTransform>().rect.height;
         _messagesParent.transform.localPosition = new Vector3(_messagesParent.transform.localPosition.x, _messagesParent.transform.localPosition.y + messageHeight, _messagesParent.transform.localPosition.z);
         Debug.Log(messageHeight);
     }
