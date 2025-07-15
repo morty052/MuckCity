@@ -21,6 +21,8 @@ public class Message : MonoBehaviour
 
     bool IsUsingUnderLine => _underLine != null && _underLine.activeSelf;
 
+
+    //* MAIN FUNCTION IS TO DETERMINE WHICH POOL TO RELEASE MESSAGE TO
     public bool _isPlayerMessage = false;
 
     // public Message() { }

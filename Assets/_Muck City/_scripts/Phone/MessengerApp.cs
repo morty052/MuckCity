@@ -28,7 +28,7 @@ public struct MessageContentStruct
 public class InstantMessage
 {
     public string _senderName;
-    public HashSet<MessageContentStruct> _messages = new();
+    public List<MessageContentStruct> _messages = new();
 
     public Message _messagePreview;
 
@@ -39,7 +39,7 @@ public class InstantMessage
         //! INITIAL MESSAGE IN LIST ALWAYS SET TO NOT PLAYER MESSAGE FOR NOW
         _messages.Add(new(content, false));
         _messagePreview = messagePrefab;
-        _messagePreview.SetMessage(_messages.ElementAt(0)._content);
+        _messagePreview.SetMessage(_messages[0]._content);
     }
     public void SetID(int id)
     {
@@ -307,8 +307,8 @@ public class MessengerApp : PhoneApp
 
         for (int i = 0; i < chat._messages.Count; i++)
         {
-            MessageContentStruct message = chat._messages.ElementAt(i);
-            if (message._playerSentMessage != true)
+            MessageContentStruct message = chat._messages[i];
+            if (message._playerSentMessage == true)
             {
                 // Message userMessage = Instantiate(_newMessagePrefab, _messagesParent);
                 // userMessage.gameObject.SetActive(true);
@@ -325,6 +325,8 @@ public class MessengerApp : PhoneApp
                 aiMessage.SetMessage(message._content);
                 // OnAddMessageToScreen?.Invoke();
             }
+
+            Debug.Log($"Index: {i} IsPlayerMessage: {message._playerSentMessage} Content: {message._content}");
 
         }
 
