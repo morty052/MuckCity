@@ -33,13 +33,19 @@ public class InstantMessage
     public Message _messagePreview;
 
     public int ID;
-    public InstantMessage(string senderName, string content, Message messagePrefab, bool firstMessageIsPlayerMessage = false)
+
+    public bool _hasPendingMessages = true;
+
+    public Chat _chat;
+    public InstantMessage(Chat chat, string senderName, string content, Message messagePrefab, bool firstMessageIsPlayerMessage = false)
     {
+        _chat = chat;
         _senderName = senderName;
         //! INITIAL MESSAGE IN LIST ALWAYS SET TO NOT PLAYER MESSAGE FOR NOW
         _messages.Add(new(content, false));
         _messagePreview = messagePrefab;
         _messagePreview.SetMessage(_messages[0]._content);
+
     }
     public void SetID(int id)
     {
@@ -256,6 +262,7 @@ public class MessengerApp : PhoneApp
         _canEndChat = true;
         _activeConvo.Complete();
         _activeConvo = null;
+        _activeChat._hasPendingMessages = false;
         _optionId = 0;
         for (int i = 0; i < _chatEffects.Count; i++)
         {
@@ -303,36 +310,37 @@ public class MessengerApp : PhoneApp
 
     public void OpenChat(InstantMessage chat)
     {
+        _activeChat = chat;
         _fullScreenMessageView.SetActive(true);
+        if (chat._hasPendingMessages)
+        {
+            Debug.Log($"<color=orange> Exposition not finished for selected convo {chat._messages[0]._content}</color> ");
+            SetUpOpenedMessage(chat._chat);
+        }
 
         for (int i = 0; i < chat._messages.Count; i++)
         {
             MessageContentStruct message = chat._messages[i];
-            if (message._playerSentMessage == true)
+            if (message._playerSentMessage)
             {
-                // Message userMessage = Instantiate(_newMessagePrefab, _messagesParent);
-                // userMessage.gameObject.SetActive(true);
-                Message userMessage = GetMessage();
+                Message userMessage = GetResponse();
                 userMessage.SetMessage(message._content);
-                // OnAddMessageToScreen?.Invoke();
             }
 
             else
             {
-                // Message aiMessage = Instantiate(_responsePrefab, _messagesParent);
-                // aiMessage.gameObject.SetActive(true);
-                Message aiMessage = GetResponse();
+                Message aiMessage = GetMessage();
                 aiMessage.SetMessage(message._content);
                 // OnAddMessageToScreen?.Invoke();
             }
 
-            Debug.Log($"Index: {i} IsPlayerMessage: {message._playerSentMessage} Content: {message._content}");
+            if (_debug)
+            {
+                Debug.Log($"Index: {i} IsPlayerMessage: {message._playerSentMessage} Content: {message._content}");
+            }
 
         }
-
-
-
-
+        ShowChatUi();
     }
 
     public void ResetState()
@@ -356,6 +364,33 @@ public class MessengerApp : PhoneApp
         // _messagesParent.transform.localPosition = new(_messagesParent.transform.localPosition.x, 0, _messagesParent.transform.localPosition.z);
         _messagesParent.transform.localPosition = new Vector3(_messagesParent.transform.localPosition.x, 0f, _messagesParent.transform.localPosition.z);
     }
+
+
+    public void SetUpOpenedMessage(Chat convo)
+    {
+        Conversation conversation = convo.GetSpeechNodes();
+
+        _rootNode = conversation.Root;
+        _activeNode = _rootNode;
+
+        _activeConvo = convo;
+
+
+        if (_activeNode.Connections.Count > 0)
+        {
+            SetActiveOptions();
+        }
+
+        //* HANDLE START MAGNIFIED CONVO
+        StartMagnifiedConvo();
+
+        //* ALLOW PLAYER TO RESPOND AFTER FIRST MESSAGE IS SHOWN
+        _canRespond = true;
+
+        _isTexting = true;
+
+    }
+
     #region "Overrides"
     public override void OnBackPressed()
     {
@@ -406,7 +441,7 @@ public class MessengerApp : PhoneApp
     {
         _notificationSystem.HideNotification();
         StartConvo();
-        OpenChat();
+        ShowChatUi();
         Phone.Instance.SetApp(ID, true);
     }
 
@@ -498,7 +533,7 @@ public class MessengerApp : PhoneApp
     #region "Editor Event Functions"
 
     //! EDITOR EVENT FUNCTIONS
-    public void OpenChat()
+    public void ShowChatUi()
     {
         _fullScreenMessageView.SetActive(true);
         _magnifiedMessagesUi.gameObject.SetActive(true);
@@ -616,11 +651,11 @@ public class MessengerApp : PhoneApp
         // message.gameObject.SetActive(true);
         message.SetMessage(_activeNode.Text);
         OnAddMessageToLargeScreen?.Invoke();
-        if (ActiveSpeechHasOptions())
-        {
-            _optionsOneText.text = _activeNodeOptions.ElementAt(0).Text;
-            _optionsTwoText.text = _activeNodeOptions.ElementAt(1).Text;
-        }
+        // if (ActiveSpeechHasOptions())
+        // {
+        //     _optionsOneText.text = _activeNodeOptions.ElementAt(0).Text;
+        //     _optionsTwoText.text = _activeNodeOptions.ElementAt(1).Text;
+        // }
 
     }
 
@@ -662,7 +697,7 @@ public class MessengerApp : PhoneApp
         //* ACTIVATE DIVIDER UNDER MESSAGE FOR UI PURPOSE
         messagePreview.UseUnderLine();
         //* FIRST  MESSAGE IN CHAT ALWAYS AI MESSAGE 
-        InstantMessage chat = new(convo._senderName, conversation.Root.Text, messagePreview);
+        InstantMessage chat = new(convo, convo._senderName, conversation.Root.Text, messagePreview);
 
         //* SET LATEST RECEIVED MESSAGE AS ACTIVE CHAT TO UPDATE WHEN ANY NEW MESSAGES COME IN
         _activeChat = chat;

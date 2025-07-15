@@ -72,14 +72,22 @@ public class PhoneApp : Tradeable, IDoQuickAction
 
     public virtual void OnBackPressed()
     {
-        // This method can be overridden by derived classes to handle selection events
-        Debug.Log("On Back pressed");
+        // This method can be overridden by derived classes to handle selection event
+
+        if (_debug)
+        {
+            Debug.Log("On Back pressed");
+        }
         Phone.Instance.GoToHomePage();
     }
     public virtual void OnLeftPressed()
     {
         // This method can be overridden by derived classes to handle selection events
-        Debug.Log("On Left pressed");
+        if (_debug)
+        {
+
+            Debug.Log("On Left pressed");
+        }
     }
     public virtual void OnUpPressed()
     {

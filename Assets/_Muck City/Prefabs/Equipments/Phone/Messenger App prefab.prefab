@@ -1211,6 +1211,8 @@ MonoBehaviour:
     _senderName: 
     _messagePreview: {fileID: 0}
     ID: 0
+    _hasPendingMessages: 0
+    _chat: {fileID: 0}
   _magnifiedMessagesOnScreen: 0
   _scrollRect: {fileID: 0}
 --- !u!1001 &3931716856826455981
