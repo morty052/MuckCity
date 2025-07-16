@@ -399,13 +399,7 @@ public class MessengerApp : PhoneApp
             {
                 messageItem = GetOutGoingMessagePrefab();
                 magnifiedMessage = GetMagnifiedOutGoingMessage();
-
-                // OnAddMessageToScreen?.Invoke();
             }
-
-            // messageItem.SetMessage(message._content);
-            // magnifiedMessage.SetMessage(message._content);
-
 
             // if (_debug)
             // {
@@ -815,6 +809,9 @@ public class MessengerApp : PhoneApp
 
         //* MAKE MESSAGE PREFAB BUTTON OPEN INSTANT MESSAGE CORRESPONDING TO ID
         AddExpandFuncToButton(messagePreview, chats.Count - 1);
+
+        //* MAKE SURE CHAT IS AT TOP OF THE LIST
+        messagePreview.transform.SetAsFirstSibling();
     }
 
 
@@ -840,6 +837,7 @@ public class MessengerApp : PhoneApp
     {
         InstantMessage instantMessage = chats[chatIndex];
         OpenChat(instantMessage);
+        Debug.Log("Opening chats " + chatIndex);
     }
 
     #endregion
