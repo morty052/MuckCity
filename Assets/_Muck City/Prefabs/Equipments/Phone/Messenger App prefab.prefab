@@ -1181,13 +1181,13 @@ MonoBehaviour:
   _appName: Pinga
   _appIcon: {fileID: 9021202317598106165}
   _appMainScreen: {fileID: 3787838909791116144}
-  _debug: 1
+  _debug: 0
   _actionPrompt: {fileID: 0}
   _fullScreenMessageView: {fileID: 2022771567961267511}
   _contactPhoto: {fileID: 0}
   _messagesParent: {fileID: 3690965150675579735}
-  _newMessagePrefab: {fileID: 6772978364059879396, guid: 00ba857443d6ea040b01dd8b4a333b92, type: 3}
-  _responsePrefab: {fileID: 8475499277846524976, guid: 0464938bbc871694a89c5737b9ccca52, type: 3}
+  _incomingMessagePrefab: {fileID: 6772978364059879396, guid: 00ba857443d6ea040b01dd8b4a333b92, type: 3}
+  _outgoingMessagePrefab: {fileID: 8475499277846524976, guid: 0464938bbc871694a89c5737b9ccca52, type: 3}
   _maxMessagesOnScreen: 4
   _isTexting: 0
   _canEndChat: 0
@@ -1201,8 +1201,8 @@ MonoBehaviour:
   _optionsTwoText: {fileID: 0}
   _endChatUi: {fileID: 0}
   _optionsUi: {fileID: 0}
-  _newMagnifiedMessagePrefab: {fileID: 0}
-  _magnifiedResponsePrefab: {fileID: 0}
+  _magnifiedIncomingMessagePrefab: {fileID: 5230060243936193517, guid: e6ce47068e95b4f449e38c2a1e5b803c, type: 3}
+  _magnifiedOutgoingMessagePrefab: {fileID: 2051523193043357354, guid: bee8cbaa1b4b07448b240da129fce8f3, type: 3}
   _maxMagnifiedMessagesOnScreen: 0
   _messagesPreviewParent: {fileID: 0}
   _messagePreviewPrefab: {fileID: 0}

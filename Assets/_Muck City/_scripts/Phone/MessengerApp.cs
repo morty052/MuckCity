@@ -157,11 +157,11 @@ public class MessengerApp : PhoneApp
     {
         return _previewPool.Get();
     }
-    Message GetMagnifiedMessage()
+    Message GetMagnifiedIncomingMessage()
     {
         return _magnifiedIncomingMessagePool.Get();
     }
-    Message GetMagnifiedResponse()
+    Message GetMagnifiedOutGoingMessage()
     {
         return _magnifiedOutgoingPool.Get();
     }
@@ -326,18 +326,24 @@ public class MessengerApp : PhoneApp
         {
             MessageContentStruct message = chat._messages[i];
             Message messageItem;
+            Message magnifiedMessage;
             if (!message._playerSentMessage)
             {
                 messageItem = GetIncomingMessagePrefab();
+                magnifiedMessage = GetMagnifiedIncomingMessage();
+
             }
 
             else
             {
                 messageItem = GetOutGoingMessagePrefab();
+                magnifiedMessage = GetMagnifiedOutGoingMessage();
+
                 // OnAddMessageToScreen?.Invoke();
             }
 
             messageItem.SetMessage(message._content);
+            magnifiedMessage.SetMessage(message._content);
 
             // if (_debug)
             // {
@@ -366,8 +372,21 @@ public class MessengerApp : PhoneApp
                 _outGoingMessagePool.Release(message);
             }
         }
+        for (int i = 0; i < _magnifiedMessagesParent.transform.childCount; i++)
+        {
+            Message message = _magnifiedMessagesParent.transform.GetChild(i).GetComponent<Message>();
+            if (!message._isPlayerMessage)
+            {
+                _magnifiedIncomingMessagePool.Release(message);
+            }
+            else
+            {
+                _magnifiedOutgoingPool.Release(message);
+            }
+        }
         // _messagesParent.transform.localPosition = new(_messagesParent.transform.localPosition.x, 0, _messagesParent.transform.localPosition.z);
         _messagesParent.transform.localPosition = new Vector3(_messagesParent.transform.localPosition.x, 0f, _messagesParent.transform.localPosition.z);
+        _messagesOnScreen = 0;
     }
 
 
@@ -387,7 +406,7 @@ public class MessengerApp : PhoneApp
         }
 
         //* HANDLE START MAGNIFIED CONVO
-        StartMagnifiedConvo();
+        // StartMagnifiedConvo();
 
         //* ALLOW PLAYER TO RESPOND AFTER FIRST MESSAGE IS SHOWN
         _canRespond = true;
@@ -651,24 +670,16 @@ public class MessengerApp : PhoneApp
     #region "Magnified messages Handling"
     public void StartMagnifiedConvo()
     {
-        // Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
-        Message message = GetMagnifiedMessage();
-        // message.gameObject.SetActive(true);
+        Message message = GetMagnifiedIncomingMessage();
         message.SetMessage(_activeNode.Text);
         OnAddMessageToLargeScreen?.Invoke();
-        // if (ActiveSpeechHasOptions())
-        // {
-        //     _optionsOneText.text = _activeNodeOptions.ElementAt(0).Text;
-        //     _optionsTwoText.text = _activeNodeOptions.ElementAt(1).Text;
-        // }
-
     }
 
 
     public string DisplayMagnifiedActiveSpeechNode()
     {
         // Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
-        Message message = GetMagnifiedMessage();
+        Message message = GetMagnifiedIncomingMessage();
         // message.gameObject.SetActive(true);
         message.SetMessage(_activeNode.Text);
         OnAddMessageToLargeScreen?.Invoke();
@@ -678,7 +689,7 @@ public class MessengerApp : PhoneApp
     {
         // Message message = Instantiate(_magnifiedResponsePrefab, _magnifiedMessagesParent);
 
-        Message message = GetMagnifiedResponse();
+        Message message = GetMagnifiedOutGoingMessage();
         message.SetMessage(text);
 
         // message.gameObject.SetActive(true);
