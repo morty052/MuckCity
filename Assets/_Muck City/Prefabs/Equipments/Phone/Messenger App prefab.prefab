@@ -1181,6 +1181,7 @@ MonoBehaviour:
   _appName: Pinga
   _appIcon: {fileID: 9021202317598106165}
   _appMainScreen: {fileID: 3787838909791116144}
+  _screenHeight: 0
   _debug: 0
   _actionPrompt: {fileID: 0}
   _fullScreenMessageView: {fileID: 2022771567961267511}
@@ -1194,6 +1195,7 @@ MonoBehaviour:
   _activeConvo: {fileID: 0}
   _messagesOnScreen: 0
   _canRespond: 0
+  _magnifiedMessagesOnScreen: 0
   _optionId: 0
   _magnifiedMessagesUi: {fileID: 0}
   _magnifiedMessagesParent: {fileID: 0}
@@ -1203,7 +1205,7 @@ MonoBehaviour:
   _optionsUi: {fileID: 0}
   _magnifiedIncomingMessagePrefab: {fileID: 5230060243936193517, guid: e6ce47068e95b4f449e38c2a1e5b803c, type: 3}
   _magnifiedOutgoingMessagePrefab: {fileID: 2051523193043357354, guid: bee8cbaa1b4b07448b240da129fce8f3, type: 3}
-  _maxMagnifiedMessagesOnScreen: 0
+  _maxVisibleMessagesThreshold: 320
   _messagesPreviewParent: {fileID: 0}
   _messagePreviewPrefab: {fileID: 0}
   chats: []
@@ -1213,8 +1215,7 @@ MonoBehaviour:
     ID: 0
     _hasPendingMessages: 0
     _chat: {fileID: 0}
-  _magnifiedMessagesOnScreen: 0
-  _scrollRect: {fileID: 0}
+  _visibleMessagesHeight: 0
 --- !u!1001 &3931716856826455981
 PrefabInstance:
   m_ObjectHideFlags: 0

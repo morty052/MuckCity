@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Sirenix.OdinInspector;
@@ -16,7 +17,7 @@ public class Message : MonoBehaviour
     public GameObject _underLine;
 
     public bool _isRejected = false;
-    [SerializeField] bool _debug = true;
+    [SerializeField] bool _debug = false;
     [SerializeField] float _bottomPadding = 5;
 
     bool IsUsingUnderLine => _underLine != null && _underLine.activeSelf;
@@ -24,6 +25,7 @@ public class Message : MonoBehaviour
 
     //* MAIN FUNCTION IS TO DETERMINE WHICH POOL TO RELEASE MESSAGE TO
     public bool _isPlayerMessage = false;
+
 
     // public Message() { }
 
@@ -61,10 +63,10 @@ public class Message : MonoBehaviour
         _underLine.SetActive(true);
     }
 
-    public void SetMessage(string content)
+    public void SetMessage(string content, Action<float> callback = null)
     {
         _content.text = content;
-        DelayedSetHeight();
+        DelayedSetHeight(false, callback);
     }
     public void SetMessage(string title, string content)
     {
@@ -74,7 +76,7 @@ public class Message : MonoBehaviour
     }
 
     [Button]
-    public void SetHeight(bool useTitle = false)
+    public float SetHeight(bool useTitle = false)
     {
         _content.ForceMeshUpdate();
         int totalLines = _content.textInfo.lineCount;
@@ -95,6 +97,13 @@ public class Message : MonoBehaviour
         Vector2 sizeDelta = rectTransform.sizeDelta;
         sizeDelta.y = totalLineheight + _bottomPadding;
         rectTransform.sizeDelta = sizeDelta;
+        return totalLineheight + _bottomPadding;
+    }
+
+    public float GetHeight()
+    {
+        float renderedHeight = GetComponent<RectTransform>().rect.height;
+        return renderedHeight;
     }
 
     public void PlayVoiceMessage()
@@ -112,10 +121,11 @@ public class Message : MonoBehaviour
 
     // }
 
-    public async void DelayedSetHeight(bool useTitle = false)
+    public async void DelayedSetHeight(bool useTitle = false, Action<float> callback = null)
     {
         // await Task.Delay(delay * 100);
         await Task.Yield();
-        SetHeight(useTitle);
+        float h = SetHeight(useTitle);
+        callback?.Invoke(h);
     }
 }

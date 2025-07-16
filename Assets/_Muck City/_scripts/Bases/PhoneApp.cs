@@ -22,6 +22,7 @@ public class PhoneApp : Tradeable, IDoQuickAction
     [SerializeField] private AppIcon _appIcon;
     [TabGroup("App Settings")]
     public AppScreen _appMainScreen;
+    public float _screenHeight;
 
     [TabGroup("App Settings")]
     public bool _debug;
@@ -35,6 +36,7 @@ public class PhoneApp : Tradeable, IDoQuickAction
     [HideInInspector]
     protected GameObject _externalCanvas;
 
+    [HideInInspector]
     public ActionPrompt _actionPrompt;
 
 
@@ -43,7 +45,7 @@ public class PhoneApp : Tradeable, IDoQuickAction
         _notificationSystem = notificationSystem;
         _externalCanvas = externalCanvas;
         _actionPrompt = actionPrompt;
-
+        SetScreenHeight();
         //* FUNCTION CALLED TO ALLOW INDIVIDUAL PHONE APPS DO THEIR UNIQUE SETUP
         OnInit();
     }
@@ -62,6 +64,22 @@ public class PhoneApp : Tradeable, IDoQuickAction
         {
             _actionPrompt.gameObject.SetActive(false);
         }
+    }
+
+    protected float SetScreenHeight()
+    {
+        float renderedHeight = _appMainScreen.GetComponent<RectTransform>().rect.height;
+        Debug.Log($"<color=cyan> Screen height is {renderedHeight} </color>");
+        _screenHeight = renderedHeight;
+        return renderedHeight;
+    }
+
+    [Button("Debug")]
+    protected float GetRectHeight(RectTransform rectTransform)
+    {
+        float renderedHeight = rectTransform.rect.height;
+        Debug.Log($"<color=blue> Rect height is {renderedHeight} </color>");
+        return renderedHeight;
     }
 
     public virtual void OnSelectPressed()
@@ -148,6 +166,6 @@ public class PhoneApp : Tradeable, IDoQuickAction
 
     public virtual void OnDisablePhone()
     {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
     }
 }

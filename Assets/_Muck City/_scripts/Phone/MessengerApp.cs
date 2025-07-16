@@ -74,13 +74,15 @@ public class MessengerApp : PhoneApp
 
     [SerializeField, TabGroup("Settings")] private int _maxMessagesOnScreen = 0;
 
-    [SerializeField] private bool _isTexting;
+    [SerializeField, TabGroup("Debug")] private bool _isTexting;
     [SerializeField, TabGroup("Settings")] private bool _canEndChat;
     [TabGroup("Debug")] public Chat _activeConvo;
 
     [TabGroup("Debug"), SerializeField] private int _messagesOnScreen = 0;
     [TabGroup("Debug")] public bool _canRespond = false;
     [TabGroup("Debug")] public HashSet<EffectName> _chatEffects = new();
+
+    [TabGroup("Debug")] public int _magnifiedMessagesOnScreen = 0;
     Action OnAddMessageToScreen;
     #endregion
 
@@ -90,11 +92,10 @@ public class MessengerApp : PhoneApp
     private HashSet<OptionNode> _activeNodeOptions = new();
     private OptionNode _lastSelectedOption;
 
-    [SerializeField] private int _optionId = 0;
+    [SerializeField, TabGroup("Debug")] private int _optionId = 0;
     #endregion
 
     #region "Magnified Messages"
-    Action OnAddMessageToLargeScreen;
 
     [TabGroup("Magnified Components")] public Transform _magnifiedMessagesUi;
     [TabGroup("Magnified Components")] public Transform _magnifiedMessagesParent;
@@ -109,7 +110,7 @@ public class MessengerApp : PhoneApp
     [TabGroup("Magnified Components")] public Message _magnifiedIncomingMessagePrefab;
     [TabGroup("Magnified Components")] public Message _magnifiedOutgoingMessagePrefab;
 
-    [TabGroup("Magnified Settings")] public int _maxMagnifiedMessagesOnScreen = 0;
+    [TabGroup("Magnified Settings")] public float _maxVisibleMessagesThreshold;
 
     #endregion
 
@@ -122,9 +123,6 @@ public class MessengerApp : PhoneApp
 
     #endregion
 
-
-    [TabGroup("Debug")] public int _magnifiedMessagesOnScreen = 0;
-
     public bool ShouldAutoSave { get => ShouldAutoSave; set => ShouldAutoSave = value; }
     bool IsViewingExpandedChat => _fullScreenMessageView.activeSelf;
 
@@ -133,15 +131,19 @@ public class MessengerApp : PhoneApp
     IObjectPool<Message> _previewPool;
     IObjectPool<Message> _magnifiedIncomingMessagePool;
     IObjectPool<Message> _magnifiedOutgoingPool;
-    [SerializeField] private ScrollRect _scrollRect;
+    // [SerializeField] private ScrollRect _scrollRect;
 
-    // Scroll down by 10% (0.1f)
-    [Button("Scroll")]
-    public void ScrollDownByAmount(float amount = 0.1f)
-    {
-        float newPos = Mathf.Clamp01(_scrollRect.verticalNormalizedPosition - amount);
-        _scrollRect.verticalNormalizedPosition = newPos;
-    }
+    // // Scroll down by 10% (0.1f)
+    // [Button("Scroll")]
+    // public void ScrollDownByAmount(float amount = 0.1f)
+    // {
+    //     float newPos = Mathf.Clamp01(_scrollRect.verticalNormalizedPosition - amount);
+    //     _scrollRect.verticalNormalizedPosition = newPos;
+    // }
+
+    // private float _magnifiedMessagesParentHeight;
+    public float _visibleMessagesHeight;
+    private float _visibleMagnifiedMessagesHeight;
 
 
     Message GetIncomingMessagePrefab()
@@ -167,41 +169,41 @@ public class MessengerApp : PhoneApp
     }
 
 
-    void OnEnable()
-    {
-        OnAddMessageToScreen += AddMessageToScreen;
-        OnAddMessageToLargeScreen += AddMessageToLargeScreen;
-    }
-    public override void OnDisablePhone()
-    {
-        OnAddMessageToScreen -= AddMessageToScreen;
-        OnAddMessageToLargeScreen -= AddMessageToLargeScreen;
-        if (_debug)
-        {
-            Debug.Log("Messenger App Disabled");
-        }
-    }
+    // void OnEnable()
+    // {
+    //     OnAddMessageToScreen += AddMessageToScreen;
+    //     OnAddMessageToLargeScreen += AddMessageToLargeScreen;
+    // }
+    // public override void OnDisablePhone()
+    // {
+    //     OnAddMessageToScreen -= AddMessageToScreen;
+    //     OnAddMessageToLargeScreen -= AddMessageToLargeScreen;
+    //     if (_debug)
+    //     {
+    //         Debug.Log("Messenger App Disabled");
+    //     }
+    // }
 
-    private void AddMessageToScreen()
-    {
-        //* INCREMENT MESSAGES ON SCREEN
-        _messagesOnScreen++;
-        if (_messagesOnScreen >= _maxMessagesOnScreen)
-        {
-            float messageHeight = _incomingMessagePrefab.GetComponent<RectTransform>().rect.height;
-            _messagesParent.transform.DOLocalMoveY(_messagesParent.transform.localPosition.y + messageHeight, 1f);
-        }
-    }
+    // private void AddMessageToScreen()
+    // {
+    //     //* INCREMENT MESSAGES ON SCREEN
+    //     _messagesOnScreen++;
+    //     if (_messagesOnScreen >= _maxMessagesOnScreen)
+    //     {
+    //         float messageHeight = _incomingMessagePrefab.GetComponent<RectTransform>().rect.height;
+    //         _messagesParent.transform.DOLocalMoveY(_messagesParent.transform.localPosition.y + messageHeight, 1f);
+    //     }
+    // }
 
-    private void AddMessageToLargeScreen()
-    {
-        _magnifiedMessagesOnScreen++;
-        if (_magnifiedMessagesOnScreen >= _maxMagnifiedMessagesOnScreen)
-        {
-            float messageHeight = _magnifiedIncomingMessagePrefab.GetComponent<RectTransform>().rect.height;
-            _magnifiedMessagesParent.transform.DOLocalMoveY(_magnifiedMessagesParent.transform.localPosition.y + messageHeight, 1f);
-        }
-    }
+    // private void AddMessageToLargeScreen()
+    // {
+    //     _magnifiedMessagesOnScreen++;
+    //     if (_magnifiedMessagesOnScreen >= _maxMagnifiedMessagesOnScreen)
+    //     {
+    //         float messageHeight = _magnifiedIncomingMessagePrefab.GetComponent<RectTransform>().rect.height;
+    //         _magnifiedMessagesParent.transform.DOLocalMoveY(_magnifiedMessagesParent.transform.localPosition.y + messageHeight, 1f);
+    //     }
+    // }
 
     public void SetActiveOptions()
     {
@@ -232,10 +234,12 @@ public class MessengerApp : PhoneApp
         // Message message = Instantiate(_newMessagePrefab, _messagesParent);
 
         Message message = GetIncomingMessagePrefab();
-        message.transform.SetParent(_messagesParent);
-        message.gameObject.SetActive(true);
-        message.SetMessage(_activeNode.Text);
-        OnAddMessageToScreen?.Invoke();
+        // message.transform.SetParent(_messagesParent);
+        // message.gameObject.SetActive(true);
+        // message.SetMessage(_activeNode.Text, (x) => Debug.Log($"<color=blue> chat bubble height is {x} </color>"));
+        // OnAddMessageToScreen?.Invoke();
+        SetMessage(message, _activeNode.Text);
+        Debug.Log($"{_activeNode.Text} has connection{SelectedOptionHasSpeech()}");
         return _activeNode.Text;
     }
 
@@ -259,6 +263,7 @@ public class MessengerApp : PhoneApp
     {
         // _optionsUi.SetActive(false);
         // _endChatUi.SetActive(true);
+        Debug.Log("Message stream  ended");
         ToggleMagnifiedOptionsUi(false);
         _canEndChat = true;
         _activeConvo.Complete();
@@ -277,9 +282,39 @@ public class MessengerApp : PhoneApp
         // _endChatUi.SetActive(true);
     }
 
+    void SetMessage(Message message, string content)
+    {
+        message.SetMessage(content, (chatBubbleHeight) =>
+        {
+            // Debug.Log($"<color=yellow> latest chat bubble height is {chatBubbleHeight} </color>");
+            _visibleMessagesHeight += chatBubbleHeight;
+            // Debug.Log($"<color=green> total messages height is {_visibleMessagesHeight} </color>");
+            if (_visibleMessagesHeight >= _screenHeight)
+            {
+                // Debug.Log($"<color=red> total messages height greater than screen size {_screenHeight} </color>");
+                _messagesParent.transform.DOLocalMoveY(_messagesParent.transform.localPosition.y + chatBubbleHeight, 1f);
+            }
+        });
+        // OnAddMessageToScreen?.Invoke();
+    }
+    void SetMagnifiedMessage(Message message, string content)
+    {
+        message.SetMessage(content, (chatBubbleHeight) =>
+        {
+            // Debug.Log($"<color=yellow> latest chat bubble height is {chatBubbleHeight} </color>");
+            _visibleMagnifiedMessagesHeight += chatBubbleHeight;
+            // Debug.Log($"<color=green> total messages height is {_visibleMagnifiedMessagesHeight} </color>");
+            if (_visibleMagnifiedMessagesHeight >= _maxVisibleMessagesThreshold)
+            {
+                Debug.Log($"<color=red> total messages height greater than screen size {_maxVisibleMessagesThreshold} </color>");
+                _magnifiedMessagesParent.transform.DOLocalMoveY(_magnifiedMessagesParent.transform.localPosition.y + chatBubbleHeight, 1f);
+            }
+        });
+        // OnAddMessageToScreen?.Invoke();
+    }
     void ShowNextMessage()
     {
-
+        Debug.Log("Attempting to show next message");
         //* GET SPEECH FOR SELECTED 
         SpeechConnection speechConnection = _lastSelectedOption.Connections.First(x => x.ConnectionType == Connection.eConnectionType.Speech) as SpeechConnection;
 
@@ -303,16 +338,21 @@ public class MessengerApp : PhoneApp
 
         //* SET CONTENT OF SPEECH AS STRING FOR MESSAGE PREVIEW LATEST MESSAGE AS AI MESSAGE
         UpdateChatPreview(_activeNode.Text, false);
+
+        //* END CONVERSATION IF SPEECH HAS NO FURTHER CONNECTIONS
+        if (speechConnection.SpeechNode.Connections.Count == 0)
+        {
+            Invoke(nameof(EndConvo), 3f);
+        }
+
     }
     public void ReplyMessage(string text)
     {
         // Message message = Instantiate(_responsePrefab, _messagesParent);
         Message message = GetOutGoingMessagePrefab();
         message.gameObject.SetActive(true);
-        message.SetMessage(text);
-
-
-        OnAddMessageToScreen?.Invoke();
+        // message.SetMessage(text, (x) => Debug.Log($"<color=blue> chat bubble height is {x} </color>"));
+        SetMessage(message, text);
     }
 
     public void OpenChat(InstantMessage chat)
@@ -355,14 +395,17 @@ public class MessengerApp : PhoneApp
                 // OnAddMessageToScreen?.Invoke();
             }
 
-            messageItem.SetMessage(message._content);
-            magnifiedMessage.SetMessage(message._content);
+            // messageItem.SetMessage(message._content);
+            // magnifiedMessage.SetMessage(message._content);
+
 
             // if (_debug)
             // {
             //     Debug.Log($"Index: {i} IsPlayerMessage: {message._playerSentMessage} Content: {message._content}");
             // }
 
+            SetMessage(messageItem, message._content);
+            SetMagnifiedMessage(magnifiedMessage, message._content);
         }
         ShowChatUi();
     }
@@ -467,7 +510,7 @@ public class MessengerApp : PhoneApp
     public override void OnRejectPressed()
     {
         // This method can be overridden by derived classes to handle selection events
-        Debug.Log("On Reject pressed");
+        // Debug.Log("On Reject pressed");
         if (_isTexting)
         {
             ProgressConvo(1);
@@ -524,6 +567,9 @@ public class MessengerApp : PhoneApp
             false, 10, 30
         );
 
+        // _magnifiedMessagesParentHeight = GetRectHeight(_magnifiedMessagesParent.GetComponent<RectTransform>());
+        // float spacing = _magnifiedMessagesParent.GetComponent<VerticalLayoutGroup>().spacing;
+
         // CalculateScreenSpace();
     }
 
@@ -546,25 +592,26 @@ public class MessengerApp : PhoneApp
     //     _maxMessagesOnScreen = messagesFit;
     // }
 
+    // void CalculateScreenSpace()
+    // {
+    //     RectTransform parentTransform = _magnifiedMessagesParent.GetComponent<RectTransform>();
+    //     RectTransform messageTransform = _magnifiedIncomingMessagePrefab.GetComponent<RectTransform>();
+
+    //     float parentHeight = parentTransform.rect.height;
+
+    //     float messageHeight = messageTransform.rect.height;
+
+    //     int messagesFit = Mathf.FloorToInt(parentHeight / messageHeight);
+    //     if (_debug)
+    //     {
+    //         Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
+    //     }
+
+    //     _maxMagnifiedMessagesOnScreen = messagesFit;
+    // }
+
     //! EDITOR EVENT FUNCTION
 
-    void CalculateScreenSpace()
-    {
-        RectTransform parentTransform = _magnifiedMessagesParent.GetComponent<RectTransform>();
-        RectTransform messageTransform = _magnifiedIncomingMessagePrefab.GetComponent<RectTransform>();
-
-        float parentHeight = parentTransform.rect.height;
-
-        float messageHeight = messageTransform.rect.height;
-
-        int messagesFit = Mathf.FloorToInt(parentHeight / messageHeight);
-        if (_debug)
-        {
-            Debug.Log($"Parent Height: {parentHeight}, Message Height: {messageHeight}, Messages that can fit on Screen: {messagesFit}");
-        }
-
-        _maxMagnifiedMessagesOnScreen = messagesFit;
-    }
 
 
     #region "Editor Event Functions"
@@ -616,9 +663,13 @@ public class MessengerApp : PhoneApp
 
         Message message = GetIncomingMessagePrefab();
 
-        message.gameObject.SetActive(true);
-        message.SetMessage(_activeNode.Text);
-        OnAddMessageToScreen?.Invoke();
+        // message.gameObject.SetActive(true);
+
+        SetMessage(message, _activeNode.Text);
+        // message.SetMessage(_activeNode.Text, (x) => Debug.Log($"<color=blue> chat bubble height is {x} </color>"));
+
+
+        // OnAddMessageToScreen?.Invoke();
         //* ALLOW PLAYER TO RESPOND AFTER FIRST MESSAGE IS SHOWN
         _canRespond = true;
 
@@ -626,6 +677,9 @@ public class MessengerApp : PhoneApp
         Phone.Instance.SetApp(ID);
 
         _isTexting = true;
+
+
+        ToggleMagnifiedOptionsUi(true);
     }
 
     //! EDITOR EVENT FUNCTION
@@ -663,8 +717,10 @@ public class MessengerApp : PhoneApp
 
         else
         {
+
             Invoke(nameof(EndConvo), 3f);
         }
+        Debug.Log($"{chosenOption.Text} has connection{SelectedOptionHasSpeech()}");
     }
 
     #endregion
@@ -683,31 +739,41 @@ public class MessengerApp : PhoneApp
     #region "Magnified messages Handling"
     public void StartMagnifiedConvo()
     {
+        // Message message = GetMagnifiedIncomingMessage();
+        // message.SetMessage(_activeNode.Text);
+
+        // OnAddMessageToLargeScreen?.Invoke();
         Message message = GetMagnifiedIncomingMessage();
-        message.SetMessage(_activeNode.Text);
-        OnAddMessageToLargeScreen?.Invoke();
+        SetMagnifiedMessage(message, _activeNode.Text);
     }
 
 
     public string DisplayMagnifiedActiveSpeechNode()
     {
         // Message message = Instantiate(_newMagnifiedMessagePrefab, _magnifiedMessagesParent);
-        Message message = GetMagnifiedIncomingMessage();
+        // Message message = GetMagnifiedIncomingMessage();
         // message.gameObject.SetActive(true);
-        message.SetMessage(_activeNode.Text);
-        OnAddMessageToLargeScreen?.Invoke();
+        // message.SetMessage(_activeNode.Text);
+        // OnAddMessageToLargeScreen?.Invoke();
+
+        Message message = GetMagnifiedIncomingMessage();
+        SetMagnifiedMessage(message, _activeNode.Text);
         return _activeNode.Text;
     }
     public void ShowMagnifiedReply(string text)
     {
         // Message message = Instantiate(_magnifiedResponsePrefab, _magnifiedMessagesParent);
 
-        Message message = GetMagnifiedOutGoingMessage();
-        message.SetMessage(text);
+        // Message message = GetMagnifiedOutGoingMessage();
+        // message.SetMessage(text);
+
 
         // message.gameObject.SetActive(true);
 
-        OnAddMessageToLargeScreen?.Invoke();
+        // OnAddMessageToLargeScreen?.Invoke();
+
+        Message message = GetMagnifiedOutGoingMessage();
+        SetMagnifiedMessage(message, text);
         _optionsOneText.text = "";
         _optionsTwoText.text = "";
     }
