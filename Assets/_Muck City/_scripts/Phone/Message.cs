@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityUtils;
 
 
@@ -24,7 +25,9 @@ public class Message : MonoBehaviour
 
 
     //* MAIN FUNCTION IS TO DETERMINE WHICH POOL TO RELEASE MESSAGE TO
-    public bool _isPlayerMessage = false;
+    // public bool _isPlayerMessage = false;
+
+    public IObjectPool<Message> _pool;
 
 
     // public Message() { }
@@ -68,11 +71,11 @@ public class Message : MonoBehaviour
         _content.text = content;
         DelayedSetHeight(false, callback);
     }
-    public void SetMessage(string title, string content)
+    public void SetMessage(string title, string content, Action<float> callback = null)
     {
         _title.text = title;
         _content.text = content;
-        // DelayedSetHeight(true);
+        DelayedSetHeight(true, callback);
     }
 
     [Button]
@@ -127,5 +130,17 @@ public class Message : MonoBehaviour
         await Task.Yield();
         float h = SetHeight(useTitle);
         callback?.Invoke(h);
+    }
+
+    public void Release()
+    {
+        Destroy(gameObject);
+    }
+
+    public void SetParent()
+    {
+        transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        transform.localScale = Vector3.one;
+
     }
 }
