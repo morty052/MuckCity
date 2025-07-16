@@ -1189,16 +1189,16 @@ MonoBehaviour:
   _messagesParent: {fileID: 3690965150675579735}
   _incomingMessagePrefab: {fileID: 6772978364059879396, guid: 00ba857443d6ea040b01dd8b4a333b92, type: 3}
   _outgoingMessagePrefab: {fileID: 8475499277846524976, guid: 0464938bbc871694a89c5737b9ccca52, type: 3}
-  _maxMessagesOnScreen: 4
+  _typingIndicator: {fileID: 7678741184033341818, guid: 32f27d1875edd0c4f812a70a267cd867, type: 3}
   _isTexting: 0
   _canEndChat: 0
   _activeConvo: {fileID: 0}
-  _messagesOnScreen: 0
   _canRespond: 0
-  _magnifiedMessagesOnScreen: 0
+  _visibleMessagesHeight: 0
   _optionId: 0
   _magnifiedMessagesUi: {fileID: 0}
   _magnifiedMessagesParent: {fileID: 0}
+  _magnifiedTypingIndicator: {fileID: 7341973643443360684, guid: 226b7165b520bdf4997cade9aafcb99d, type: 3}
   _optionsOneText: {fileID: 0}
   _optionsTwoText: {fileID: 0}
   _endChatUi: {fileID: 0}
@@ -1215,7 +1215,6 @@ MonoBehaviour:
     ID: 0
     _hasPendingMessages: 0
     _chat: {fileID: 0}
-  _visibleMessagesHeight: 0
 --- !u!1001 &3931716856826455981
 PrefabInstance:
   m_ObjectHideFlags: 0

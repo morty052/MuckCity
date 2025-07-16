@@ -73,18 +73,18 @@ public class MessengerApp : PhoneApp
     [TabGroup("Components")] public Message _incomingMessagePrefab;
     [TabGroup("Components")] public Message _outgoingMessagePrefab;
 
-    [SerializeField, TabGroup("Settings")] private int _maxMessagesOnScreen = 0;
+    [TabGroup("Components")] public GameObject _typingIndicator;
+
 
     [SerializeField, TabGroup("Debug")] private bool _isTexting;
     [SerializeField, TabGroup("Settings")] private bool _canEndChat;
     [TabGroup("Debug")] public Chat _activeConvo;
-
-    [TabGroup("Debug"), SerializeField] private int _messagesOnScreen = 0;
     [TabGroup("Debug")] public bool _canRespond = false;
+
+    [TabGroup("Debug")] public float _visibleMessagesHeight;
+    [TabGroup("Debug")] private float _visibleMagnifiedMessagesHeight;
     [TabGroup("Debug")] public HashSet<EffectName> _chatEffects = new();
 
-    [TabGroup("Debug")] public int _magnifiedMessagesOnScreen = 0;
-    Action OnAddMessageToScreen;
     #endregion
 
     #region "Non Inspector values"
@@ -101,7 +101,7 @@ public class MessengerApp : PhoneApp
     [TabGroup("Magnified Components")] public Transform _magnifiedMessagesUi;
     [TabGroup("Magnified Components")] public Transform _magnifiedMessagesParent;
 
-    [TabGroup("Magnified Components")]
+    [TabGroup("Magnified Components")] public GameObject _magnifiedTypingIndicator;
     [SerializeField, TabGroup("Magnified Components")] TextMeshProUGUI _optionsOneText;
 
     [SerializeField, TabGroup("Magnified Components")] TextMeshProUGUI _optionsTwoText;
@@ -143,8 +143,7 @@ public class MessengerApp : PhoneApp
     // }
 
     // private float _magnifiedMessagesParentHeight;
-    public float _visibleMessagesHeight;
-    private float _visibleMagnifiedMessagesHeight;
+
 
 
     Message GetIncomingMessagePrefab()
@@ -316,6 +315,8 @@ public class MessengerApp : PhoneApp
     }
     void ShowNextMessage()
     {
+        // _typingIndicator.SetActive(false);
+        ToggleTypingIndicator();
         //* GET SPEECH FOR SELECTED 
         SpeechConnection speechConnection = _lastSelectedOption.Connections.First(x => x.ConnectionType == Connection.eConnectionType.Speech) as SpeechConnection;
 
@@ -414,13 +415,19 @@ public class MessengerApp : PhoneApp
     {
         for (int i = 0; i < _messagesParent.transform.childCount; i++)
         {
-            Message message = _messagesParent.transform.GetChild(i).GetComponent<Message>();
-            message.Release();
+            // Message message = _messagesParent.transform.GetChild(i).GetComponent<Message>();
+            if (_messagesParent.transform.GetChild(i).TryGetComponent(out Message message))
+            {
+
+                message.Release();
+            }
         }
         for (int i = 0; i < _magnifiedMessagesParent.transform.childCount; i++)
         {
-            Message message = _magnifiedMessagesParent.transform.GetChild(i).GetComponent<Message>();
-            message.Release();
+            if (_magnifiedMessagesParent.transform.GetChild(i).TryGetComponent(out Message magnifiedMessage))
+            {
+                magnifiedMessage.Release();
+            }
         }
 
 
@@ -593,10 +600,21 @@ public class MessengerApp : PhoneApp
 
     //! EDITOR EVENT FUNCTION
 
-    void ResetTransform(GameObject obj)
+    void ToggleTypingIndicator()
     {
-        obj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-        obj.transform.localScale = Vector3.one;
+        if (!_magnifiedTypingIndicator.activeSelf)
+        {
+            _magnifiedTypingIndicator.transform.SetAsLastSibling();
+            _magnifiedTypingIndicator.SetActive(true);
+
+            _typingIndicator.transform.SetAsLastSibling();
+            _typingIndicator.SetActive(true);
+        }
+        else
+        {
+            _magnifiedTypingIndicator.SetActive(false);
+            _typingIndicator.SetActive(false);
+        }
     }
 
     #region "Editor Event Functions"
@@ -697,6 +715,7 @@ public class MessengerApp : PhoneApp
         //* CHECK IF SELECTED OPTION HAS FURTHER DIALOGUE
         if (SelectedOptionHasSpeech())
         {
+            Invoke(nameof(ToggleTypingIndicator), 0.5f);
             Invoke(nameof(ShowNextMessage), 2f);
         }
 
