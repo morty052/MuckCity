@@ -257,8 +257,9 @@ public class MessengerApp : PhoneApp
 
     private void EndConvo()
     {
-        _optionsUi.SetActive(false);
-        _endChatUi.SetActive(true);
+        // _optionsUi.SetActive(false);
+        // _endChatUi.SetActive(true);
+        ToggleMagnifiedOptionsUi(false);
         _canEndChat = true;
         _activeConvo.Complete();
         _activeConvo = null;
@@ -268,6 +269,12 @@ public class MessengerApp : PhoneApp
         {
             Debug.Log(_chatEffects.ElementAt(i));
         }
+    }
+
+    void ToggleMagnifiedOptionsUi(bool state)
+    {
+        _optionsUi.SetActive(state);
+        // _endChatUi.SetActive(true);
     }
 
     void ShowNextMessage()
@@ -320,6 +327,12 @@ public class MessengerApp : PhoneApp
                 Debug.Log($"<color=orange> Exposition not finished for selected convo {chat._messages[0]._content}</color> ");
             }
             SetUpOpenedMessage(chat._chat);
+            ToggleMagnifiedOptionsUi(true);
+        }
+
+        else
+        {
+            ToggleMagnifiedOptionsUi(false);
         }
 
         for (int i = 0; i < chat._messages.Count; i++)
