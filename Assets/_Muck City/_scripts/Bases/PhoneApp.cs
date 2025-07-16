@@ -69,7 +69,10 @@ public class PhoneApp : Tradeable, IDoQuickAction
     protected float SetScreenHeight()
     {
         float renderedHeight = _appMainScreen.GetComponent<RectTransform>().rect.height;
-        Debug.Log($"<color=cyan> Screen height is {renderedHeight} </color>");
+        if (_debug)
+        {
+            Debug.Log($"<color=cyan> Screen height is {renderedHeight} </color>");
+        }
         _screenHeight = renderedHeight;
         return renderedHeight;
     }

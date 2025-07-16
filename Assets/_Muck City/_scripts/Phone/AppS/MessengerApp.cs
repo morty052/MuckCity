@@ -233,13 +233,14 @@ public class MessengerApp : PhoneApp
     {
         // Message message = Instantiate(_newMessagePrefab, _messagesParent);
 
-        Message message = GetIncomingMessagePrefab();
+
         // message.transform.SetParent(_messagesParent);
         // message.gameObject.SetActive(true);
         // message.SetMessage(_activeNode.Text, (x) => Debug.Log($"<color=blue> chat bubble height is {x} </color>"));
         // OnAddMessageToScreen?.Invoke();
+        Message message = GetIncomingMessagePrefab();
         SetMessage(message, _activeNode.Text);
-        Debug.Log($"{_activeNode.Text} has connection{SelectedOptionHasSpeech()}");
+        // Debug.Log($"{_activeNode.Text} has connection{SelectedOptionHasSpeech()}");
         return _activeNode.Text;
     }
 
@@ -263,13 +264,17 @@ public class MessengerApp : PhoneApp
     {
         // _optionsUi.SetActive(false);
         // _endChatUi.SetActive(true);
-        Debug.Log("Message stream  ended");
+        if (_debug)
+        {
+            Debug.Log("Message stream  ended");
+        }
         ToggleMagnifiedOptionsUi(false);
         _canEndChat = true;
         _activeConvo.Complete();
         _activeConvo = null;
         _activeChat._hasPendingMessages = false;
         _optionId = 0;
+        _activeChat = null;
         for (int i = 0; i < _chatEffects.Count; i++)
         {
             Debug.Log(_chatEffects.ElementAt(i));
@@ -306,7 +311,10 @@ public class MessengerApp : PhoneApp
             // Debug.Log($"<color=green> total messages height is {_visibleMagnifiedMessagesHeight} </color>");
             if (_visibleMagnifiedMessagesHeight >= _maxVisibleMessagesThreshold)
             {
-                Debug.Log($"<color=red> total messages height greater than screen size {_maxVisibleMessagesThreshold} </color>");
+                if (_debug)
+                {
+                    Debug.Log($"<color=red> total messages height greater than screen size {_maxVisibleMessagesThreshold} </color>");
+                }
                 _magnifiedMessagesParent.transform.DOLocalMoveY(_magnifiedMessagesParent.transform.localPosition.y + chatBubbleHeight, 1f);
             }
         });
@@ -314,7 +322,6 @@ public class MessengerApp : PhoneApp
     }
     void ShowNextMessage()
     {
-        Debug.Log("Attempting to show next message");
         //* GET SPEECH FOR SELECTED 
         SpeechConnection speechConnection = _lastSelectedOption.Connections.First(x => x.ConnectionType == Connection.eConnectionType.Speech) as SpeechConnection;
 
@@ -342,16 +349,17 @@ public class MessengerApp : PhoneApp
         //* END CONVERSATION IF SPEECH HAS NO FURTHER CONNECTIONS
         if (speechConnection.SpeechNode.Connections.Count == 0)
         {
-            Invoke(nameof(EndConvo), 3f);
+            EndConvo();
         }
 
     }
     public void ReplyMessage(string text)
     {
         // Message message = Instantiate(_responsePrefab, _messagesParent);
-        Message message = GetOutGoingMessagePrefab();
-        message.gameObject.SetActive(true);
+
+        // message.gameObject.SetActive(true);
         // message.SetMessage(text, (x) => Debug.Log($"<color=blue> chat bubble height is {x} </color>"));
+        Message message = GetOutGoingMessagePrefab();
         SetMessage(message, text);
     }
 
@@ -442,7 +450,10 @@ public class MessengerApp : PhoneApp
         }
         // _messagesParent.transform.localPosition = new(_messagesParent.transform.localPosition.x, 0, _messagesParent.transform.localPosition.z);
         _messagesParent.transform.localPosition = new Vector3(_messagesParent.transform.localPosition.x, 0f, _messagesParent.transform.localPosition.z);
-        _messagesOnScreen = 0;
+        _magnifiedMessagesParent.transform.localPosition = new Vector3(_magnifiedMessagesParent.transform.localPosition.x, 0f, _magnifiedMessagesParent.transform.localPosition.z);
+
+        _visibleMessagesHeight = 0;
+        _visibleMagnifiedMessagesHeight = 0;
     }
 
 
@@ -720,7 +731,6 @@ public class MessengerApp : PhoneApp
 
             Invoke(nameof(EndConvo), 3f);
         }
-        Debug.Log($"{chosenOption.Text} has connection{SelectedOptionHasSpeech()}");
     }
 
     #endregion
