@@ -78,10 +78,9 @@ public class MuckFog : MonoBehaviour
 
     private void DegradeGasMask()
     {
-        _gasMask._integrity -= 6;
-        if (_gasMask._integrity <= 0)
+        bool isBroken = _gasMask.Degrade(6);
+        if (isBroken)
         {
-            _gasMask.Break();
             PierceGasMask();
         }
     }

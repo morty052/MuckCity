@@ -17,6 +17,17 @@ public class GasMask : SpecialEquipment
         transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 
+    public bool Degrade(float degradeValue)
+    {
+        _integrity -= degradeValue;
+        bool isBroken = _integrity <= 0;
+        if (isBroken)
+        {
+            Break();
+            return true;
+        }
+        return false;
+    }
     public void Break()
     {
         Debug.Log($"<color=cyan> Gas Mask Broke </color>");

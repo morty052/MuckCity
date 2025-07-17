@@ -228,7 +228,7 @@ public class Player : MonoBehaviour, IHavePersistentData
             transform.SetPositionAndRotation(_playerSaveData._position.position, Quaternion.Euler(_playerSaveData._position.rotation));
         }
 
-        // _specialEquipmentManager.SetSpecialEquipments(_playerSaveData._specialEquipments);
+        SpecialEquipmentManager.Instance.SetSpecialEquipments();
 
     }
 

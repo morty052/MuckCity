@@ -31,10 +31,10 @@ public class SpecialEquipmentManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        SetSpecialEquipments();
-    }
+    // void Start()
+    // {
+    //     SetSpecialEquipments();
+    // }
 
     public void AddSpecialEquipment(SpecialEquipmentID specialEquipment)
     {

@@ -11,6 +11,8 @@ public enum SpecialEquipmentID
 public class SpecialEquipment : MonoBehaviour
 {
     public SpecialEquipmentID _id;
+
+    [SerializeField] protected bool _debugEquipment;
     public virtual void Init()
     {
 
