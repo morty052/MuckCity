@@ -186,7 +186,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d2622d4c9b4c5945a52b07dd5becf03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _highlight: {fileID: 0}
   _highlightMat: {fileID: 2100000, guid: 43c734eaa52778a47b4679d6cef0b701, type: 2}
-  _itemData: {fileID: 11400000, guid: 3201e28dff29e5c41b4ac733572bea6e, type: 2}
+  _itemData: {fileID: 11400000, guid: 998494607ef03c34ca5fdae09623c685, type: 2}
   _shouldHighlight: 0

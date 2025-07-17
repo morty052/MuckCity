@@ -27,9 +27,10 @@ public class Tradeable : MonoBehaviour
     public virtual void OnBuy(ShopItemSO shopItemSO)
     {
         Debug.Log("Buying " + shopItemSO._name + " with id " + shopItemSO._itemReference.id);
-        if (shopItemSO._tradeable is SpecialEquipment)
+        if (shopItemSO._type == ShopItemType.SPECIAL_EQUIPMENT)
         {
             Debug.Log("bought special equipment");
+            SpecialEquipmentManager.Instance.AddSpecialEquipment(shopItemSO as SpecialEquipmentSO);
             return;
         }
         Player.Instance.AddItemToInventory(shopItemSO._itemReference);

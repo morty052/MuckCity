@@ -40,6 +40,10 @@ public class SpecialEquipmentManager : MonoBehaviour
     {
         Add(specialEquipment);
     }
+    public void AddSpecialEquipment(SpecialEquipmentSO specialEquipment)
+    {
+        InitSpecialEquipment(specialEquipment);
+    }
 
     public void Add(SpecialEquipmentID specialEquipment)
     {
@@ -84,18 +88,24 @@ public class SpecialEquipmentManager : MonoBehaviour
 
         foreach (SpecialEquipmentSO item in _data)
         {
-            SpecialEquipmentID id = item._id;
-            if (specialEquipments.Contains(id)) return;
-            if (_debug)
-            {
-                Debug.Log($"Adding {id} ");
-            }
-            specialEquipments.Add(id);
-            Debug.Log(item.name);
-            SpecialEquipment special = Instantiate(item._equipmentPrefab).GetComponent<SpecialEquipment>();
-            _equipments.Add(special);
-            special.Init();
+            InitSpecialEquipment(item);
         }
+    }
+
+    void InitSpecialEquipment(SpecialEquipmentSO item)
+    {
+        Debug.Log("bought special equipment" + item._id);
+        SpecialEquipmentID id = item._id;
+        if (specialEquipments.Contains(id)) return;
+        if (_debug)
+        {
+            Debug.Log($"Adding {id} ");
+        }
+        specialEquipments.Add(id);
+        Debug.Log(item.name);
+        SpecialEquipment special = Instantiate(item._equipmentPrefab).GetComponent<SpecialEquipment>();
+        _equipments.Add(special);
+        special.Init();
     }
 
     public bool HasEquipment(SpecialEquipmentID equipment)

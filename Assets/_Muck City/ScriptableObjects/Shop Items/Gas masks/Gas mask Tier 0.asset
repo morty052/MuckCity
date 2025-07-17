@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 583d04fc1e28618478b307b1d32cc512, type: 3}
-  m_Name: Gas mask Tier 0
+  m_Script: {fileID: 11500000, guid: b07a4b8ea10f7cf42b4c31c86f1e5601, type: 3}
+  m_Name: Gas Mask Tier 0
   m_EditorClassIdentifier: 
-  _name: Gas mask Tier 0
+  _name: Special Equipment
   _icon: {fileID: 0}
   _price: 0
   _tradeable: {fileID: 671424210889472819, guid: 9a2f07ee28804e449adad8f4cd404721, type: 3}
@@ -26,14 +26,6 @@ MonoBehaviour:
     addToEquipArea: 0
     indexArea: 0
   _type: 3
-  _stats:
-  - _name: 0
-    _value: 0
-  - _name: 1
-    _value: 0
-  - _name: 2
-    _value: 0
-  - _name: 3
-    _value: 0
-  - _name: 4
-    _value: 0
+  _stats: []
+  _equipmentPrefab: {fileID: 0}
+  _id: 3
