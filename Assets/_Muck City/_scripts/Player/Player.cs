@@ -86,8 +86,6 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Interaction")]
     [SerializeField] InteractionSystem _interactionSystem;
 
-    [TabGroup("Equipments")]
-    public SpecialEquipmentManager _specialEquipmentManager;
 
     [TabGroup("Equipments")]
     [SerializeField] Transform _backPackHolder;
@@ -119,6 +117,8 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     [TabGroup("Components")]
     [SerializeField] Camera _defaultCamera;
+    [TabGroup("Components")]
+    public Transform _headHolder;
 
 
     [TabGroup("Phone")]
@@ -204,7 +204,7 @@ public class Player : MonoBehaviour, IHavePersistentData
 
             LoadPersistentData();
             _interactionSystem = new InteractionSystem(_interactionRange, _detectionRate, transform, _interactionLayerMask, _defaultLayerMask);
-            _specialEquipmentManager = new SpecialEquipmentManager();
+            // _specialEquipmentManager = new SpecialEquipmentManager();
             _postProcessManager = new(GetComponentInChildren<Volume>());
             // DontDestroyOnLoad(gameObject);
         }
@@ -228,7 +228,7 @@ public class Player : MonoBehaviour, IHavePersistentData
             transform.SetPositionAndRotation(_playerSaveData._position.position, Quaternion.Euler(_playerSaveData._position.rotation));
         }
 
-        _specialEquipmentManager.SetSpecialEquipments(_playerSaveData._specialEquipments);
+        // _specialEquipmentManager.SetSpecialEquipments(_playerSaveData._specialEquipments);
 
     }
 
@@ -730,10 +730,7 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     }
 
-    public void AddSpecialEquipment(SpecialEquipmentID specialEquipment)
-    {
-        _specialEquipmentManager.AddSpecialEquipment(specialEquipment);
-    }
+
 
 
     public bool IsItemInInventory(int id)
@@ -768,8 +765,6 @@ public class Player : MonoBehaviour, IHavePersistentData
     {
         Gizmos.DrawSphere(transform.position + Vector3.up, _interactionRange);
     }
-
-
 
 
 }

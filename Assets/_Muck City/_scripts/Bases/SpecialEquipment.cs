@@ -4,7 +4,8 @@ public enum SpecialEquipmentID
 {
     PHONE = 0,
     ARMOUR = 1,
-    ROVER = 2
+    ROVER = 2,
+    GAS_MASK = 3
 }
 
 public class SpecialEquipment : MonoBehaviour

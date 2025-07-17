@@ -51,7 +51,7 @@ public class ItemPickUpContainer : Interactable
             case PickupType.ITEM:
                 break;
             case PickupType.SPECIAL_EQUIPMENT:
-                Player.Instance.AddSpecialEquipment(_specialEquipment._id);
+                SpecialEquipmentManager.Instance.AddSpecialEquipment(_specialEquipment._id);
                 break;
             default:
                 break;

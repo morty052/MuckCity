@@ -43,6 +43,7 @@ namespace Invector
         public bool limitParticleCollisionEvent = false;
         public int maxParticleCollisionEvent = 1;
         public List<ParticleCollisionEvent> collisionEvents;
+        public bool _shouldDamage;
 
         protected virtual void Start()
         {
@@ -130,6 +131,10 @@ namespace Invector
 
         protected virtual bool CanApplyDamage(GameObject hitObject)
         {
+            if (!_shouldDamage)
+            {
+                return false;
+            }
             return (tags.Count == 0 || tags.Contains(hitObject.tag)) && layerToCollide == 0 || layerToCollide.ContainsLayer(hitObject.layer);
         }
 
