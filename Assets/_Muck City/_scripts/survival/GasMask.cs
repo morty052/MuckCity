@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GasMask : SpecialEquipment
@@ -14,5 +15,10 @@ public class GasMask : SpecialEquipment
     {
         transform.SetParent(Player.Instance._headHolder);
         transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+    }
+
+    public void Break()
+    {
+        Debug.Log($"<color=cyan> Gas Mask Broke </color>");
     }
 }

@@ -16,7 +16,6 @@ public class MuckFog : MonoBehaviour
     [SerializeField] GasMask _gasMask;
 
     CountdownTimer _countdownTimer;
-
     void Awake()
     {
         _vObjectDamage = GetComponent<vObjectDamage>();
@@ -28,7 +27,6 @@ public class MuckFog : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         Debug.Log($"<color=green> Player entered the muck </color>");
-        // _defaultProfile = Player.Instance.GetComponentInChildren<Volume>().profile;
         HandleCanDamage();
     }
 
@@ -62,6 +60,11 @@ public class MuckFog : MonoBehaviour
 
     void SetUpGasMaskDegradingTimer()
     {
+        if (_gasMask._integrity <= 0)
+        {
+            PierceGasMask();
+            return;
+        }
         _countdownTimer = new(_gasMask.resistance);
         _countdownTimer.OnTimerStop += () => { _countdownTimer.Start(); DegradeGasMask(); };
         _countdownTimer.Start();
@@ -69,12 +72,25 @@ public class MuckFog : MonoBehaviour
 
     void DisposeTimer()
     {
-        _countdownTimer.Dispose();
+        _countdownTimer?.Dispose();
         _countdownTimer = null;
     }
 
     private void DegradeGasMask()
     {
-        _gasMask._integrity -= 1;
+        _gasMask._integrity -= 6;
+        if (_gasMask._integrity <= 0)
+        {
+            _gasMask.Break();
+            PierceGasMask();
+        }
+    }
+
+    void PierceGasMask()
+    {
+        _gasMask = null;
+        _countdownTimer?.Dispose();
+        _countdownTimer = null;
+        _vObjectDamage._shouldDamage = true;
     }
 }

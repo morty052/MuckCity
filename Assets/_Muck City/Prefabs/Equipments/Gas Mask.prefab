@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 3
   resistance: 5
+  _integrity: 12
 --- !u!1001 &1772675289010900474
 PrefabInstance:
   m_ObjectHideFlags: 0

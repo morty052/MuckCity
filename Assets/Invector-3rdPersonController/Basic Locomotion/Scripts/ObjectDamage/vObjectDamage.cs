@@ -59,6 +59,10 @@ namespace Invector
         protected virtual void Update()
         {
             if (!this.enabled) return;
+            if (!_shouldDamage)
+            {
+                return;
+            }
             if (continuousDamage && targets != null && targets.Count > 0)
             {
                 if (currentTime > 0)
@@ -131,10 +135,7 @@ namespace Invector
 
         protected virtual bool CanApplyDamage(GameObject hitObject)
         {
-            if (!_shouldDamage)
-            {
-                return false;
-            }
+
             return (tags.Count == 0 || tags.Contains(hitObject.tag)) && layerToCollide == 0 || layerToCollide.ContainsLayer(hitObject.layer);
         }
 
@@ -186,6 +187,10 @@ namespace Invector
         public virtual void ClearTargets()
         {
             targets.Clear();
+        }
+        public void AddTargets(Collider collider)
+        {
+            targets.Add(collider);
         }
 
         public virtual void ApplyDamage(Collider target, Vector3 hitPoint)
