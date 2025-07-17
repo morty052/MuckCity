@@ -2,15 +2,54 @@ using UnityEngine;
 
 public class SoundsManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static SoundsManager Instance { get; private set; }
+
+    [SerializeField] private AudioSource _soundFxObj;
+
+
+    void Awake()
     {
-        
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void PlayClip(AudioClip clip, Transform spawnPoint, float volume)
     {
-        
+        Debug.Log("playing" + clip.name);
+        AudioSource audioSource = Instantiate(_soundFxObj, spawnPoint.position, Quaternion.identity);
+
+        audioSource.clip = clip;
+
+        audioSource.volume = volume;
+
+        audioSource.Play();
+
+        float clipLength = audioSource.clip.length;
+
+        Destroy(audioSource.gameObject, clipLength);
+    }
+
+    public void PlayRandomClip(AudioClip[] clip, Transform spawnPoint, float volume)
+    {
+        int rand = Random.Range(0, clip.Length);
+        AudioSource audioSource = Instantiate(_soundFxObj, spawnPoint.position, Quaternion.identity);
+
+        audioSource.clip = clip[rand];
+
+        audioSource.volume = volume;
+
+        audioSource.Play();
+
+        float clipLength = audioSource.clip.length;
+
+        Destroy(audioSource.gameObject, clipLength);
     }
 }

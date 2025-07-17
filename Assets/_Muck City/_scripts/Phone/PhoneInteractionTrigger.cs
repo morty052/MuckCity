@@ -12,6 +12,14 @@ public class PhoneInteractionTrigger : MonoBehaviour
 
     public Chat _chat;
 
+    void Awake()
+    {
+        if (_chat != null)
+        {
+            _chat.SetSpeechNodes();
+        }
+    }
+
     void OnTriggerEnter(Collider other)
     {
         Phone.Instance.ReceiveInstantMessage(_chat);

@@ -15,6 +15,8 @@ public class Chat : ScriptableObject
 
     [SerializeReference] public List<DecisionEffect> _effects;
 
+    private Conversation _conversation;
+
     public void Complete()
     {
         Oncomplete?.Invoke();
@@ -22,7 +24,12 @@ public class Chat : ScriptableObject
 
     public Conversation GetSpeechNodes()
     {
-        return _convo.Deserialize();
+        return _conversation;
+    }
+
+    public void SetSpeechNodes()
+    {
+        _conversation = _convo.Deserialize();
     }
 
 }

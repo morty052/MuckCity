@@ -1,12 +1,21 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
+using Invector;
 
 
 public class MuckFog : MonoBehaviour
 {
     [SerializeField] VolumeProfile _fogProfile;
     [SerializeField] VolumeProfile _defaultProfile;
+
+    vObjectDamage _vObjectDamage;
+
+    void Awake()
+    {
+        _vObjectDamage = GetComponent<vObjectDamage>();
+        _vObjectDamage.enabled = false;
+    }
 
     void OnTriggerEnter(Collider other)
     {
