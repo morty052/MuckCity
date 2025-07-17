@@ -8,7 +8,7 @@ public enum SpecialEquipmentID
     GAS_MASK = 3
 }
 
-public class SpecialEquipment : MonoBehaviour
+public class SpecialEquipment : Tradeable
 {
     public SpecialEquipmentID _id;
 

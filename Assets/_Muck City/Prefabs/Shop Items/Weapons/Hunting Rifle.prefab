@@ -307,8 +307,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d2622d4c9b4c5945a52b07dd5becf03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _highlight: {fileID: 5207347641813344929}
+  _highlightMat: {fileID: 2100000, guid: 13af8da6df32342439cae41c9481751b, type: 2}
   _itemData: {fileID: 11400000, guid: fbb05237668249644a167bb61972d78c, type: 2}
+  _shouldHighlight: 0
 --- !u!1 &2660270890398387584
 GameObject:
   m_ObjectHideFlags: 0

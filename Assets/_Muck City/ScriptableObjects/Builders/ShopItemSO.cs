@@ -18,7 +18,8 @@ public enum ShopItemType
 {
     WEAPON,
     AMMO,
-    APP
+    APP,
+    SPECIAL_EQUIPMENT
 }
 
 [Serializable]

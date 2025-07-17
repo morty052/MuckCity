@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 583d04fc1e28618478b307b1d32cc512, type: 3}
+  m_Name: Cut to Size
+  m_EditorClassIdentifier: 
+  _name: Cut to Size
+  _icon: {fileID: 0}
+  _price: 0
+  _tradeable: {fileID: 497618631158377378, guid: ea884d02b3151c44ea6ed6e1efbd7686, type: 3}
+  _itemReference:
+    id: 0
+    name: 
+    amount: 0
+    attributes: []
+    changeAttributes: 0
+    autoEquip: 0
+    addToEquipArea: 0
+    indexArea: 0
+  _type: 0
+  _stats:
+  - _name: 0
+    _value: 30
+  - _name: 1
+    _value: 12
+  - _name: 2
+    _value: 20
+  - _name: 3
+    _value: 10
+  - _name: 4
+    _value: 40
