@@ -35,7 +35,10 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
 
     void Start()
     {
-        _actionText.SetText(_interactionPrompt);
+        if (_actionText != null)
+        {
+            _actionText.SetText(_interactionPrompt);
+        }
     }
 
     public virtual void HideInteractionPrompt()
@@ -56,6 +59,7 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
 
     public virtual void ToggleDrawAttention()
     {
+        if (_actionText == null) return;
         _actionText.ToggleWhiteDot();
     }
 
@@ -67,5 +71,10 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
     public void RemoveInteractionListener(Action<string> action)
     {
         OnInteracted -= action;
+    }
+
+    public virtual void ToggleCanInteract()
+    {
+        _canInteract = !_canInteract;
     }
 }

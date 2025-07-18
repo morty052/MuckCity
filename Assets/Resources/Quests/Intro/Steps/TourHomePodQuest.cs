@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
-public class TourHomePodQuest : QuestStep, ILoadDataOnStart
+public class TourHomePodQuest : QuestStep
 {
 
     SpecialNPC _alberto;
@@ -70,13 +69,13 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         _activeCutScenePlayer.OnCutSceneEnded += OnCutSceneEnded;
         _activeCutScenePlayer.OnCutSceneStarted += OnCutSceneStarted;
 
-        Generator gen = GetQuestItem<Generator>("Generator", true);
+        PropertyInterface propertyInterface = GetQuestItem<PropertyInterface>("PROPERTY_INTERFACE", true);
         DoorTrigger mainDoorTrigger = GetQuestItem<DoorTrigger>("Main Room Door", true);
         ItemPickUpContainer phonePickUp = GetQuestItem<ItemPickUpContainer>("Phone", true);
 
         // mainDoorTrigger.ToggleCanInteract();
 
-        gen.ToggleCanInteract();
+        propertyInterface.ToggleCanInteract();
 
         // gen.OnInteracted += OnQuestItemInteracted;
         // mainDoorTrigger.OnInteracted += OnQuestItemInteracted;
@@ -248,14 +247,6 @@ public class TourHomePodQuest : QuestStep, ILoadDataOnStart
         _activeCutScenePlayer.OnCutSceneStarted -= OnCutSceneStarted;
     }
 
-    public Task OnLoadTask()
-    {
 
-        return null;
-    }
 
-    public void AddLoadingTaskToQueue()
-    {
-        GameEventsManager.Instance.AddGameStartTask(this);
-    }
 }

@@ -52,9 +52,6 @@ public class Equipment : Interactable
     //     _actionText.ToggleWhiteDot();
     // }
 
-    public virtual void ToggleCanInteract()
-    {
-        _canInteract = !_canInteract;
-    }
+
 
 }

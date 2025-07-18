@@ -40,7 +40,7 @@ public class AltInput : MonoBehaviour
     private InputAction _buyInput;
     private InputAction _inspectInput;
 
-    public static event Action<Inputs> OnButtonPress;
+    // public static event Action<Inputs> OnButtonPress;
 
     private int _buyHoldCounter = 0;
     private int _buyHoldThreshold = 30;

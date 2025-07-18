@@ -75,17 +75,17 @@ MonoBehaviour:
       position: {x: 8.94, y: -14.27, z: -111.73}
       rotation: {x: -0, y: 270.00003, z: 0}
   _questItemsData:
-  - _name: Generator
+  - _name: PROPERTY_INTERFACE
     _tag: Get Power Back On
-    _position: {x: 20.140953, y: -24.228474, z: -111.30984}
+    _position: {x: 5.155, y: -27.2, z: -329.77}
     _radius: 0
   - _name: Main Room Door
     _tag: Enter Main Room
-    _position: {x: 14.591953, y: -30.13957, z: -111.319}
+    _position: {x: 11.951864, y: -27.557478, z: -323.91522}
     _radius: 1
   - _name: Phone
     _tag: Phone Pickup
-    _position: {x: 13.165, y: -29.345, z: -119.312}
+    _position: {x: 13.684793, y: -26.727, z: -317.016}
     _radius: 0
   _objectDetector:
     _radius: 0
