@@ -94,7 +94,7 @@ public class SpecialEquipmentManager : MonoBehaviour
 
     void InitSpecialEquipment(SpecialEquipmentSO item)
     {
-        Debug.Log("bought special equipment" + item._id);
+        // Debug.Log("bought special equipment" + item._id);
         SpecialEquipmentID id = item._id;
         if (specialEquipments.Contains(id)) return;
         if (_debug)

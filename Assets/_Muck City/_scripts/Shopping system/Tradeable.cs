@@ -29,7 +29,7 @@ public class Tradeable : MonoBehaviour
         Debug.Log("Buying " + shopItemSO._name + " with id " + shopItemSO._itemReference.id);
         if (shopItemSO._type == ShopItemType.SPECIAL_EQUIPMENT)
         {
-            Debug.Log("bought special equipment");
+
             SpecialEquipmentManager.Instance.AddSpecialEquipment(shopItemSO as SpecialEquipmentSO);
             return;
         }
@@ -92,7 +92,7 @@ public class Tradeable : MonoBehaviour
         foreach (MeshFilter mf in meshFilters)
         {
             Mesh mesh = mf.sharedMesh;
-            Debug.Log($"Found mesh: {mesh.name} in {mf.gameObject.name}");
+            // Debug.Log($"Found mesh: {mesh.name} in {mf.gameObject.name}");
             meshes.Add(mesh);
         }
     }

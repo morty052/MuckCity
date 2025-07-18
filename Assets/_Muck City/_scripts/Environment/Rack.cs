@@ -126,7 +126,7 @@ public class Rack : Interactable, IBrowsable
         OnInitialized?.Invoke(_stockType);
         if (_items.Count != 0)
         {
-            OnChangeSelection.Invoke(_items[_selectedItemIndex]._itemData);
+            OnChangeSelection?.Invoke(_items[_selectedItemIndex]._itemData);
         }
     }
 

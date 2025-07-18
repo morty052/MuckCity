@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b07a4b8ea10f7cf42b4c31c86f1e5601, type: 3}
   m_Name: Gas Mask Tier 0
   m_EditorClassIdentifier: 
-  _name: Special Equipment
+  _name: Gas Mask Tier 0
   _icon: {fileID: 0}
   _price: 0
   _tradeable: {fileID: 671424210889472819, guid: 9a2f07ee28804e449adad8f4cd404721, type: 3}
@@ -27,5 +27,5 @@ MonoBehaviour:
     indexArea: 0
   _type: 3
   _stats: []
-  _equipmentPrefab: {fileID: 0}
+  _equipmentPrefab: {fileID: 8352795869099641896, guid: 7e5f3dcb9b57308449ef61b498ded7a5, type: 3}
   _id: 3
