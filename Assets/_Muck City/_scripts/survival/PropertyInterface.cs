@@ -1,6 +1,12 @@
+using System;
 using UnityEngine;
 
 public class PropertyInterface : Interactable
 {
-    public Property property;
+    public Residence property;
+
+    public void TransferPropertyToPlayer()
+    {
+        property.TransferToPlayer();
+    }
 }

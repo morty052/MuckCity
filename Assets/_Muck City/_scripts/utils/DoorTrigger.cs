@@ -177,9 +177,9 @@ public class DoorTrigger : Interactable
     }
 
 
-    public virtual void ToggleCanInteract()
-    {
-        _canInteract = !_canInteract;
-    }
+    // public virtual void ToggleCanInteract()
+    // {
+    //     _canInteract = !_canInteract;
+    // }
 
 }

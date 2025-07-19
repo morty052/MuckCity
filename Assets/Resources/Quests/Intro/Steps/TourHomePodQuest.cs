@@ -76,6 +76,7 @@ public class TourHomePodQuest : QuestStep
         // mainDoorTrigger.ToggleCanInteract();
 
         propertyInterface.ToggleCanInteract();
+        propertyInterface.TransferPropertyToPlayer();
 
         // gen.OnInteracted += OnQuestItemInteracted;
         // mainDoorTrigger.OnInteracted += OnQuestItemInteracted;

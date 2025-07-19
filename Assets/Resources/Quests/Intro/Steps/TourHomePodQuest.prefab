@@ -192,8 +192,8 @@ MonoBehaviour:
   _questCutScenes:
   - _name: INTRO_TO_HAZMAT_BILL
     _spawnPosition:
-      position: {x: 17.26, y: -23.23, z: -109.07}
-      rotation: {x: -0, y: 0, z: 0}
+      position: {x: 19.67, y: -27.07, z: -330.58}
+      rotation: {x: -0, y: 89.99998, z: -0}
     _cutScenePlayer: {fileID: 7038046814094832206, guid: f1d798197feb0694dab2f20afd7eeff2, type: 3}
   _spawnableCreatures:
   - _spawnPositions:
