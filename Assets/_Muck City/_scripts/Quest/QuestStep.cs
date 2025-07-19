@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
+
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -173,10 +177,9 @@ public abstract class QuestStep : MonoBehaviour
 
 
     [TabGroup("Audio")]
-    [SerializeField] List<EventClip> _eventClips = new();
+    [SerializeField] List<ClipData> _eventClips = new();
 
-    [TabGroup("Audio")]
-    [SerializeField] GameObject _currentClipObject;
+
 
     [TabGroup("CutScene's")]
     [SerializeField] List<CutSceneData> _questCutScenes = new();
@@ -228,8 +231,31 @@ public abstract class QuestStep : MonoBehaviour
     public (CutSceneData, TimelinePlayer) InstantiateCutSceneAtPoint(string name)
     {
         CutSceneData cutSceneData = FindCutSceneByName(name);
-        TimelinePlayer cutScene = Instantiate(cutSceneData._cutScenePlayer.gameObject, cutSceneData._spawnPosition.position, Quaternion.identity).GetComponent<TimelinePlayer>();
+        TimelinePlayer cutScene = Instantiate(cutSceneData._cutScenePlayer.gameObject, cutSceneData._spawnPosition.position, Quaternion.Euler(cutSceneData._spawnPosition.rotation)).GetComponent<TimelinePlayer>();
         return (cutSceneData, cutScene);
+    }
+
+    public void GetObjectFromTimeLine(TimelinePlayer timelinePlayer)
+    {
+        PlayableDirector director = timelinePlayer.GetComponent<PlayableDirector>();
+        TimelineAsset timeline = (TimelineAsset)director.playableAsset;
+
+        foreach (var output in timeline.outputs)
+        {
+            var track = output.sourceObject as TrackAsset;
+            var boundObject = director.GetGenericBinding(track);
+            if (boundObject is NpcCharacter npc)
+            {
+                Debug.Log("Child is: " + boundObject.name);
+                // Check if it has your NPC class
+                var npcScript = npc.GetComponent<NpcCharacter>();
+                if (npcScript != null)
+                {
+                    Debug.Log("Found NPC: " + npc.name);
+                    // Now you can use npcScript to do whatever you need
+                }
+            }
+        }
     }
 
     public NpcQuestData FindNpcQuestDataByName(SpecialCharacters name)
@@ -274,7 +300,6 @@ public abstract class QuestStep : MonoBehaviour
     }
     protected void RemoveInteractionListener(string tag)
     {
-
         List<QuestItemStruct> data = _questItemsData.FindAll(x => x._name == name);
         if (data.Count == 0)
         {
@@ -341,21 +366,7 @@ public abstract class QuestStep : MonoBehaviour
     }
 
     #endregion
-    protected void UseClip(string name)
-    {
-        EventClip clip = FindClipByName(name);
-        switch (clip._clipType)
-        {
-            case EventClipType.ANNOUNCEMENT:
-                break;
-            case EventClipType.ASSESMENT:
-                break;
-            case EventClipType.MYSTERYGUY:
-                break;
-            default:
-                break;
-        }
-    }
+
 
     protected IEnumerator DelayedInvoke(float delay, Action action)
     {
@@ -363,33 +374,26 @@ public abstract class QuestStep : MonoBehaviour
         action?.Invoke();
     }
 
-    protected IEnumerator PlayClipAfterDelay(float delay, string clipName, float maxDistance = 50f, float volume = 1f, Action OnComplete = null)
+    // protected IEnumerator PlayClipAfterDelay(float delay, string clipName, float maxDistance = 50f, float volume = 1f, Action OnComplete = null)
+    // {
+    //     yield return new WaitForSeconds(delay);
+    //     UseClipAtPoint(clipName, maxDistance, volume, OnComplete);
+    // }
+
+    protected void UseClipAtPoint(string clipName, Transform position)
     {
-        yield return new WaitForSeconds(delay);
-        UseClipAtPoint(clipName, maxDistance, volume, OnComplete);
+        ClipData clip = FindClipByName(clipName);
+        SoundsManager.Instance.PlayClip(clip._clip, position, 1f);
+    }
+    protected void UseClipAtPointWithEvent(string clipName, Transform position, Action OnComplete)
+    {
+        ClipData clip = FindClipByName(clipName);
+        SoundsManager.Instance.PlayClipWithEventAtEnd(clip._clip, position, 1f, OnComplete);
     }
 
-    protected void UseClipAtPoint(string name, float maxDistance = 50f, float volume = 1f, Action OnComplete = null)
+    protected ClipData FindClipByName(string name)
     {
-        EventClip clip = FindClipByName(name);
-        switch (clip._clipType)
-        {
-            case EventClipType.ANNOUNCEMENT:
-                break;
-            case EventClipType.ASSESMENT:
-                break;
-            case EventClipType.MYSTERYGUY:
-                break;
-            default:
-                break;
-        }
-        // AudioSource.PlayClipAtPoint(clip._clip, clip._position, 1f);
-        PlaySoundAtPoint(clip._clip, clip._position, maxDistance, volume, OnComplete);
-    }
-
-    protected EventClip FindClipByName(string name)
-    {
-        EventClip clip = _eventClips.Find(x => x._name == name);
+        ClipData clip = _eventClips.Find(x => x._name == name);
         return clip;
     }
 
@@ -406,29 +410,7 @@ public abstract class QuestStep : MonoBehaviour
         return data;
     }
 
-    void PlaySoundAtPoint(AudioClip clip, Vector3 position, float maxDistance = 50f, float volume = 1f, Action OnComplete = null)
-    {
-        if (_currentClipObject != null)
-        {
-            return; // Prevent playing multiple clips at the same time
-        }
-        GameObject tempAudioSource = new("TempAudio");
-        _currentClipObject = tempAudioSource;
-        tempAudioSource.transform.position = position;
 
-        AudioSource audioSource = tempAudioSource.AddComponent<AudioSource>();
-        audioSource.clip = clip;
-        audioSource.spatialBlend = 1.0f; // Fully 3D
-        audioSource.maxDistance = maxDistance;  // Adjust as needed
-        audioSource.rolloffMode = AudioRolloffMode.Linear; // Adjust rolloff mode
-        audioSource.Play();
-
-        if (OnComplete != null)
-        {
-            StartCoroutine(DelayedInvoke(clip.length, OnComplete));
-        }
-        Destroy(tempAudioSource, clip.length); // Destroy after the clip finishes
-    }
 
 
     protected void ShowTutorialPrompt(string title)
@@ -459,7 +441,7 @@ public abstract class QuestStep : MonoBehaviour
         {
             _isFinished = true;
             GameEventsManager.Instance._questEvents.AdvanceQuest(_questId);
-            Destroy(this.gameObject);
+            Destroy(this.gameObject, 1f);
         }
     }
 

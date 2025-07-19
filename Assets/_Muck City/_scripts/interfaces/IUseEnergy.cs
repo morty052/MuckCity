@@ -1,6 +1,8 @@
 
 
+using System;
 using UnityEngine;
+
 
 public interface IUseEnergy
 {
@@ -11,6 +13,8 @@ public interface IUseEnergy
 
     Transform ChargingPort { get; }
     void PowerUp(float amount); // Method to power up the object with a specified amount of energy
+
+    public void PowerDown();
 
     public void PromptToCharge(); // Method to prompt the player to charge the object if needed
 

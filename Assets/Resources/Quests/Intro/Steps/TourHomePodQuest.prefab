@@ -67,13 +67,13 @@ MonoBehaviour:
   - _name: Find Officers Mess
     _completesObjective: 1
     _spawnPosition:
-      position: {x: -12.277799, y: 1.55, z: -64.6}
+      position: {x: 2.2, y: -26.11, z: -351.03}
       rotation: {x: -0, y: 0, z: 0}
-  - _name: Get Power Back On
+  - _name: ENTER_MAIN_ROOM
     _completesObjective: 0
     _spawnPosition:
-      position: {x: 8.94, y: -14.27, z: -111.73}
-      rotation: {x: -0, y: 270.00003, z: 0}
+      position: {x: 12.14, y: -26.45, z: -320.66}
+      rotation: {x: -0, y: 270, z: 0}
   _questItemsData:
   - _name: PROPERTY_INTERFACE
     _tag: Get Power Back On
@@ -98,8 +98,8 @@ MonoBehaviour:
     _conversationForQuest: {fileID: 967415334066115386, guid: 0236e1cf245c2a246ade3ee0b34e4ab7, type: 3}
     _npcSO: {fileID: 11400000, guid: e7643c4cd3609c8489350d05bd6382e5, type: 2}
     _specialPosition:
-      position: {x: 0, y: 0, z: 0}
-      rotation: {x: 0, y: 90, z: 0}
+      position: {x: 11.53, y: -27.71, z: -354.79}
+      rotation: {x: 0, y: 270, z: 0}
     _mission:
       _title: 
       _missionStartPoint: {x: 0, y: 0, z: 0}
@@ -108,8 +108,8 @@ MonoBehaviour:
     _conversationForQuest: {fileID: 2315960693268669948, guid: 09ef9fa2e08d53d428fa0d847acf9a29, type: 3}
     _npcSO: {fileID: 11400000, guid: 3158f4934826ce1499778b3e3e23fba5, type: 2}
     _specialPosition:
-      position: {x: 23.317965, y: -24.471628, z: -109.218636}
-      rotation: {x: -0, y: 252.66986, z: 0}
+      position: {x: 18.574457, y: -27.698202, z: -332.21606}
+      rotation: {x: -0, y: -0.000020490566, z: 0}
     _mission:
       _title: Find Alberto
       _missionStartPoint: {x: 0, y: 0, z: 0}
@@ -163,11 +163,11 @@ MonoBehaviour:
     _title: Find Alberto
     _missionStartPoint: {x: 0, y: 0, z: 0}
     _objectives:
-    - _title: Exit Bunker
+    - _title: Find Officers Mess
       _wayPoint: {x: 0, y: 0, z: 0}
       _isCompleted: 0
       _index: 0
-    - _title: Find Officers Mess
+    - _title: Exit Bunker
       _wayPoint: {x: 0, y: 0, z: 0}
       _isCompleted: 0
       _index: 1
@@ -184,15 +184,13 @@ MonoBehaviour:
       _isCompleted: 0
       _index: 4
   _eventClips:
-  - _name: Wing is Getting Detached
-    _clip: {fileID: 8300000, guid: 689d5a07a2c018e4690d71f242356428, type: 3}
-    _clipType: 0
-    _position: {x: -108.21, y: 1.762411, z: 29.01}
+  - _clip: {fileID: 8300000, guid: 85032414a76e0b347bfff421ad0e27e8, type: 3}
+    _name: COMPAD_RINGTONE
   _currentClipObject: {fileID: 0}
   _questCutScenes:
   - _name: INTRO_TO_HAZMAT_BILL
     _spawnPosition:
-      position: {x: 19.67, y: -27.07, z: -330.58}
+      position: {x: 19.67, y: -27.07, z: -330.87}
       rotation: {x: -0, y: 89.99998, z: -0}
     _cutScenePlayer: {fileID: 7038046814094832206, guid: f1d798197feb0694dab2f20afd7eeff2, type: 3}
   _spawnableCreatures:

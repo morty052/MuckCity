@@ -68,27 +68,18 @@ public class TourHomePodQuest : QuestStep
         _activeCutScenePlayer = cutScene;
         _activeCutScenePlayer.OnCutSceneEnded += OnCutSceneEnded;
         _activeCutScenePlayer.OnCutSceneStarted += OnCutSceneStarted;
+        GetObjectFromTimeLine(_activeCutScenePlayer);
 
         PropertyInterface propertyInterface = GetQuestItem<PropertyInterface>("PROPERTY_INTERFACE", true);
-        DoorTrigger mainDoorTrigger = GetQuestItem<DoorTrigger>("Main Room Door", true);
         ItemPickUpContainer phonePickUp = GetQuestItem<ItemPickUpContainer>("Phone", true);
 
-        // mainDoorTrigger.ToggleCanInteract();
-
-        propertyInterface.ToggleCanInteract();
+        propertyInterface.ToggleCanInteract(false);
+        propertyInterface.PowerDownProperty();
         propertyInterface.TransferPropertyToPlayer();
-
-        // gen.OnInteracted += OnQuestItemInteracted;
-        // mainDoorTrigger.OnInteracted += OnQuestItemInteracted;
-        // phonePickUp.OnInteracted += OnQuestItemInteracted;
-
 
 
 
         _doneSetup = true;
-        // Alberto.UpdateQuestData(_questInfoSo, this, questData._conversationForQuest);
-
-
     }
 
     private void OnConversationFinished(SpecialCharacters speakerName)
@@ -99,18 +90,20 @@ public class TourHomePodQuest : QuestStep
             case SpecialCharacters.HAZMAT_BILL:
                 billQuestData._conversationForQuest.OnDialogueFinishedEvent -= OnConversationFinished;
 
-                ActivateMission(2);
+                ActivateMission(1);
 
-                //* Set up quest point in elevator to complete exit bunker objective
-                InstantiateQuestPoint("Exit Bunker");
-                //* Set up quest point in elevator to load muck city 
-                // InstantiateQuestPoint("LOAD_MUCK_CITY");
+                //* Set up quest point in officers mess;
+                StartCoroutine(InstantiateQuestPointAfterDelay(0.5f, "Find Officers Mess"));
+                SetupAlberto();
                 break;
             case SpecialCharacters.ALBERTO:
                 CompleteObjective("Talk To Alberto");
-                InstantiateQuestPoint("Get Power Back On");
+                InstantiateQuestPoint("ENTER_MAIN_ROOM");
                 UpdateMissionObjectives(3);
                 _albertoQuestData._conversationForQuest.OnDialogueFinishedEvent -= OnConversationFinished;
+                //* POWER UP BUNKER
+                PropertyInterface propertyInterface = GetQuestItem<PropertyInterface>("PROPERTY_INTERFACE");
+                propertyInterface.PowerUpProperty();
                 break;
             default:
                 break;
@@ -134,9 +127,10 @@ public class TourHomePodQuest : QuestStep
                 UpdateMissionObjectives(2);
                 break;
             case "Get Power Back On":
-                //* REACTIVATE GENERATOR IN BUNKER
-                Generator gen = GetQuestItem<Generator>("Generator");
-                gen.ToggleCanInteract();
+                break;
+            case "ENTER_MAIN_ROOM":
+                ItemPickUpContainer phonePickUp = GetQuestItem<ItemPickUpContainer>("Phone", false);
+                UseClipAtPoint("COMPAD_RINGTONE", phonePickUp.transform);
                 break;
             default:
                 break;
@@ -155,9 +149,6 @@ public class TourHomePodQuest : QuestStep
                 CompleteObjective("Get Power Back On");
                 Debug.Log("Player Has turned on Gen");
                 UpdateMissionObjectives(4, true);
-                break;
-            case "Enter Main Room":
-                Debug.Log("Player has entered main room");
                 break;
             case "Phone Pickup":
                 Debug.Log("Player has entered main room");
@@ -190,14 +181,23 @@ public class TourHomePodQuest : QuestStep
 
     void SetupAlberto()
     {
+        //* FIND LBERTO QUEST DATA
         _albertoQuestData = FindNpcQuestDataByName(SpecialCharacters.ALBERTO);
-        _alberto = NpcManager.Instance.GetSpecialCharacterByID(_albertoQuestData._characterID);
+
+        //* SPAWN ALBERTO
+        _alberto = NpcManager.Instance.SpawnAndMoveToPosition(_albertoQuestData._npcSO, _albertoQuestData._specialPosition);
+
+        // _alberto = NpcManager.Instance.GetSpecialCharacterByID(_albertoQuestData._characterID);
+
+        //* GIVE ALBERTO CURRENT QUEST DATA
         _alberto.UpdateQuestData(_questInfoSo, this, _albertoQuestData._conversationForQuest);
+
+
         _alberto.OnInteractedWithQuestGiver += SendMessageToPhone;
+
+        //* SUBSCRIBE TO ALBERTO CONVERSATION
         _albertoQuestData._conversationForQuest.OnDialogueFinishedEvent += OnConversationFinished;
 
-        // _hazmatBill.gameObject.SetActive(false);
-        // _hazmatBob.gameObject.SetActive(false);
         Debug.Log("Setup Alberto");
     }
 

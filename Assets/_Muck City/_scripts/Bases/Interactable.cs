@@ -73,8 +73,8 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
         OnInteracted -= action;
     }
 
-    public virtual void ToggleCanInteract()
+    public virtual void ToggleCanInteract(bool state)
     {
-        _canInteract = !_canInteract;
+        _canInteract = state;
     }
 }

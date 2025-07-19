@@ -16,26 +16,11 @@ public enum DoorTriggerType
     HANDLE
 }
 
-public class DoorTrigger : Interactable
+public class DoorTrigger : Interactable, IUseEnergy
 {
     [SerializeField] GameObject _door;
 
     [SerializeField] bool _isOpen = false;
-    // [SerializeField] bool _canInteract = true;
-
-    // string _interactionPrompt = "Open";
-
-    //  public bool CanInteract => _canInteract;
-
-    // public string InteractionPrompt => _interactionPrompt;
-
-    // public GameObject GameObject => gameObject;
-
-    // public bool IsHighlighted { get; }
-
-    // bool _isQuestItem;
-
-    // public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
 
     [SerializeField] Direction _direction;
     [SerializeField] DoorTriggerType _type;
@@ -45,6 +30,14 @@ public class DoorTrigger : Interactable
     [SerializeField, ShowIf("_type", DoorTriggerType.HANDLE)] DoorTrigger _frontTrigger;
 
     bool _isOccupied = false;
+
+    public float EnergyLevel { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public bool IsPowered => throw new NotImplementedException();
+
+    public float EnergyNeededToFunction => 0;
+
+    public Transform ChargingPort => throw new NotImplementedException();
 
     // public Action<string> OnInteracted;
 
@@ -174,6 +167,26 @@ public class DoorTrigger : Interactable
             _door.transform.localRotation = Quaternion.Euler(0, -90, 0);
             _isOpen = true;
         }
+    }
+
+    public void PowerUp(float amount)
+    {
+        _canInteract = true;
+    }
+
+    public void PromptToCharge()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnChargeComplete()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void PowerDown()
+    {
+        _canInteract = false;
     }
 
 

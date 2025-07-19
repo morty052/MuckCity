@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class SoundsManager : MonoBehaviour
@@ -37,9 +39,28 @@ public class SoundsManager : MonoBehaviour
         Destroy(audioSource.gameObject, clipLength);
     }
 
+    public void PlayClipWithEventAtEnd(AudioClip clip, Transform spawnPoint, float volume, Action OnComplete)
+    {
+        Debug.Log("playing" + clip.name);
+        AudioSource audioSource = Instantiate(_soundFxObj, spawnPoint.position, Quaternion.identity);
+
+        audioSource.clip = clip;
+
+        audioSource.volume = volume;
+
+        audioSource.Play();
+
+        float clipLength = audioSource.clip.length;
+
+        Destroy(audioSource.gameObject, clipLength);
+
+        StartCoroutine(DelayedInvoke(clipLength, OnComplete));
+
+    }
+
     public void PlayRandomClip(AudioClip[] clip, Transform spawnPoint, float volume)
     {
-        int rand = Random.Range(0, clip.Length);
+        int rand = UnityEngine.Random.Range(0, clip.Length);
         AudioSource audioSource = Instantiate(_soundFxObj, spawnPoint.position, Quaternion.identity);
 
         audioSource.clip = clip[rand];
@@ -51,5 +72,11 @@ public class SoundsManager : MonoBehaviour
         float clipLength = audioSource.clip.length;
 
         Destroy(audioSource.gameObject, clipLength);
+    }
+
+    protected IEnumerator DelayedInvoke(float delay, Action action)
+    {
+        yield return new WaitForSeconds(delay);
+        action?.Invoke();
     }
 }
