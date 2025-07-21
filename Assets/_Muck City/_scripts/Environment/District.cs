@@ -8,7 +8,7 @@ using UnityEngine;
 
 
 
-public class District : MonoBehaviour, ILoadDataOnStart
+public class District : ExtendedMono
 {
     [TabGroup("Details")]
     public Locations _districtID;
@@ -175,7 +175,7 @@ public class District : MonoBehaviour, ILoadDataOnStart
         }
         return Task.CompletedTask;
     }
-    public async Task OnLoadTask()
+    public override async Task OnLoadTask()
     {
 
         await LoadGuards();
@@ -183,10 +183,10 @@ public class District : MonoBehaviour, ILoadDataOnStart
 
     }
 
-    public void AddLoadingTaskToQueue()
-    {
-        GameEventsManager.Instance.AddGameStartTask(this);
-    }
+    // public void AddLoadingTaskToQueue()
+    // {
+    //     GameEventsManager.Instance.AddGameStartTask(this);
+    // }
 
     GuardNPC SpawnGuard(Pos spawnPos)
     {

@@ -186,7 +186,8 @@ MonoBehaviour:
   _eventClips:
   - _clip: {fileID: 8300000, guid: 85032414a76e0b347bfff421ad0e27e8, type: 3}
     _name: COMPAD_RINGTONE
-  _currentClipObject: {fileID: 0}
+  - _clip: {fileID: 8300000, guid: 9ba2e4bdcd5d5144994f8940f25dec04, type: 3}
+    _name: PODCAST_TO_PLAY_WHEN_OTHRO_WAKES_UP
   _questCutScenes:
   - _name: INTRO_TO_HAZMAT_BILL
     _spawnPosition:

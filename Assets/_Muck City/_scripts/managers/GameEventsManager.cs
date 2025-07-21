@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DialogueEditor;
 using Invector;
@@ -22,6 +23,7 @@ public class GameEventsManager : MonoBehaviour
     vGameController _vGameController;
 
     List<ILoadDataOnStart> _onGameStartTasks = new();
+    List<ExtendedMono> _onGameStartLoaders = new();
     public int _tasksCount = 0;
 
     [SerializeField] SceneField _sceneToLoad;
@@ -108,7 +110,23 @@ public class GameEventsManager : MonoBehaviour
     {
         // OnScreenDebugger.Instance.Log("GameEventsManager started");
         OnGameStartEvent?.Invoke();
-        Invoke(nameof(LoadGameStartTasks), 1f);
+        // Invoke(nameof(LoadGameStartTasks), 1f);
+        Invoke(nameof(FindAllStartLoaders), 1f);
+    }
+
+    async void FindAllStartLoaders()
+    {
+        _onGameStartLoaders = FindObjectsByType<ExtendedMono>(FindObjectsSortMode.None).ToList();
+        Debug.Log("Found" + _onGameStartLoaders.Count);
+        var tasks = new Task[_onGameStartLoaders.Count];
+        for (int i = 0; i < _onGameStartLoaders.Count; i++)
+        {
+            tasks[i] = _onGameStartLoaders[i].OnLoadTask();
+        }
+
+        await Task.WhenAll(tasks);
+        OnGameLoadEndedEvent?.Invoke();
+        _onGameStartLoaders.Clear();
     }
     public void AddGameStartTask(ILoadDataOnStart task)
     {
