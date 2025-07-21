@@ -37,6 +37,10 @@ public class ItemPickUpContainer : Interactable
     public override void Interact()
     {
         PickUp();
+        //* DISABLE COLLIDER TO AVOID GETTING INTO COLLIDER LIST AGAIN
+        GetComponent<Collider>().enabled = false;
+        //* REMOVE SELF TO AVOID BUG WHEN DESTROYED
+        InteractionSystem._closestInteractables.Remove(this);
         if (IsQuestItem)
         {
             QuestItem questItem = GetComponent<QuestItem>();
@@ -60,7 +64,7 @@ public class ItemPickUpContainer : Interactable
         // InteractionSystem.InvokeOnPick(GameObject);
         // GetComponent<Collider>().enabled = false;
 
-        InteractionSystem._closestInteractables.Remove(this);
+
     }
 
     // public void HideInteractionPrompt()
