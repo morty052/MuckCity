@@ -42,6 +42,7 @@ public class ItemPickUpContainer : Interactable
             QuestItem questItem = GetComponent<QuestItem>();
             OnInteracted?.Invoke(questItem._questItemData._tag);
         }
+        Destroy(gameObject, 0.2f);
     }
 
     void PickUp()
@@ -56,6 +57,10 @@ public class ItemPickUpContainer : Interactable
             default:
                 break;
         }
+        // InteractionSystem.InvokeOnPick(GameObject);
+        // GetComponent<Collider>().enabled = false;
+
+        InteractionSystem._closestInteractables.Remove(this);
     }
 
     // public void HideInteractionPrompt()

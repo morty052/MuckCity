@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using ImprovedTimers;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
@@ -11,7 +13,7 @@ public class InteractionSystem
 
     public float _interactionRange = 1f;
 
-    [SerializeField] List<IInteractable> _closestInteractables = new();
+    public static List<IInteractable> _closestInteractables = new();
 
     [SerializeField] LayerMask _interactionLayerMask = new();
 
@@ -46,6 +48,7 @@ public class InteractionSystem
         _detectionTimer.Dispose();
     }
 
+
     public void EnvironmentInteraction()
     {
         //* Check if difference between player pos last check and current check is greater than threshold
@@ -60,7 +63,7 @@ public class InteractionSystem
 
         //     Debug.Log("Player is past check threshold");
         // }
-        _playerLastPos = _transform.position;
+        // _playerLastPos = _transform.position;
         Collider[] hitColliders = Physics.OverlapSphere(_transform.position + Vector3.up, _interactionRange, _interactionLayerMask);
         if (hitColliders.Length > 0)
         {
@@ -101,7 +104,7 @@ public class InteractionSystem
             for (int i = _closestInteractables.Count - 1; i >= 0; i--)
             {
                 IInteractable interactable = _closestInteractables[i];
-                if (Vector3.Distance(interactable.GameObject.transform.position, _transform.position) > _interactionRange)
+                if (interactable != null && Vector3.Distance(interactable.GameObject.transform.position, _transform.position) > _interactionRange)
                 {
                     interactable.ToggleDrawAttention();
                     _closestInteractables.RemoveAt(i);
@@ -123,7 +126,6 @@ public class InteractionSystem
         }
 
     }
-
 
     bool CheckIfObjectIsBetween(GameObject targetObject)
     {
