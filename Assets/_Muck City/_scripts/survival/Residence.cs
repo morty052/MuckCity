@@ -3,18 +3,35 @@ using UnityEngine;
 
 public class Residence : Asset
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public PropertyID _propertyID;
     public bool _isOwned = false;
 
     public bool _isPlayerOwned = false;
+
+    [SerializeField] private List<GameObject> _energyObjects = new();
+
+    public List<IUseEnergy> _energyConsumers = new();
 
     public List<NpcCharacter> _occupants = new();
 
     public Transform _reSpawnTransform;
 
     public int _latestBid = 0;
-    public int _rent;
+    public int _rent = 0;
+    public int _energyCost;
 
+    public bool _hasAmI;
+
+    public ResidenceConfigSO _data;
+
+
+    void Awake()
+    {
+        for (int i = 0; i < _energyObjects.Count; i++)
+        {
+            _energyConsumers.Add(_energyObjects[i].GetComponent<IUseEnergy>());
+        }
+    }
 
     public void TransferToPlayer()
     {

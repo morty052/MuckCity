@@ -11,6 +11,8 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
     [TabGroup("Interaction")]
     [SerializeField] protected string _interactionPrompt;
     [TabGroup("Interaction")]
+    [SerializeField] Pos _promptPos;
+    [TabGroup("Interaction")]
     public bool CanInteract => _canInteract;
     [TabGroup("Interaction")]
 
@@ -35,15 +37,21 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
 
     void Start()
     {
-        if (_actionText != null)
-        {
-            _actionText.SetText(_interactionPrompt);
-        }
+        Invoke(nameof(SetupActionText), 1f);
+    }
+
+    void SetupActionText()
+    {
+        _actionText = HudManager.Instance._actionText;
+        // if (_actionText != null)
+        // {
+        //     _actionText.SetText(_interactionPrompt);
+        // }
     }
 
     public virtual void HideInteractionPrompt()
     {
-        _actionText.HideInteractionPrompt();
+        _actionText.gameObject.SetActive(false);
     }
 
     public virtual void Interact()
@@ -53,13 +61,21 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
 
     public virtual void PrepareInteraction()
     {
-        _actionText.ShowInteractionPrompt();
+        if (!_canInteract) return;
+        ShowInteractPrompt();
         Player.Instance.SetInteractableObject(this);
+    }
+
+    public void ShowInteractPrompt()
+    {
+        _actionText.transform.position = transform.TransformPoint(_promptPos.position);
+        _actionText.SetText(_interactionPrompt ?? "Interact");
+        _actionText.gameObject.SetActive(true);
     }
 
     public virtual void ToggleDrawAttention()
     {
-        if (_actionText == null) return;
+        if (_actionText == null || !_canInteract) return;
         _actionText.ToggleWhiteDot();
     }
 

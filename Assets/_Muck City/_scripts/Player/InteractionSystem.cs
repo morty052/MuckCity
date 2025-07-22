@@ -9,7 +9,7 @@ public class InteractionSystem
 {
     CountdownTimer _detectionTimer;
 
-    float _detectionRate = 0.2f;
+    // float _detectionRate = 0.2f;
 
     public float _interactionRange = 1f;
 
@@ -22,7 +22,7 @@ public class InteractionSystem
 
     public bool _debug;
 
-    Vector3 _playerLastPos;
+    // Vector3 _playerLastPos;
 
     Transform _transform;
 

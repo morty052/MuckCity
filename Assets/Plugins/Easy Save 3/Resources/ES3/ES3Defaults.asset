@@ -48,7 +48,7 @@ MonoBehaviour:
   autoUpdateReferences: 1
   addAllPrefabsToManager: 1
   collectDependenciesDepth: 4
-  collectDependenciesTimeout: 10
+  collectDependenciesTimeout: 20
   updateReferencesWhenSceneChanges: 1
   updateReferencesWhenSceneIsSaved: 1
   updateReferencesWhenSceneIsOpened: 1

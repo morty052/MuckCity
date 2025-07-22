@@ -74,8 +74,8 @@ public class TourHomePodQuest : QuestStep
         ItemPickUpContainer phonePickUp = GetQuestItem<ItemPickUpContainer>("Phone", true);
 
         propertyInterface.ToggleCanInteract(false);
-        propertyInterface.PowerDownProperty();
-        propertyInterface.TransferPropertyToPlayer();
+        propertyInterface.PowerDownProperty(propertyInterface.PlayerLot);
+        // propertyInterface.TransferPropertyToPlayer(propertyInterface.PlayerLot);
 
 
 
@@ -103,7 +103,7 @@ public class TourHomePodQuest : QuestStep
                 _albertoQuestData._conversationForQuest.OnDialogueFinishedEvent -= OnConversationFinished;
                 //* POWER UP BUNKER
                 PropertyInterface propertyInterface = GetQuestItem<PropertyInterface>("PROPERTY_INTERFACE");
-                propertyInterface.PowerUpProperty();
+                propertyInterface.PowerUpProperty(propertyInterface.PlayerLot);
                 break;
             default:
                 break;
@@ -135,7 +135,11 @@ public class TourHomePodQuest : QuestStep
             default:
                 break;
         }
-        Debug.Log("Quest point Entered: " + questPointName + " can complete " + completesObjective);
+        if (_debug)
+        {
+
+            Debug.Log("Quest point Entered: " + questPointName + " can complete " + completesObjective);
+        }
         _activeQuestPoint.OnEnterQuestPoint -= OnEnterQuestPoint;
         _activeQuestPoint = null;
     }

@@ -165,7 +165,6 @@ public abstract class QuestStep : MonoBehaviour
     [TabGroup("NPC's")]
     [SerializeField] List<NpcQuestData> _tiedCharactersQuestData = new();
 
-
     [TabGroup("Tutorials")]
     [SerializeField] TutorialTrigger _tutorialTriggerPrefab;
 
@@ -175,21 +174,14 @@ public abstract class QuestStep : MonoBehaviour
     [TabGroup("Mission")]
     [SerializeField] Mission _mission = new();
 
-
     [TabGroup("Audio")]
     [SerializeField] List<ClipData> _eventClips = new();
-
-
 
     [TabGroup("CutScene's")]
     [SerializeField] List<CutSceneData> _questCutScenes = new();
 
-
-    [TabGroup("Spawning")]
-    [SerializeField] List<CreatureData> _spawnableCreatures = new();
-
-
-
+    [TabGroup("Debug")]
+    public bool _debug = new();
 
     protected QuestPoint _activeQuestPoint;
 
@@ -200,6 +192,7 @@ public abstract class QuestStep : MonoBehaviour
     }
 
 
+    #region "Quest helpers"
     public void InitializeQuest(string questId)
     {
         this._questId = questId;
@@ -228,6 +221,23 @@ public abstract class QuestStep : MonoBehaviour
         _activeQuestPoint.OnEnterQuestPoint -= OnEnterQuestPoint;
         _activeQuestPoint = null;
     }
+
+    public NpcQuestData FindNpcQuestDataByName(SpecialCharacters name)
+    {
+        NpcQuestData data = _tiedCharactersQuestData.Find(x => x._characterID == name);
+        return data;
+    }
+
+    public QuestPointData FindQuestPointDataByName(string name)
+    {
+        QuestPointData data = _questPointsData.Find(x => x._name == name);
+        return data;
+    }
+
+    #endregion
+
+
+    #region"Cut Scene"
     public (CutSceneData, TimelinePlayer) InstantiateCutSceneAtPoint(string name)
     {
         CutSceneData cutSceneData = FindCutSceneByName(name);
@@ -258,11 +268,14 @@ public abstract class QuestStep : MonoBehaviour
         }
     }
 
-    public NpcQuestData FindNpcQuestDataByName(SpecialCharacters name)
+
+    CutSceneData FindCutSceneByName(string name)
     {
-        NpcQuestData data = _tiedCharactersQuestData.Find(x => x._characterID == name);
+        CutSceneData data = _questCutScenes.Find(x => x._name == name);
         return data;
     }
+
+    #endregion
 
     #region Quest Item
     public QuestItemStruct FindQuestItemByName(string name)
@@ -319,17 +332,13 @@ public abstract class QuestStep : MonoBehaviour
 
 
     }
+
+    public virtual void OnQuestItemInteracted(string questItemName)
+    {
+        Debug.Log("Quest item interacted with!");
+    }
     #endregion
-    public QuestPointData FindQuestPointDataByName(string name)
-    {
-        QuestPointData data = _questPointsData.Find(x => x._name == name);
-        return data;
-    }
-    CutSceneData FindCutSceneByName(string name)
-    {
-        CutSceneData data = _questCutScenes.Find(x => x._name == name);
-        return data;
-    }
+
 
     #region Mission Control
     public virtual void ActivateMission(int objectivesToDisplayOnstart = 0)
@@ -368,18 +377,7 @@ public abstract class QuestStep : MonoBehaviour
     #endregion
 
 
-    protected IEnumerator DelayedInvoke(float delay, Action action)
-    {
-        yield return new WaitForSeconds(delay);
-        action?.Invoke();
-    }
-
-    // protected IEnumerator PlayClipAfterDelay(float delay, string clipName, float maxDistance = 50f, float volume = 1f, Action OnComplete = null)
-    // {
-    //     yield return new WaitForSeconds(delay);
-    //     UseClipAtPoint(clipName, maxDistance, volume, OnComplete);
-    // }
-
+    #region "audio"
     protected void UseClipAtPoint(string clipName, Transform position)
     {
         ClipData clip = FindClipByName(clipName);
@@ -397,21 +395,21 @@ public abstract class QuestStep : MonoBehaviour
         return clip;
     }
 
+    #endregion
+
+
+    #region"Tutorial"
     protected EventTutorial FindTutorialByName(string title)
     {
         EventTutorial clip = _tutorials.Find(x => x._pcTitle.Contains(title));
         return clip;
     }
 
-
-    public CreatureData FindCreatureByType(string name)
+    public void InstantiateTutorialPoint(EventTutorial tutorial, Vector3 position)
     {
-        CreatureData data = _spawnableCreatures.Find(x => x._tag == name);
-        return data;
+        TutorialTrigger tutorialPoint = Instantiate(_tutorialTriggerPrefab, position, Quaternion.identity);
+        tutorialPoint.SetTutorial(tutorial);
     }
-
-
-
 
     protected void ShowTutorialPrompt(string title)
     {
@@ -435,6 +433,14 @@ public abstract class QuestStep : MonoBehaviour
 
         HudManager.Instance.ToggleTutorialPrompt(true, platformTitle, platformDescription, tutorial._image);
     }
+
+    #endregion
+
+    protected IEnumerator DelayedInvoke(float delay, Action action)
+    {
+        yield return new WaitForSeconds(delay);
+        action?.Invoke();
+    }
     protected void FinishQuestStep()
     {
         if (!_isFinished)
@@ -446,39 +452,7 @@ public abstract class QuestStep : MonoBehaviour
     }
 
 
-    public virtual void OnQuestItemInteracted(string questItemName)
-    {
-        Debug.Log("Quest item interacted with!");
-    }
 
-
-
-    public void InstantiateTutorialPoint(EventTutorial tutorial, Vector3 position)
-    {
-        TutorialTrigger tutorialPoint = Instantiate(_tutorialTriggerPrefab, position, Quaternion.identity);
-        tutorialPoint.SetTutorial(tutorial);
-    }
-
-
-
-    public void InstantiateCreature(string tag)
-    {
-        CreatureData creatureData = FindCreatureByType(tag);
-        if (creatureData._spawnPositions.Count > 0)
-        {
-
-            foreach (Vector3 spawnPosition in creatureData._spawnPositions)
-            {
-                AiAgent creatureObject = Instantiate(creatureData._creaturePrefab, spawnPosition, Quaternion.identity);
-                // creatureObject.transform.SetParent(transform);
-            }
-        }
-        else
-        {
-            AiAgent creatureObject = Instantiate(creatureData._creaturePrefab, creatureData._spawnPositions[0], Quaternion.identity);
-            // creatureObject.transform.SetParent(transform);
-        }
-    }
 
 
 

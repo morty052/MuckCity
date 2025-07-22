@@ -95,6 +95,16 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
         }
     }
 
+    public void Pay(int amount)
+    {
+        SocialCredit -= amount;
+        _socialCreditText.text = SocialCredit.ToString();
+        if (_debug)
+        {
+            Debug.Log("Paid" + amount + "New Balance: " + SocialCredit);
+        }
+    }
+
     public bool CanBuy(int price)
     {
         if (SocialCredit >= price)

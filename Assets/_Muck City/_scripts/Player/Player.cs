@@ -365,6 +365,9 @@ public class Player : MonoBehaviour, IHavePersistentData
         _isUsingAltInput = state;
         _altInput.ToggleUseInput(state);
         LockAllInput(state);
+        _vThirdPersonCamera.LockCamera = state;
+        _vThirdPersonInput.ShowCursor(state);
+        _vThirdPersonInput.LockCursor(state);
         if (browsable != null)
         {
             _altInput._activeBrowsable = browsable;

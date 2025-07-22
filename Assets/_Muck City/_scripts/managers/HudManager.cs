@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
 using UnityEngine.InputSystem.XInput;
@@ -38,8 +39,9 @@ public class HudManager : MonoBehaviour
     [SerializeField] private GameObject _phone;
     [SerializeField] private GameObject _ui;
 
-    [SerializeField] ActionText _actionText;
+    public ActionText _actionText;
 
+    public EventSystem _eventSystem;
 
 
     void Awake()
@@ -150,6 +152,8 @@ public class HudManager : MonoBehaviour
         _actionText.transform.position = position;
         _actionText.SetText(promptText);
         _actionText.gameObject.SetActive(true);
+
+
     }
     public void HideInteractPrompt()
     {
