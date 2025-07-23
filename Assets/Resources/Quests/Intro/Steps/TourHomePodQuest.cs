@@ -72,6 +72,10 @@ public class TourHomePodQuest : QuestStep
 
         PropertyInterface propertyInterface = GetQuestItem<PropertyInterface>("PROPERTY_INTERFACE", true);
         ItemPickUpContainer phonePickUp = GetQuestItem<ItemPickUpContainer>("Phone", true);
+        PodcastPlayer radio = GetQuestItem<PodcastPlayer>("RADIO");
+
+        ABUtils.DelayedInvoke(2, () => radio.PlayPodcast(FindClipByName("PODCAST_TO_PLAY_WHEN_OTHRO_WAKES_UP")._clip));
+        // radio.PlayPodcast(FindClipByName("PODCAST_TO_PLAY_WHEN_OTHRO_WAKES_UP")._clip);
 
         propertyInterface.ToggleCanInteract(false);
         propertyInterface.PowerDownProperty(propertyInterface.PlayerLot);

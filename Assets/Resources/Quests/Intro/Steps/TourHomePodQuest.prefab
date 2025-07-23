@@ -87,6 +87,10 @@ MonoBehaviour:
     _tag: Phone Pickup
     _position: {x: 13.684793, y: -26.727, z: -317.016}
     _radius: 0
+  - _name: RADIO
+    _tag: 
+    _position: {x: 6.976, y: -27.154, z: -324.101}
+    _radius: 0.5
   _objectDetector:
     _radius: 0
     _position: {x: 0, y: 0, z: 0}
@@ -194,9 +198,4 @@ MonoBehaviour:
       position: {x: 19.67, y: -27.07, z: -330.87}
       rotation: {x: -0, y: 89.99998, z: -0}
     _cutScenePlayer: {fileID: 7038046814094832206, guid: f1d798197feb0694dab2f20afd7eeff2, type: 3}
-  _spawnableCreatures:
-  - _spawnPositions:
-    - {x: -87.65, y: -2.2, z: 26.439999}
-    _creaturePrefab: {fileID: 3519536000938682549, guid: c335dc62e4832014fa348e67604c9ed9, type: 3}
-    _name: 0
-    _tag: WAVE_ONE
+  _debug: 0

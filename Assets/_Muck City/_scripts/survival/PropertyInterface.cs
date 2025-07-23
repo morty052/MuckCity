@@ -90,7 +90,7 @@ public class PropertyInterface : Interactable, IBrowsable
         _activeProperty = _property.Find(x => x._propertyID == (PropertyID)id);
         DrawPropertyData(_activeProperty._data);
 
-        ExtendedUIMono.ScaleOut(_apartmentsParentUI.transform, () =>
+        ABUtils.ScaleOut(_apartmentsParentUI.transform, () =>
         {
             _apartmentsParentUI.SetActive(false);
             _activePropertyUI.SetActive(true);
@@ -129,21 +129,21 @@ public class PropertyInterface : Interactable, IBrowsable
 
     public void ClosePopup()
     {
-        ExtendedUIMono.ScaleOut(ActivePopup.transform, () =>
+        ABUtils.ScaleOut(ActivePopup.transform, () =>
         {
             ActivePopup.gameObject.SetActive(false);
             _propertyControlPanel.SetActive(true);
-            ExtendedUIMono.ScaleIn(_propertyControlPanel.transform);
+            ABUtils.ScaleIn(_propertyControlPanel.transform);
         });
     }
     public void ShowPopup(GameObject popup)
     {
-        ExtendedUIMono.ScaleOut(_propertyControlPanel.transform, () =>
+        ABUtils.ScaleOut(_propertyControlPanel.transform, () =>
         {
             popup.transform.localScale = Vector3.zero;
             popup.SetActive(true);
             _propertyControlPanel.SetActive(false);
-            ExtendedUIMono.ScaleIn(popup.transform);
+            ABUtils.ScaleIn(popup.transform);
         });
     }
 

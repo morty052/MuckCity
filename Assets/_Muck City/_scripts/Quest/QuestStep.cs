@@ -436,11 +436,7 @@ public abstract class QuestStep : MonoBehaviour
 
     #endregion
 
-    protected IEnumerator DelayedInvoke(float delay, Action action)
-    {
-        yield return new WaitForSeconds(delay);
-        action?.Invoke();
-    }
+
     protected void FinishQuestStep()
     {
         if (!_isFinished)
