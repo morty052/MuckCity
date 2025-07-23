@@ -100,9 +100,9 @@ public class SpecialEquipmentManager : MonoBehaviour
         if (_debug)
         {
             Debug.Log($"Adding {id} ");
+            Debug.Log(item.name);
         }
         specialEquipments.Add(id);
-        Debug.Log(item.name);
         SpecialEquipment special = Instantiate(item._equipmentPrefab).GetComponent<SpecialEquipment>();
         _equipments.Add(special);
         special.Init();

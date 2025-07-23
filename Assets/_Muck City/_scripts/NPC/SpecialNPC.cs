@@ -37,13 +37,17 @@ public class SpecialNPC : NpcCharacter
 
     public override void Interact()
     {
+
+        if (_activeConversation != null)
+        {
+            _activeConversation._speakerName = _npcSO._id;
+            StartConversation(_activeConversation);
+        }
         if (IsQuestGiver && _questGiver.HasQuest)
         {
             // OnScreenDebugger.Instance.Log("Interacted with quest giver");
             if (_questGiver.HasConvoForQuest)
             {
-                _activeConversation._speakerName = _npcSO._id;
-                StartConversation(_activeConversation);
                 OnInteractedWithQuestGiver?.Invoke();
             }
         }

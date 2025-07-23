@@ -36,8 +36,6 @@ public class NpcCharacter : MonoBehaviour, IInteractable
 
     [SerializeField] protected NPCConversation _activeConversation;
 
-
-
     [SerializeField] bool _canInteract;
     public bool _canBeSearched = false;
 
@@ -80,7 +78,6 @@ public class NpcCharacter : MonoBehaviour, IInteractable
     public bool IsQuestItem { get; set; }
 
 
-
     protected virtual void Awake()
     {
         if (_npcSO != null)
@@ -92,11 +89,15 @@ public class NpcCharacter : MonoBehaviour, IInteractable
             // SetupTransitions();
         }
     }
+    void Start()
+    {
+        Invoke(nameof(SetupActionText), 1f);
+    }
 
-    // void Update()
-    // {
-    //     _stateMachine?.Update();
-    // }
+    void SetupActionText()
+    {
+        _actionText = HudManager.Instance._actionText;
+    }
 
 
     protected virtual void SetupData()
@@ -129,15 +130,23 @@ public class NpcCharacter : MonoBehaviour, IInteractable
 
     public virtual void StartConversation(NPCConversation conversation)
     {
+        // Debug.Log("Conversation Started");
         ConversationManager.Instance.StartConversation(_activeConversation);
         GameEventsManager.Instance.OnConversationStarted(_activeConversation);
+        GameEventsManager.Instance.OnToggleUi();
+    }
+    public void ShowInteractPrompt()
+    {
+        _actionText.transform.position = transform.TransformPoint(new(0, 1.83f, 0));
+        _actionText.SetText("Talk");
+        _actionText.gameObject.SetActive(true);
     }
 
     public virtual void PrepareInteraction()
     {
         if (_canInteract)
         {
-            HudManager.Instance.ShowInteractPrompt(InteractionPrompt);
+            ShowInteractPrompt();
             Player.Instance.SetInteractableObject(this);
         }
     }

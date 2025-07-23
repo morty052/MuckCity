@@ -117,7 +117,7 @@ public class GameEventsManager : MonoBehaviour
     async void FindAllStartLoaders()
     {
         _onGameStartLoaders = FindObjectsByType<ExtendedMono>(FindObjectsSortMode.None).ToList();
-        Debug.Log("Found" + _onGameStartLoaders.Count);
+        // Debug.Log("Found" + _onGameStartLoaders.Count);
         var tasks = new Task[_onGameStartLoaders.Count];
         for (int i = 0; i < _onGameStartLoaders.Count; i++)
         {

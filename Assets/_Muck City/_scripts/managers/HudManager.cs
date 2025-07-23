@@ -64,6 +64,7 @@ public class HudManager : MonoBehaviour
         GameEventsManager.OnDisplayPhone += OnDisplayPhone;
         GameEventsManager.OnHidePhone += OnHidePhone;
         GameEventsManager.OnToggleUiEvent += OnToggleUi;
+        GameEventsManager.OnConversationEndEvent += OnToggleUi;
         GameEventsManager.OnSceneLoadStartEvent += (location) => ToggleLoadingScreen(true);
         GameEventsManager.OnSceneLoadEndEvent += () => ToggleLoadingScreen(false);
 
@@ -77,6 +78,7 @@ public class HudManager : MonoBehaviour
         GameEventsManager.OnDisplayPhone -= OnDisplayPhone;
         GameEventsManager.OnHidePhone -= OnHidePhone;
         GameEventsManager.OnToggleUiEvent -= OnToggleUi;
+        GameEventsManager.OnConversationEndEvent -= OnToggleUi;
         GameEventsManager.OnSceneLoadStartEvent -= (location) => ToggleLoadingScreen(true);
         GameEventsManager.OnSceneLoadEndEvent -= () => ToggleLoadingScreen(false);
     }
