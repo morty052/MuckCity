@@ -24,4 +24,9 @@ public class DelveManager : MonoBehaviour
     {
         Debug.Log("Accepted Contract Delve");
     }
+
+    void InitContract(ContractSO contractSO)
+    {
+
+    }
 }
