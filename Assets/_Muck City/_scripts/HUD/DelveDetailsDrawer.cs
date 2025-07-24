@@ -24,4 +24,13 @@ public class DelveDetailsDrawer : MonoBehaviour
         _descriptionText.text = bounty._description;
         // Debug.Log($"Bounty {bounty.name} selected");
     }
+
+    public void DrawContractReward()
+    {
+
+    }
+    public void DrawBountyReward()
+    {
+
+    }
 }

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0db184dcfdf4443a9cefedd82c35df, type: 3}
+  m_Name: Denie Field Research
+  m_EditorClassIdentifier: 
+  _bounty: 20
+  _name: Razer Mushrooms Wanted
+  _description: Find 5 Razer mushrooms
+  _sprite: {fileID: 0}
+  _delveItem: {fileID: 1580796860582888537, guid: 7e09f31bed025444992296d2c35d2e60, type: 3}
+  _keyLocation: 4
+  _itemSpawnPos:
+    position: {x: 0.554, y: -26.589, z: -353.806}
+    rotation: {x: -0, y: 44.999996, z: 0}
+  _id: Denac30

@@ -49,6 +49,7 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
         GameEventsManager.OnSocialCreditUpdated += OnSocialCreditUpdated;
         GameEventsManager.OnDeliveryPointReachedEvent += OnDeliveryPointReached;
         GameEventsManager.OnBuyItemEvent += OnPurchase;
+        GameEventsManager.OnDepositDelveItemEvent += OnDepositDelveItem;
         // GameEventsManager.OnShouldAutoSave += TriggerAutoSave;
     }
 
@@ -57,9 +58,17 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
         GameEventsManager.OnSocialCreditUpdated -= OnSocialCreditUpdated;
         GameEventsManager.OnDeliveryPointReachedEvent -= OnDeliveryPointReached;
         GameEventsManager.OnBuyItemEvent -= OnPurchase;
+        GameEventsManager.OnDepositDelveItemEvent -= OnDepositDelveItem;
         // GameEventsManager.OnShouldAutoSave -= TriggerAutoSave;
 
         TriggerAutoSave();
+    }
+
+    private void OnDepositDelveItem(ContractSO sO)
+    {
+        SocialCredit += sO._bounty;
+        _socialCreditText.text = SocialCredit.ToString();
+        // TriggerAutoSave();
     }
 
     private void OnPurchase(ShopItemSO sO)

@@ -31,6 +31,7 @@ public class DecisionData : ScriptableObject
 }
 
 
+
 [Serializable]
 public abstract class DecisionEffect
 {

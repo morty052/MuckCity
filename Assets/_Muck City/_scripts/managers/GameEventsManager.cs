@@ -54,6 +54,9 @@ public class GameEventsManager : MonoBehaviour
     public static Action OnSunDownEvent;
     public static Action OnSunUpEvent;
     public static Action OnToggleUiEvent;
+    public static Action<ContractSO> OnAcceptContractEvent;
+    public static Action<ContractSO> OnDepositDelveItemEvent;
+    public static Action<BountySO> OnAcceptBountyEvent;
 
 
     public static Action<float, bool> OnContaminationUpdate;

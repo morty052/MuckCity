@@ -245,6 +245,8 @@ public class ContractGiver : Interactable, IBrowsable
     {
         //* SET SELECTED ITEM TO INDEX ASSIGNED TO BUTTON 
         _selectedItemIndex = index;
+
+        //* FIRE EVENT TO OTHER UI COMPONENTS TO DRAW CONTRACT
         OnClickContract?.Invoke(_contractSOList.ElementAt(index));
     }
 
@@ -347,10 +349,12 @@ public class ContractGiver : Interactable, IBrowsable
         switch (eumName)
         {
             case DelverScreenName.BOUNTY:
-                DelveManager.Instance.OnAcceptBounty(_bountySOlist.ElementAt(_selectedItemIndex));
+                GameEventsManager.OnAcceptBountyEvent.Invoke(_bountySOlist.ElementAt(_selectedItemIndex));
+                // DelveManager.Instance.OnAcceptBounty(_bountySOlist.ElementAt(_selectedItemIndex));
                 break;
             case DelverScreenName.CONTRACTS:
-                DelveManager.Instance.OnAcceptContract(_contractSOList.ElementAt(_selectedItemIndex));
+                GameEventsManager.OnAcceptContractEvent.Invoke(_contractSOList.ElementAt(_selectedItemIndex));
+                // DelveManager.Instance.OnAcceptContract(_contractSOList.ElementAt(_selectedItemIndex));
                 break;
             default:
                 break;

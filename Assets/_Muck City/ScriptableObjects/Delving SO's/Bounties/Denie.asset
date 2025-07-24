@@ -16,3 +16,4 @@ MonoBehaviour:
   _name: Denie
   _description: 'Lead Tech Officer Denie has gone missing '
   _sprite: {fileID: 0}
+  _lastKnownPos: 5

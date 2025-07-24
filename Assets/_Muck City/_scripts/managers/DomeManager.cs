@@ -122,7 +122,7 @@ public class DomeManager : MonoBehaviour
     [SerializeField, TabGroup("Attack")] List<Zombie> _spawnedEnemies;
     [SerializeField, TabGroup("Weather")] FogController _fogController;
 
-
+    [SerializeField, TabGroup("Locations")] ScriptedLocationsSO _LocationsData;
 
 
     private void Awake()
@@ -145,6 +145,9 @@ public class DomeManager : MonoBehaviour
         GameEventsManager.OnEnterDistrictEvent += HandleDistrictEntry;
         TimeService.OnSunSet += HandleSunDown;
         TimeService.OnSunRise += HandleSunUp;
+
+        GameEventsManager.OnAcceptBountyEvent += OnAcceptBounty;
+        GameEventsManager.OnAcceptContractEvent += OnAcceptContract;
     }
 
     void OnDisable()
@@ -153,6 +156,22 @@ public class DomeManager : MonoBehaviour
         GameEventsManager.OnEnterDistrictEvent -= HandleDistrictEntry;
         TimeService.OnSunSet -= HandleSunDown;
         TimeService.OnSunRise -= HandleSunUp;
+        GameEventsManager.OnAcceptBountyEvent -= OnAcceptBounty;
+        GameEventsManager.OnAcceptContractEvent -= OnAcceptContract;
+    }
+
+    private void OnAcceptContract(ContractSO sO)
+    {
+        ScriptedLocation scriptedLocation = _LocationsData.GetLocation(sO._keyLocation);
+        Debug.Log(scriptedLocation.GetCleanName() + " Is a key location");
+        Waypoint.Instance.Init(scriptedLocation._posData.position);
+    }
+
+    private void OnAcceptBounty(BountySO sO)
+    {
+        ScriptedLocation scriptedLocation = _LocationsData.GetLocation(sO._lastKnownPos);
+        Debug.Log(scriptedLocation.GetCleanName() + " Is the last known location");
+        Waypoint.Instance.Init(scriptedLocation._posData.position);
     }
 
     [Button]
@@ -239,14 +258,6 @@ public class DomeManager : MonoBehaviour
         return _othroBunkerLocationData;
     }
 
-    public void InstantiateQuestMarker(Vector3 position, string eventTitle = null)
-    {
-        if (eventTitle != null)
-        {
-            _questMarker._eventTitle = eventTitle;
-        }
-        _questMarker.Init(position);
-    }
 
     #region "ATTACK"
 
