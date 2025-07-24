@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Mushroom Contract
   m_EditorClassIdentifier: 
   _bounty: 20
-  _name: 
-  _description: 
+  _name: Razer Mushrooms Wanted
+  _description: Find 5 Razer mushrooms
   _sprite: {fileID: 0}

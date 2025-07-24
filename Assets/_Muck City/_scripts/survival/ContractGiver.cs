@@ -45,12 +45,17 @@ public class ContractGiver : Interactable, IBrowsable
     [SerializeField, TabGroup("Asset Groups")] AssetLabelReference _baseContracts;
     [SerializeField, TabGroup("Settings")] List<DelverScreenStruct> _screens = new();
     [SerializeField, TabGroup("Settings")] int _activeScreenIndex = 0;
+    [SerializeField, TabGroup("Settings")] int _selectedItemIndex = 0;
 
-    [SerializeField, TabGroup("Events")] UnityEvent<DelverScreenName> OnChangeScreen;
+    [SerializeField, TabGroup("Events")] UnityEvent OnLoadingComplete;
     [SerializeField, TabGroup("Events")] UnityEvent<BountySO> OnClickBounty;
     [SerializeField, TabGroup("Events")] UnityEvent<ContractSO> OnClickContract;
-    [SerializeField, TabGroup("Events")] UnityEvent OnLoadingComplete;
+    [SerializeField, TabGroup("Events")] UnityEvent<ContractSO> OnSelectContract;
+    [SerializeField, TabGroup("Events")] UnityEvent<BountySO> OnSelectBounty;
+    [SerializeField, TabGroup("Events")] UnityEvent<DelverScreenName> OnConfirmDelve;
+    [SerializeField, TabGroup("Events")] UnityEvent OnCancelConfirm;
     [SerializeField, TabGroup("Events")] UnityEvent OnClose;
+    [SerializeField, TabGroup("Events")] UnityEvent<DelverScreenName> OnChangeScreen;
     [SerializeField, TabGroup("Events")] bool _debug;
 
     HashSet<BountySO> _bountySOlist = new();
@@ -58,6 +63,7 @@ public class ContractGiver : Interactable, IBrowsable
     HashSet<GameObject> _bountyList = new();
     HashSet<GameObject> _contractList = new();
 
+    private bool _isConfirmingDelve = false;
     private bool _loadingBounties = true;
     private bool _loadingContracts = true;
     private bool Loading => _loadingBounties && _loadingContracts;
@@ -78,6 +84,8 @@ public class ContractGiver : Interactable, IBrowsable
         LoadAddressables();
         await WaitUntilNotLoading();
         DrawContractButtons();
+        OnClickBounty?.Invoke(_bountySOlist.ElementAt(0));
+        OnClickContract?.Invoke(_contractSOList.ElementAt(0));
     }
 
     async Task WaitUntilNotLoading()
@@ -227,12 +235,16 @@ public class ContractGiver : Interactable, IBrowsable
     void DrawBounty(int index)
     {
 
+        //* SET SELECTED ITEM TO INDEX ASSIGNED TO BUTTON 
+        _selectedItemIndex = index;
         OnClickBounty?.Invoke(_bountySOlist.ElementAt(index));
+
     }
 
     void DrawContract(int index)
     {
-
+        //* SET SELECTED ITEM TO INDEX ASSIGNED TO BUTTON 
+        _selectedItemIndex = index;
         OnClickContract?.Invoke(_contractSOList.ElementAt(index));
     }
 
@@ -282,7 +294,25 @@ public class ContractGiver : Interactable, IBrowsable
                 ShowPopup(_activeScreenIndex);
                 break;
             case Inputs.BACK:
-                HandleClose();
+                if (!_isConfirmingDelve)
+                {
+                    HandleExit();
+                }
+                else
+                {
+                    OnCancelConfirm?.Invoke();
+                    _isConfirmingDelve = false;
+                }
+                break;
+            case Inputs.SELECT:
+                if (!_isConfirmingDelve)
+                {
+                    SelectItem();
+                }
+                else
+                {
+                    AcceptItem();
+                }
                 break;
             default:
                 break;
@@ -290,7 +320,45 @@ public class ContractGiver : Interactable, IBrowsable
     }
 
 
-    void HandleClose()
+    void SelectItem()
+    {
+        //* GET ACTIVE SCREEN ENUM NAME
+        DelverScreenName eumName = (DelverScreenName)_activeScreenIndex;
+        switch (eumName)
+        {
+            case DelverScreenName.BOUNTY:
+                OnSelectBounty?.Invoke(_bountySOlist.ElementAt(_selectedItemIndex));
+                break;
+            case DelverScreenName.CONTRACTS:
+                OnSelectContract?.Invoke(_contractSOList.ElementAt(_selectedItemIndex));
+                break;
+            default:
+                break;
+        }
+        _isConfirmingDelve = true;
+    }
+
+    void AcceptItem()
+    {
+        OnConfirmDelve?.Invoke((DelverScreenName)_activeScreenIndex);
+        _isConfirmingDelve = false;
+
+        DelverScreenName eumName = (DelverScreenName)_activeScreenIndex;
+        switch (eumName)
+        {
+            case DelverScreenName.BOUNTY:
+                DelveManager.Instance.OnAcceptBounty(_bountySOlist.ElementAt(_selectedItemIndex));
+                break;
+            case DelverScreenName.CONTRACTS:
+                DelveManager.Instance.OnAcceptContract(_contractSOList.ElementAt(_selectedItemIndex));
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    void HandleExit()
     {
         _ui.SetActive(false);
         Player.Instance.UseAltControls(false);

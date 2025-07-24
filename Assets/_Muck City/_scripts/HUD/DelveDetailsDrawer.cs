@@ -12,10 +12,16 @@ public class DelveDetailsDrawer : MonoBehaviour
 
     public void DrawContract(ContractSO contract)
     {
-        Debug.Log($"Contract {contract.name} selected");
+        // Debug.Log($"Contract {contract.name} selected");
+        _rewardText.text = contract._bounty.ToString();
+        _titleText.text = contract._name;
+        _descriptionText.text = contract._description;
     }
     public void DrawBounty(BountySO bounty)
     {
-        Debug.Log($"Bounty {bounty.name} selected");
+        _rewardText.text = bounty._bounty.ToString();
+        _titleText.text = bounty._name;
+        _descriptionText.text = bounty._description;
+        // Debug.Log($"Bounty {bounty.name} selected");
     }
 }
