@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 951fbfec964afb249a26c9fdb62bae5e
   m_currentHash:
     serializedVersion: 2
-    Hash: e338c8b568773a480cf10999a9d35e47
+    Hash: 5b7a69b219b22f342b8e27a481a98906
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -99,6 +99,9 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - DELVING_SO'S
+    - Bounties
+    - Contracts
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 5c861e11119bdd24f91dca0d614f709e, type: 2}

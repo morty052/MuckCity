@@ -35,7 +35,7 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
 
 
 
-    void Start()
+    public virtual void Start()
     {
         Invoke(nameof(SetupActionText), 1f);
     }

@@ -14,7 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
   m_GUID: 951fbfec964afb249a26c9fdb62bae5e
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 2b27d9c51b739ca4c98bd701d4c9a2f9
+    m_Address: Contracts
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Contracts
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98742ae9ad0fc1e4db979512848bc676
+    m_Address: Mushroom Contract
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Contracts
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bbb3169d364dc6f4d827e5d9fe512f76
+    m_Address: Bounties
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Bounties
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c906cbe5c8122444795a73a0806c1858
+    m_Address: Delving SO's
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea03468280b8c454a9b9f322abb890ae
+    m_Address: DenieSO
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Bounties
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0e91e183ed520154482a8f0d1db9fed1, type: 2}
   m_SchemaSet:

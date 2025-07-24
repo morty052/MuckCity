@@ -4,6 +4,12 @@ using UnityEngine;
 using UnityUtils;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Sirenix.OdinInspector;
+using UnityEngine.Events;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEngine.UI;
+using System.Threading.Tasks;
 
 public enum DelverScreenName
 {
@@ -24,38 +30,136 @@ public struct DelverScreenStruct
     }
 }
 
-
 public class ContractGiver : Interactable, IBrowsable
 {
 
-    public AssetLabelReference _baseBounties;
-    public NpcCharacter _tiedNpc;
-    [SerializeField] GameObject _ui;
-    [SerializeField] GameObject _viewsParent;
 
-    [SerializeField] List<DelverScreenStruct> _screens = new();
+    [SerializeField, TabGroup("Components")] NpcCharacter _tiedNpc;
+    [SerializeField, TabGroup("Components")] GameObject _ui;
+    [SerializeField, TabGroup("Components")] GameObject _screensParent;
+    [SerializeField, TabGroup("Components")] GameObject _sideBar;
+    [SerializeField, TabGroup("Components")] GameObject _delverButtonPrefab;
+    [SerializeField, TabGroup("Text Components")] TextMeshProUGUI _navbarText;
 
-    List<BountySO> _bounties = new();
+    [SerializeField, TabGroup("Asset Groups")] AssetLabelReference _baseBounties;
+    [SerializeField, TabGroup("Asset Groups")] AssetLabelReference _baseContracts;
+    [SerializeField, TabGroup("Settings")] List<DelverScreenStruct> _screens = new();
+    [SerializeField, TabGroup("Settings")] int _activeScreenIndex = 0;
 
-    bool IsPopupActive => _viewsParent.transform.Children().Any(x => x.gameObject.activeSelf);
-    Transform ActivePopup => _viewsParent.transform.Children().FirstOrDefault(x => x.gameObject.activeSelf);
+    [SerializeField, TabGroup("Events")] UnityEvent<DelverScreenName> OnChangeScreen;
+    [SerializeField, TabGroup("Events")] UnityEvent<BountySO> OnClickBounty;
+    [SerializeField, TabGroup("Events")] UnityEvent<ContractSO> OnClickContract;
+    [SerializeField, TabGroup("Events")] UnityEvent OnLoadingComplete;
+    [SerializeField, TabGroup("Events")] UnityEvent OnClose;
+    [SerializeField, TabGroup("Events")] bool _debug;
 
-    void Start()
+    HashSet<BountySO> _bountySOlist = new();
+    HashSet<ContractSO> _contractSOList = new();
+    HashSet<GameObject> _bountyList = new();
+    HashSet<GameObject> _contractList = new();
+
+    private bool _loadingBounties = true;
+    private bool _loadingContracts = true;
+    private bool Loading => _loadingBounties && _loadingContracts;
+    // HashSet<BountySO> _deposits = new();
+    bool IsPopupActive => _screensParent.transform.Children().Any(x => x.gameObject.activeSelf);
+    Transform ActivePopup => _screensParent.transform.Children().FirstOrDefault(x => x.gameObject.activeSelf);
+
+    AsyncOperationHandle<IList<BountySO>> _bountyLoadHandle;
+    AsyncOperationHandle<IList<ContractSO>> _contractLoadHandle;
+    // public override void Start()
+    // {
+    //     base.Start();
+    //     SetupData();
+    // }
+
+    async void SetupData()
     {
         LoadAddressables();
+        await WaitUntilNotLoading();
+        DrawContractButtons();
+    }
+
+    async Task WaitUntilNotLoading()
+    {
+        while (Loading)
+        {
+            await Task.Yield();
+            if (_debug)
+            {
+                Debug.Log("Loading");
+            }
+        }
+        if (_debug)
+        {
+            Debug.Log("Done Loading");
+        }
+        OnLoadingComplete?.Invoke();
     }
 
     public override void Interact()
     {
         Player.Instance.UseAltControls(true, this);
         _ui.SetActive(true);
+        SetupData();
     }
+
+
+    #region"ADDRESSABLE STUFF"
+    public AsyncOperationHandle<T> FindAddressable<T>(string id) where T : class
+    {
+        return Addressables.LoadAssetAsync<T>(id);
+    }
+
+
+    void LoadAddressables()
+    {
+        _bountyLoadHandle = Addressables.LoadAssetsAsync<BountySO>(_baseBounties, null);
+        _contractLoadHandle = Addressables.LoadAssetsAsync<ContractSO>(_baseContracts, null);
+        _bountyLoadHandle.Completed += OnCompleteLoadBounty;
+        _contractLoadHandle.Completed += OnCompleteLoadContract;
+
+        // _bountyLoadHandle.Release();
+        // _contractLoadHandle.Release();
+    }
+
+
+    void OnCompleteLoadBounty(AsyncOperationHandle<IList<BountySO>> handle)
+    {
+        for (int i = 0; i < handle.Result.Count; i++)
+        {
+            _bountySOlist.Add(handle.Result[i]);
+            Debug.Log(_bountySOlist.ElementAt(i).name);
+            CreateBountyButton(_bountySOlist.ElementAt(i), i);
+        }
+        handle.Completed -= OnCompleteLoadBounty;
+        _loadingBounties = false;
+    }
+    void OnCompleteLoadContract(AsyncOperationHandle<IList<ContractSO>> handle)
+    {
+        for (int i = 0; i < handle.Result.Count; i++)
+        {
+            _contractSOList.Add(handle.Result[i]);
+            Debug.Log(_contractSOList.ElementAt(i).name);
+
+            CreateContractButton(_contractSOList.ElementAt(i), i);
+        }
+        handle.Completed -= OnCompleteLoadContract;
+        _loadingContracts = false;
+    }
+    #endregion
+
+    #region "UI STUFF
 
     public void ShowPopup(int parentIndex)
     {
-        // GameObject obj = _screens.Find(x => x._id == parentIndex);
+        //* FIND SELECTED SCREEN
         GameObject obj = _screens.Find(x => x._id == (DelverScreenName)parentIndex)._obj;
+
+        //* DO NOTHING IF SCREEN IS ALREADY SELECTED
         if (obj == null || obj.name == ActivePopup.gameObject.name) return;
+
+        //* SCALE OUT ACTIVE SCREEN
         ABUtils.ScaleOut(ActivePopup.transform, () =>
        {
            //* DISABLE ACTIVE POP UP
@@ -67,51 +171,143 @@ public class ContractGiver : Interactable, IBrowsable
            ABUtils.ScaleIn(obj.transform);
        });
 
-    }
+        //* GET SELECTED SCREEN ENUM NAME
+        DelverScreenName eumName = (DelverScreenName)parentIndex;
 
-    void LoadAddressables()
-    {
-        // var op = FindAddressable<BountySO>("DenieSO");
-        // op.Completed += OnCompleted;
+        //* SET NAVBAR TEXT
+        string cleanEnumName = eumName.ToString().ToLower().Replace("_", " ").FirstCharacterToUpper();
+        _navbarText.text = cleanEnumName;
 
-        var handle = Addressables.LoadAssetsAsync<BountySO>(_baseBounties, null);
-        handle.Completed += OnCompletedLoad;
-    }
+        //*DEACTIVATE ACTIVE BUTTONS    
+        _sideBar.transform.Children().ToList().ForEach(x => x.gameObject.SetActive(false));
 
-    void OnCompleted(AsyncOperationHandle<BountySO> op)
-    {
-        if (op.Result != null)
+        //* SHOW BUTTONS FOR SELECTED SCREEN
+        switch (eumName)
         {
-            Debug.Log($"Loaded asset: {op.Result.name}");
-            op.Completed -= OnCompleted;
+            case DelverScreenName.BOUNTY:
+                DrawBountyButtons();
+                break;
+            case DelverScreenName.CONTRACTS:
+                DrawContractButtons();
+                break;
+            default:
+                break;
         }
-        else
-        {
-            Debug.LogError("Failed to load asset");
-        }
-
     }
-    void OnCompletedLoad(AsyncOperationHandle<IList<BountySO>> handle)
+
+    void CreateBountyButton(BountySO bounty, int index)
     {
-        _bounties = (List<BountySO>)handle.Result;
-        foreach (var bounty in _bounties)
-        {
-            Debug.Log(bounty.name);
-        }
-        handle.Completed -= OnCompletedLoad;
+        GameObject button = Instantiate(_delverButtonPrefab, _sideBar.transform);
+        button.GetComponentInChildren<TextMeshProUGUI>().text = $"{bounty._bounty}SC";
+
+        Button btn = button.GetComponent<Button>();
+        btn.onClick.RemoveAllListeners();
+
+        btn.onClick.AddListener(() => DrawBounty(index));
+        _bountyList.Add(button);
+
+        button.SetActive(false);
+    }
+    void CreateContractButton(ContractSO bounty, int index)
+    {
+        GameObject button = Instantiate(_delverButtonPrefab, _sideBar.transform);
+        button.GetComponentInChildren<TextMeshProUGUI>().text = $"{bounty._bounty}SC";
+
+        Button btn = button.GetComponent<Button>();
+        btn.onClick.RemoveAllListeners();
+
+        btn.onClick.AddListener(() => DrawContract(index));
+
+        _contractList.Add(button);
+
+        button.SetActive(false);
     }
 
 
+    void DrawBounty(int index)
+    {
+
+        OnClickBounty?.Invoke(_bountySOlist.ElementAt(index));
+    }
+
+    void DrawContract(int index)
+    {
+
+        OnClickContract?.Invoke(_contractSOList.ElementAt(index));
+    }
+
+    void DrawBountyButtons()
+    {
+        for (int i = 0; i < _bountyList.Count; i++)
+        {
+            _bountyList.ElementAt(i).SetActive(true);
+        }
+    }
+
+    void DrawContractButtons()
+    {
+        for (int i = 0; i < _contractList.Count; i++)
+        {
+            _contractList.ElementAt(i).SetActive(true);
+        }
+    }
+
+    #endregion
 
     public void OnButtonPress(Inputs button)
     {
-        throw new System.NotImplementedException();
+        switch (button)
+        {
+            case Inputs.LEFT:
+                if (_activeScreenIndex == 0)
+                {
+                    _activeScreenIndex = _screens.Count - 1;
+                }
+                else
+                {
+                    _activeScreenIndex--;
+                }
+
+                ShowPopup(_activeScreenIndex);
+                break;
+            case Inputs.RIGHT:
+                if (_activeScreenIndex == _screens.Count - 1)
+                {
+                    _activeScreenIndex = 0;
+                }
+                else
+                {
+                    _activeScreenIndex++;
+                }
+                ShowPopup(_activeScreenIndex);
+                break;
+            case Inputs.BACK:
+                HandleClose();
+                break;
+            default:
+                break;
+        }
     }
 
 
-    public AsyncOperationHandle<T> FindAddressable<T>(string id) where T : class
+    void HandleClose()
     {
-        return Addressables.LoadAssetAsync<T>(id);
+        _ui.SetActive(false);
+        Player.Instance.UseAltControls(false);
+        _bountyLoadHandle.Release();
+        _contractLoadHandle.Release();
+        _activeScreenIndex = 0;
+        ShowPopup(_activeScreenIndex);
+        _loadingBounties = true;
+        _loadingContracts = true;
+        _bountySOlist.Clear();
+        _contractSOList.Clear();
+        _contractList.Clear();
+        _bountyList.Clear();
+        for (int i = 0; i < _sideBar.transform.childCount; i++)
+        {
+            Destroy(_sideBar.transform.GetChild(i).gameObject);
+        }
+        OnClose?.Invoke();
     }
-
 }
