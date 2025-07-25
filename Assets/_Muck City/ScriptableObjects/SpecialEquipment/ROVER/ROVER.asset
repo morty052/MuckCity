@@ -12,5 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b07a4b8ea10f7cf42b4c31c86f1e5601, type: 3}
   m_Name: ROVER
   m_EditorClassIdentifier: 
+  _name: ROVER
+  _icon: {fileID: 0}
+  _price: 0
+  _tradeable: {fileID: 0}
+  _itemReference:
+    id: 0
+    name: 
+    amount: 0
+    attributes: []
+    changeAttributes: 0
+    autoEquip: 0
+    addToEquipArea: 0
+    indexArea: 0
+  _type: 0
+  _stats:
+  - _name: 0
+    _value: 0
+  - _name: 1
+    _value: 0
+  - _name: 2
+    _value: 0
+  - _name: 3
+    _value: 0
+  - _name: 4
+    _value: 0
   _equipmentPrefab: {fileID: 7194681845233224851, guid: 7141e2e638ee26a4ab036d2366b41019, type: 3}
   _id: 2

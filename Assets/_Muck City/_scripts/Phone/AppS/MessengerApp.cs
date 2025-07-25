@@ -93,7 +93,7 @@ public class MessengerApp : PhoneApp
     private HashSet<OptionNode> _activeNodeOptions = new();
     private OptionNode _lastSelectedOption;
 
-    [SerializeField, TabGroup("Debug")] private int _optionId = 0;
+    // [SerializeField, TabGroup("Debug")] private int _optionId = 0;
     #endregion
 
     #region "Magnified Messages"
@@ -265,7 +265,7 @@ public class MessengerApp : PhoneApp
         _activeConvo.Complete();
         _activeConvo = null;
         _activeChat._hasPendingMessages = false;
-        _optionId = 0;
+        // _optionId = 0;
         _activeChat = null;
         _activeNodeOptions.Clear();
         for (int i = 0; i < _chatEffects.Count; i++)

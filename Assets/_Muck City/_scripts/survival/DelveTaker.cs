@@ -16,9 +16,11 @@ public class DelveTaker : Interactable, IBrowsable
     [SerializeField, TabGroup("Components")] GameObject _delverButtonPrefab;
     [SerializeField, TabGroup("Text Components")] TextMeshProUGUI _navbarText;
     [SerializeField, TabGroup("Events")] UnityEvent OnLoadingComplete;
+    [SerializeField, TabGroup("Events")] UnityEvent<ContractSO> OnClickContract;
+    [SerializeField, TabGroup("Events")] UnityEvent<ContractSO> OnCollectReward;
+    [SerializeField, TabGroup("Events")] UnityEvent OnCloseRewardPopup;
     [SerializeField, TabGroup("Events")] UnityEvent OnClose;
 
-    [SerializeField, TabGroup("Events")] UnityEvent<ContractSO> OnClickContract;
 
     [SerializeField, TabGroup("Debug")] int _selectedItemIndex = 0;
 
@@ -27,6 +29,8 @@ public class DelveTaker : Interactable, IBrowsable
     ContractSO ActiveContract => DelveManager.Instance.Retrievals.ElementAt(_selectedItemIndex);
     GameObject ActiveButton => _contractList.ElementAt(_selectedItemIndex);
     bool HasContractToCollect => _contractList.Count > 0;
+
+    bool _isInspectingReward = false;
     public override void Interact()
     {
         Player.Instance.UseAltControls(true, this);
@@ -62,7 +66,15 @@ public class DelveTaker : Interactable, IBrowsable
                 // ShowPopup(_activeScreenIndex);
                 break;
             case Inputs.BACK:
-                HandleExit();
+                if (!_isInspectingReward)
+                {
+                    HandleExit();
+                }
+                else
+                {
+                    OnCloseRewardPopup?.Invoke();
+                    _isInspectingReward = false;
+                }
                 break;
             case Inputs.SELECT:
                 RewardContract();
@@ -159,6 +171,7 @@ public class DelveTaker : Interactable, IBrowsable
     void RewardContract()
     {
         Debug.Log("Collecting Reward for contract" + ActiveContract.name);
+        OnCollectReward?.Invoke(ActiveContract);
         ActiveButton.SetActive(false);
         _contractList.Remove(ActiveButton);
         GameEventsManager.OnDepositDelveItemEvent?.Invoke(ActiveContract);
@@ -166,5 +179,7 @@ public class DelveTaker : Interactable, IBrowsable
         {
             _noItemsScreen.SetActive(true);
         }
+
+        _isInspectingReward = true;
     }
 }
