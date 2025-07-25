@@ -158,14 +158,11 @@ public class NpcManager : MonoBehaviour
         // Debug.Log("Execution took" + (Time.time - executionStartTime));
         return specialNPC;
     }
-    public SpecialNPC SpawnAndMoveToPosition(NpcSO npc, Pos position, string spawnParentName)
+    public void SpawnNPC(NpcSO npc, Pos position)
     {
 
-        Transform spawnParent = GameObject.Find(spawnParentName).transform;
-
-        SpecialNPC specialNPC = Instantiate(npc._npcPrefab, spawnParent).GetComponent<SpecialNPC>();
-        specialNPC.transform.SetPositionAndRotation(position.position, Quaternion.Euler(position.rotation.x, position.rotation.y, position.rotation.z));
-        return specialNPC;
+        NpcCharacter specialNPC = Instantiate(npc._npcPrefab).GetComponent<NpcCharacter>();
+        specialNPC.transform.SetPositionAndRotation(position.position, Quaternion.Euler(position.rotation));
     }
 
     void SpawnAndMoveToPosition(string npc, Pos position)

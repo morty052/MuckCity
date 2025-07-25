@@ -22,3 +22,20 @@ MonoBehaviour:
     position: {x: 0.554, y: -26.589, z: -353.806}
     rotation: {x: -0, y: 44.999996, z: 0}
   _id: Denac30
+  _events:
+  - rid: 3260592411991343181
+  references:
+    version: 2
+    RefIds:
+    - rid: 3260592411991343181
+      type: {class: SpawnNpc, ns: , asm: Assembly-CSharp}
+      data:
+        _spawnData:
+        - _location:
+            position: {x: 0.9451196, y: -27.679224, z: -354.6122}
+            rotation: {x: -0, y: 0, z: 0}
+          _npc: {fileID: 11400000, guid: 3dc1897638a179844856db23cd6c23a0, type: 2}
+        - _location:
+            position: {x: 1.35, y: -27.679224, z: -352.65}
+            rotation: {x: 0, y: 198.04128, z: 0}
+          _npc: {fileID: 11400000, guid: bb9775a2f7763f34d85213b8e63a5e04, type: 2}

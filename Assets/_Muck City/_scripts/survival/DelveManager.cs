@@ -21,7 +21,8 @@ public class SpawnNpc : ScriptedEvent
         for (int i = 0; i < _spawnData.Count; i++)
         {
             SpawnStruct spawnStruct = _spawnData[i];
-            GameObject.Instantiate(spawnStruct._npc, spawnStruct._location.position, Quaternion.Euler(spawnStruct._location.rotation));
+            // Instantiate(spawnStruct._npc, spawnStruct._location.position, Quaternion.Euler(spawnStruct._location.rotation));
+            NpcManager.Instance.SpawnNPC(spawnStruct._npc, spawnStruct._location);
         }
     }
 }
