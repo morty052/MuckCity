@@ -26,8 +26,8 @@ public class DelveTaker : Interactable, IBrowsable
 
     HashSet<GameObject> _contractList = new();
 
-    ContractSO ActiveContract => DelveManager.Instance.Retrievals.ElementAt(_selectedItemIndex);
-    GameObject ActiveButton => _contractList.ElementAt(_selectedItemIndex);
+
+    GameObject ActiveButton => _contractList.ElementAt(_selectedItemIndex) ?? null;
     bool HasContractToCollect => _contractList.Count > 0;
 
     bool _isInspectingReward = false;
@@ -156,7 +156,7 @@ public class DelveTaker : Interactable, IBrowsable
     {
         //* SET SELECTED ITEM TO INDEX ASSIGNED TO BUTTON 
         _selectedItemIndex = index;
-        OnClickContract?.Invoke(ActiveContract);
+        OnClickContract?.Invoke(ActiveContract());
     }
 
     void DrawContractButtons()
@@ -168,13 +168,24 @@ public class DelveTaker : Interactable, IBrowsable
         }
     }
 
+    ContractSO ActiveContract()
+    {
+        if (DelveManager.Instance.Retrievals.Count == 0 || DelveManager.Instance.Retrievals.Count < _selectedItemIndex)
+        {
+            return null;
+        }
+        ContractSO contractSO = DelveManager.Instance.Retrievals.ElementAt(_selectedItemIndex);
+        return contractSO;
+    }
+
     void RewardContract()
     {
-        Debug.Log("Collecting Reward for contract" + ActiveContract.name);
-        OnCollectReward?.Invoke(ActiveContract);
+        if (ActiveContract() == null) return;
+        Debug.Log("Collecting Reward for contract" + ActiveContract().name);
+        OnCollectReward?.Invoke(ActiveContract());
         ActiveButton.SetActive(false);
         _contractList.Remove(ActiveButton);
-        GameEventsManager.OnDepositDelveItemEvent?.Invoke(ActiveContract);
+        GameEventsManager.OnDepositDelveItemEvent?.Invoke(ActiveContract());
         if (!HasContractToCollect)
         {
             _noItemsScreen.SetActive(true);

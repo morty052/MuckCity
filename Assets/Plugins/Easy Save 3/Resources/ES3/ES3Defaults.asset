@@ -37,12 +37,15 @@ MonoBehaviour:
     assemblyNames:
     - Assembly-CSharp
     - Assembly-CSharp-firstpass
+    - Eflatun.SceneReference
     - ImprovedTimers
     - MalbersAnimations
     - MalbersAnimations.Cinemachine
     - MalbersAnimations.Editor
     - MalbersAnimations.InputSystem
     - Sirenix.OdinInspector.Modules.Unity.Addressables
+    - Unity.RenderPipelines.Core.Samples.Runtime
+    - VFXGraph.OutputEventHandlers
     showAdvancedSettings: 0
   addMgrToSceneAutomatically: 0
   autoUpdateReferences: 0

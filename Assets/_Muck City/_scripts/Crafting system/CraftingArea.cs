@@ -71,7 +71,7 @@ public class CraftingArea : Equipment
 
 
 
-    void Start()
+    public override void Start()
     {
         for (int i = 0; i < _discoveredRecipes.Count; i++)
         {
