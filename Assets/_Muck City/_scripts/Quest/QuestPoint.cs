@@ -16,6 +16,7 @@ public class QuestPoint : MonoBehaviour
     [SerializeField] private bool _startPoint;
 
     [SerializeField] private bool _endPoint;
+    [SerializeField] private bool _useVisibility = false;
 
     public Action<string, bool> OnEnterQuestPoint;
 
@@ -25,6 +26,10 @@ public class QuestPoint : MonoBehaviour
         {
             _questId = _questInfoForPoint._id;
         }
+        if (_useVisibility)
+        {
+            GetComponent<Collider>().enabled = false;
+        }
     }
 
 
@@ -32,17 +37,36 @@ public class QuestPoint : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (_startPoint)
-            {
-                GameEventsManager.Instance._questEvents.StartQuest(_questId);
-            }
-
-            else
-            {
-                // _tiedQuestStep.OnQuestItemInteracted(_questItemData._name);
-                OnEnterQuestPoint?.Invoke(_questItemData._name, _completesObjective);
-            }
+            StartQuest();
             Destroy(gameObject);
+        }
+    }
+
+
+    public void StartQuest()
+    {
+        if (_startPoint)
+        {
+            GameEventsManager.Instance._questEvents.StartQuest(_questId);
+        }
+
+        else
+        {
+            // _tiedQuestStep.OnQuestItemInteracted(_questItemData._name);
+            OnEnterQuestPoint?.Invoke(_questItemData._name, _completesObjective);
+        }
+    }
+    public void StartQuestByVisibility()
+    {
+        if (_startPoint)
+        {
+            GameEventsManager.Instance._questEvents.StartQuest(_questId);
+        }
+
+        else
+        {
+            // _tiedQuestStep.OnQuestItemInteracted(_questItemData._name);
+            OnEnterQuestPoint?.Invoke(_questItemData._name, _completesObjective);
         }
     }
 

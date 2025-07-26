@@ -14,6 +14,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Muck City/Scenes/GamePlay.unity
     guid: a5aa46bebec44e44aa16b9bd5aa3e3a5
+  - enabled: 1
+    path: Assets/_Muck City/Scenes/Under Belly.unity
+    guid: e5b2cd2ce4e09214aa9d6023b1848de0
+  - enabled: 1
+    path: Assets/_Muck City/Scenes/Main_Menu.unity
+    guid: 9decdade64e9948408eab1d107f306e3
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 22e0e2d1f4f713b4cb6ec9e20e698c41, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

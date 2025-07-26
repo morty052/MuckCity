@@ -104,10 +104,10 @@ public class ObjectDetector
         else
         {
             component = hitColliders[0].GetComponent<T>();
-            // foreach (var item in hitColliders)
-            // {
-            //     Debug.Log($" {item.name}");
-            // }
+            foreach (var item in hitColliders)
+            {
+                Debug.Log($" {item.name}");
+            }
             Debug.Log($"<color=green> found  {typeof(T)} {component.GameObject.name}</color>");
             return component;
         }

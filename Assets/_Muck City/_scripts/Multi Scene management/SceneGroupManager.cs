@@ -64,18 +64,29 @@ namespace Systems.SceneManagement
 
         private async Task UnloadScenes()
         {
+            //* CREATE EMPTY LIST OF SCENE NAMES
             var scenes = new List<string>();
+
+            //* STORE ACTIVE SCENE NAME
             var activeScene = SceneManager.GetActiveScene().name;
 
+            //* GET TOTAL SCENE COUNT
             int sceneCount = SceneManager.sceneCount;
 
+            //* LOOP OVER ALL OPEN SCENES
             for (int i = sceneCount - 1; i > 0; i--)
             {
+                //* Get the scene at index
                 var sceneAt = SceneManager.GetSceneAt(i);
+                //*skip if scene is not loaded
                 if (!sceneAt.isLoaded) continue;
 
+                //* Get the scene name
                 var sceneName = sceneAt.name;
+                //*skip if its the active scene or boot strapper
                 if (sceneName.Equals(activeScene) || sceneName == "BootStrapper") continue;
+
+                //* add eligible scenes to list
                 scenes.Add(sceneName);
             }
 

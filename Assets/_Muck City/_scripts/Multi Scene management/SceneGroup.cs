@@ -24,6 +24,12 @@ namespace Systems.SceneManagement
         public SceneReference Reference;
         public string Name => Reference.Name;
         public SceneType SceneType;
+
+        public SceneData(SceneReference sceneReference, SceneType sceneType)
+        {
+            Reference = sceneReference;
+            SceneType = sceneType;
+        }
     }
 
     public enum SceneType { ActiveScene, MainMenu, UserInterface, HUD, Cinematic, Environment, Tooling }
