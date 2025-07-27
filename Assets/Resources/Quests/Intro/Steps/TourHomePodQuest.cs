@@ -36,11 +36,7 @@ public class TourHomePodQuest : QuestStep
 
     void Start()
     {
-        SetupQuest();
-        // ActivateMission(1);
-        // UpdateMissionObjectives(4, true);
-        // InstantiateQuestPoint("Find Officers Mess");
-        // StartCoroutine(PlayClipAfterDelay(2f, "Wing is Getting Detached", OnComplete: () => ShowTutorialPrompt("Basic Locomotion")));
+        RunStartOperations(() => SetupQuest());
     }
 
     void SetupQuest()
@@ -70,9 +66,9 @@ public class TourHomePodQuest : QuestStep
         _activeCutScenePlayer.OnCutSceneStarted += OnCutSceneStarted;
         GetObjectFromTimeLine(_activeCutScenePlayer);
 
-        PropertyInterface propertyInterface = GetQuestItem<PropertyInterface>("PROPERTY_INTERFACE", true);
-        ItemPickUpContainer phonePickUp = GetQuestItem<ItemPickUpContainer>("Phone", true);
-        PodcastPlayer radio = GetQuestItem<PodcastPlayer>("RADIO");
+        PropertyInterface propertyInterface = (PropertyInterface)GetQuestItem<PropertyInterface>("PROPERTY_INTERFACE", true);
+        ItemPickUpContainer phonePickUp = (ItemPickUpContainer)GetQuestItem<ItemPickUpContainer>("Phone", true);
+        PodcastPlayer radio = (PodcastPlayer)GetQuestItem<PodcastPlayer>("RADIO");
 
         ABUtils.DelayedInvoke(2, () => radio.PlayPodcast(FindClipByName("PODCAST_TO_PLAY_WHEN_OTHRO_WAKES_UP")._clip));
         // radio.PlayPodcast(FindClipByName("PODCAST_TO_PLAY_WHEN_OTHRO_WAKES_UP")._clip);
@@ -85,6 +81,7 @@ public class TourHomePodQuest : QuestStep
 
         _doneSetup = true;
     }
+
 
     private void OnConversationFinished(SpecialCharacters speakerName)
     {
@@ -106,7 +103,7 @@ public class TourHomePodQuest : QuestStep
                 UpdateMissionObjectives(3);
                 _albertoQuestData._conversationForQuest.OnDialogueFinishedEvent -= OnConversationFinished;
                 //* POWER UP BUNKER
-                PropertyInterface propertyInterface = GetQuestItem<PropertyInterface>("PROPERTY_INTERFACE");
+                PropertyInterface propertyInterface = (PropertyInterface)GetQuestItem<PropertyInterface>("PROPERTY_INTERFACE");
                 propertyInterface.PowerUpProperty(propertyInterface.PlayerLot);
                 break;
             default:
@@ -133,7 +130,7 @@ public class TourHomePodQuest : QuestStep
             case "Get Power Back On":
                 break;
             case "ENTER_MAIN_ROOM":
-                ItemPickUpContainer phonePickUp = GetQuestItem<ItemPickUpContainer>("Phone", false);
+                ItemPickUpContainer phonePickUp = (ItemPickUpContainer)GetQuestItem<ItemPickUpContainer>("Phone", false);
                 UseClipAtPoint("COMPAD_RINGTONE", phonePickUp.transform);
                 break;
             default:

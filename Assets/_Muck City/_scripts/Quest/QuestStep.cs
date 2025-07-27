@@ -96,6 +96,21 @@ public struct QuestPointData
 
 
 [System.Serializable]
+public struct QuestItemRef
+{
+
+    public string _name;
+    public IFindable _obj;
+    public QuestItemTag _questItemStruct;
+
+    public QuestItemRef(string name, IFindable obj, QuestItemTag questItemStruct)
+    {
+        _name = name;
+        _obj = obj;
+        _questItemStruct = questItemStruct;
+    }
+}
+[System.Serializable]
 public struct QuestItemData
 {
 
@@ -137,7 +152,43 @@ public struct QuestItemStruct
     }
 }
 
+[Serializable]
+public abstract class QuestOperation
+{
+    public enum OperationLifeCycle
+    {
+        ON_START,
+        IN_QUEST,
+        ON_QUEST_END
+    }
+    public OperationLifeCycle _operationLifeCycle;
+    public abstract void Execute(QuestStep questStep);
+}
 
+[Serializable]
+public class InitQuestItems : QuestOperation
+{
+    [SerializeField] List<QuestItemStruct> _questItemsData = new();
+
+    public override void Execute(QuestStep questStep)
+    {
+        for (int i = 0; i < _questItemsData.Count; i++)
+        {
+            questStep.AddQuestItem(_questItemsData[i]);
+            Debug.Log($"<color=cyan>Initializing Quest Item {_questItemsData[i]._name} </color>");
+        }
+    }
+}
+[Serializable]
+public class SpawnQuestItems : QuestOperation
+{
+    [SerializeField] List<QuestItemStruct> _questItemsData = new();
+
+    public override void Execute(QuestStep questStep)
+    {
+        Debug.Log("Initializing Waypoint");
+    }
+}
 public abstract class QuestStep : MonoBehaviour
 {
 
@@ -156,6 +207,7 @@ public abstract class QuestStep : MonoBehaviour
 
     [TabGroup("Quest Items")]
     [SerializeField] List<QuestItemStruct> _questItemsData = new();
+    [SerializeField] List<QuestItemRef> _questItems = new();
 
     [TabGroup("Quest Items")]
     public ObjectDetector _objectDetector;
@@ -180,6 +232,8 @@ public abstract class QuestStep : MonoBehaviour
     [TabGroup("CutScene's")]
     [SerializeField] List<CutSceneData> _questCutScenes = new();
 
+
+    [SerializeReference, TabGroup("Operations")] public List<QuestOperation> _operations;
     [TabGroup("Debug")]
     public bool _debug = new();
 
@@ -191,6 +245,24 @@ public abstract class QuestStep : MonoBehaviour
         _objectDetector = new(_detectionLayerMask);
     }
 
+
+
+    #region "Operations
+
+    protected void RunStartOperations(Action callBack = null)
+    {
+        List<QuestOperation> operations = _operations.FindAll(x => x._operationLifeCycle == QuestOperation.OperationLifeCycle.ON_START);
+        if (operations.Count > 0)
+        {
+            foreach (QuestOperation operation in operations)
+            {
+                operation.Execute(this);
+            }
+        }
+        callBack?.Invoke();
+    }
+
+    #endregion
 
     #region "Quest helpers"
     public void InitializeQuest(string questId)
@@ -278,54 +350,116 @@ public abstract class QuestStep : MonoBehaviour
     #endregion
 
     #region Quest Item
-    public QuestItemStruct FindQuestItemByName(string name)
+    // public QuestItemStruct FindQuestItemByName(string name)
+    // {
+    //     List<QuestItemStruct> data = _questItemsData.FindAll(x => x._name == name);
+    //     if (data.Count == 0)
+    //     {
+    //         Debug.LogError("No data found for " + name);
+    //     }
+    //     return data[0];
+    // }
+
+    // public T GetQuestItem<T>(string name, bool setupListener = false) where T : IFindable
+    // {
+    //     // Debug.Log("Looking for " + name);
+    //     QuestItemStruct itemData = FindQuestItemByName(name);
+    //     T item = _objectDetector.DetectFindable<T>(itemData._position, itemData._radius);
+
+    //     // Debug.Log("item is " + item.GameObject.name);
+    //     if (setupListener)
+    //     {
+    //         AddQuestItemToObject(item, itemData);
+    //     }
+
+    //     return item;
+    // }
+
+    // protected void AddQuestItemToObject(IFindable obj, QuestItemStruct itemData)
+    // {
+    //     QuestItem powerBackOnQuest = obj.GameObject.AddComponent<QuestItem>();
+    //     powerBackOnQuest._questItemData = itemData;
+    //     obj.IsQuestItem = true;
+    //     // Debug.Log(obj.GameObject.name + " is a quest item");
+    //     obj.SetupInteractionListener(OnQuestItemInteracted);
+    // }
+    // protected void RemoveInteractionListener(string tag)
+    // {
+    //     List<QuestItemStruct> data = _questItemsData.FindAll(x => x._name == name);
+    //     if (data.Count == 0)
+    //     {
+    //         Debug.LogError("No data found for " + name);
+    //         return;
+    //     }
+
+    //     QuestItemStruct itemData = data[0];
+
+    //     IFindable obj = _objectDetector.DetectFindable<IFindable>(itemData._position, itemData._radius);
+
+    //     QuestItem item = obj.GameObject.GetComponent<QuestItem>();
+    //     item._questItemData = itemData;
+
+    //     obj.IsQuestItem = false;
+    //     obj.RemoveInteractionListener(OnQuestItemInteracted);
+
+
+    // }
+
+    public QuestItemRef FindQuestItemByName(string name)
     {
-        List<QuestItemStruct> data = _questItemsData.FindAll(x => x._name == name);
+        List<QuestItemRef> data = _questItems.FindAll(x => x._name == name);
         if (data.Count == 0)
         {
             Debug.LogError("No data found for " + name);
         }
         return data[0];
     }
-
-    public T GetQuestItem<T>(string name, bool setupListener = false) where T : IFindable
+    public IFindable GetQuestItem<T>(string name, bool setupListener = false) where T : IFindable
     {
         // Debug.Log("Looking for " + name);
-        QuestItemStruct itemData = FindQuestItemByName(name);
-        T item = _objectDetector.DetectFindable<T>(itemData._position, itemData._radius);
+        QuestItemRef itemData = FindQuestItemByName(name);
 
         // Debug.Log("item is " + item.GameObject.name);
         if (setupListener)
         {
-            AddQuestItemToObject(item, itemData);
+            AddQuestItemToObject(itemData._obj, itemData._questItemStruct);
         }
 
-        return item;
+        return itemData._obj;
+    }
+    public void AddQuestItem(QuestItemStruct itemData)
+    {
+        IFindable item = _objectDetector.DetectFindable<IFindable>(itemData._position, itemData._radius);
+        _questItems.Add(new(itemData._name, item, new(itemData._tag)));
     }
 
-    protected void AddQuestItemToObject(IFindable obj, QuestItemStruct itemData)
+
+    protected void AddQuestItemToObject(IFindable obj, QuestItemTag itemData)
     {
-        QuestItem powerBackOnQuest = obj.GameObject.AddComponent<QuestItem>();
-        powerBackOnQuest._questItemData = itemData;
+        QuestItem questItem = obj.GameObject.AddComponent<QuestItem>();
+        questItem._questItemData = itemData;
         obj.IsQuestItem = true;
         // Debug.Log(obj.GameObject.name + " is a quest item");
         obj.SetupInteractionListener(OnQuestItemInteracted);
     }
+
+
+
     protected void RemoveInteractionListener(string tag)
     {
-        List<QuestItemStruct> data = _questItemsData.FindAll(x => x._name == name);
+        List<QuestItemRef> data = _questItems.FindAll(x => x._name == name);
         if (data.Count == 0)
         {
             Debug.LogError("No data found for " + name);
             return;
         }
 
-        QuestItemStruct itemData = data[0];
+        QuestItemRef itemData = data[0];
 
-        IFindable obj = _objectDetector.DetectFindable<IFindable>(itemData._position, itemData._radius);
+        IFindable obj = itemData._obj;
 
         QuestItem item = obj.GameObject.GetComponent<QuestItem>();
-        item._questItemData = itemData;
+        item._questItemData = itemData._questItemStruct;
 
         obj.IsQuestItem = false;
         obj.RemoveInteractionListener(OnQuestItemInteracted);

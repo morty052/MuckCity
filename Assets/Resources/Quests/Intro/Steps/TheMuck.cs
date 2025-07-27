@@ -9,12 +9,12 @@ public class TheMuck : QuestStep
     void Start()
     {
         DogPound dogPound = FindFirstObjectByType<DogPound>();
-        QuestItemStruct itemData = FindQuestItemByName("Dog Pound");
+        QuestItemRef itemData = FindQuestItemByName("Dog Pound");
         dogPound._roverIsInPound = true;
-        AddQuestItemToObject(dogPound, itemData);
+        AddQuestItemToObject(dogPound, itemData._questItemStruct);
 
-        Rack rack = GetQuestItem<Rack>("Gun Rack", true);
-        _dodge = GetQuestItem<Mountable>("Dodge", true);
+        Rack rack = (Rack)GetQuestItem<Rack>("Gun Rack", true);
+        _dodge = (Mountable)GetQuestItem<Mountable>("Dodge", true);
         _dodge._playerCanMount = false;
     }
 

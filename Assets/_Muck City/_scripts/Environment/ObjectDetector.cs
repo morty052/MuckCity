@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 #endif
 using UnityEngine;
+using UnityUtils;
 
 
 [System.Serializable]
@@ -104,11 +105,33 @@ public class ObjectDetector
         else
         {
             component = hitColliders[0].GetComponent<T>();
-            foreach (var item in hitColliders)
+            if (hitColliders.Length > 1)
             {
-                Debug.Log($" {item.name}");
+                Debug.Log($"<color=yellow> found {hitColliders.Length} items </color>");
+                foreach (var item in hitColliders)
+                {
+                    if (item.TryGetComponent(out T itemComponent))
+                    {
+                        component = itemComponent;
+                        Debug.Log($"<color=blue> Selected  {itemComponent.GetType()} {component.GameObject.name} items </color>");
+                        if (item.TryGetComponent(out PodcastPlayer interactable))
+                        {
+                            Debug.Log($" {item.name} {interactable.transform.position.x}{interactable.transform.position.y}{interactable.transform.position.z}");
+                            item.PingAndSelect();
+                        }
+                    }
+                    else
+                    {
+
+                        if (item.TryGetComponent(out PodcastPlayer interactable))
+                        {
+                            Debug.Log($" {item.name} {interactable.transform.position.x}{interactable.transform.position.y}{interactable.transform.position.z}");
+                            item.PingAndSelect();
+                        }
+                    }
+                }
             }
-            Debug.Log($"<color=green> found  {typeof(T)} {component.GameObject.name}</color>");
+            Debug.Log($"<color=green> found  {component.GetType()} {component.GameObject.name}</color>");
             return component;
         }
 
