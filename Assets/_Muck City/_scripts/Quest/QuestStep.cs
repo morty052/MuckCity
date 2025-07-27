@@ -152,43 +152,7 @@ public struct QuestItemStruct
     }
 }
 
-[Serializable]
-public abstract class QuestOperation
-{
-    public enum OperationLifeCycle
-    {
-        ON_START,
-        IN_QUEST,
-        ON_QUEST_END
-    }
-    public OperationLifeCycle _operationLifeCycle;
-    public abstract void Execute(QuestStep questStep);
-}
 
-[Serializable]
-public class InitQuestItems : QuestOperation
-{
-    [SerializeField] List<QuestItemStruct> _questItemsData = new();
-
-    public override void Execute(QuestStep questStep)
-    {
-        for (int i = 0; i < _questItemsData.Count; i++)
-        {
-            questStep.AddQuestItem(_questItemsData[i]);
-            Debug.Log($"<color=cyan>Initializing Quest Item {_questItemsData[i]._name} </color>");
-        }
-    }
-}
-[Serializable]
-public class SpawnQuestItems : QuestOperation
-{
-    [SerializeField] List<QuestItemStruct> _questItemsData = new();
-
-    public override void Execute(QuestStep questStep)
-    {
-        Debug.Log("Initializing Waypoint");
-    }
-}
 public abstract class QuestStep : MonoBehaviour
 {
 
@@ -249,9 +213,21 @@ public abstract class QuestStep : MonoBehaviour
 
     #region "Operations
 
+    protected void RunAwakeOperations(Action callBack = null)
+    {
+        List<QuestOperation> operations = _operations.FindAll(x => x._operationLifeCycle == OperationLifeCycle.ON_AWAKE);
+        if (operations.Count > 0)
+        {
+            foreach (QuestOperation operation in operations)
+            {
+                operation.Execute(this);
+            }
+        }
+        callBack?.Invoke();
+    }
     protected void RunStartOperations(Action callBack = null)
     {
-        List<QuestOperation> operations = _operations.FindAll(x => x._operationLifeCycle == QuestOperation.OperationLifeCycle.ON_START);
+        List<QuestOperation> operations = _operations.FindAll(x => x._operationLifeCycle == OperationLifeCycle.ON_START);
         if (operations.Count > 0)
         {
             foreach (QuestOperation operation in operations)

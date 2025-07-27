@@ -36,7 +36,7 @@ public class TourHomePodQuest : QuestStep
 
     void Start()
     {
-        RunStartOperations(() => SetupQuest());
+        RunAwakeOperations(() => RunStartOperations(() => SetupQuest()));
     }
 
     void SetupQuest()
