@@ -1,16 +1,17 @@
 using UnityEngine;
 
-public class DelveTicket : MonoBehaviour
+public enum TicketTier
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    ON_WORLD,
+    RECON
+}
+
+public class DelveTicket
+{
+    public TicketTier _ticketTier = TicketTier.ON_WORLD;
+    public DelveTicket(TicketTier ticketTier)
     {
-        
+        _ticketTier = ticketTier;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

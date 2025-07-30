@@ -114,4 +114,10 @@ public class DelveManager : MonoBehaviour
         // GameEventsManager.OnRetrieveDelveItem?.Invoke(contractSO);
         Debug.Log("Retreived " + contractSO.name);
     }
+
+    public void IssueDelveTicket(DelveTicket delveTicket)
+    {
+        _activeDelveTicket = delveTicket;
+        Debug.Log("Issued Delve Ticket" + delveTicket._ticketTier);
+    }
 }

@@ -32,8 +32,6 @@ public struct DelverScreenStruct
 
 public class ContractGiver : Interactable, IBrowsable
 {
-
-
     [SerializeField, TabGroup("Components")] NpcCharacter _tiedNpc;
     [SerializeField, TabGroup("Components")] GameObject _ui;
     [SerializeField, TabGroup("Components")] GameObject _screensParent;
@@ -55,7 +53,6 @@ public class ContractGiver : Interactable, IBrowsable
     [SerializeField, TabGroup("Events")] UnityEvent<DelverScreenName> OnConfirmDelve;
     [SerializeField, TabGroup("Events")] UnityEvent OnCancelConfirm;
     [SerializeField, TabGroup("Events")] UnityEvent OnClose;
-    [SerializeField, TabGroup("Events")] UnityEvent<DelverScreenName> OnChangeScreen;
     [SerializeField, TabGroup("Events")] bool _debug;
 
     HashSet<BountySO> _bountySOlist = new();

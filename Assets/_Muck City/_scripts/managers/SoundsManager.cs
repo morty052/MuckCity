@@ -25,7 +25,6 @@ public class SoundsManager : MonoBehaviour
 
     public void PlayClip(AudioClip clip, Transform spawnPoint, float volume)
     {
-        Debug.Log("playing" + clip.name);
         AudioSource audioSource = Instantiate(_soundFxObj, spawnPoint.position, Quaternion.identity);
 
         audioSource.clip = clip;
@@ -35,6 +34,7 @@ public class SoundsManager : MonoBehaviour
         audioSource.Play();
 
         float clipLength = audioSource.clip.length;
+        Debug.Log("playing" + clip.name + clipLength);
 
         Destroy(audioSource.gameObject, clipLength);
     }

@@ -14,8 +14,10 @@ public class TicketValidator : Interactable
     [SerializeField] private GameObject _verifiedTicketUi;
     [SerializeField] private Image _scanningTicketImage;
     [SerializeField] private TextMeshProUGUI _scanningTicketText;
+    [SerializeField] private AudioClip _noTicketsFoundAudio;
 
     [SerializeField] UnityEvent OnValidateSuccessful;
+    [SerializeField] UnityEvent OnValidateFail;
 
     bool IsShowingAlert => _noTicketScreen.gameObject.activeSelf;
 
@@ -37,6 +39,7 @@ public class TicketValidator : Interactable
             Debug.Log("No Ticket");
             if (!IsShowingAlert)
             {
+                OnValidateFail?.Invoke();
                 AlertNoTicket();
             }
             return;
@@ -64,8 +67,9 @@ public class TicketValidator : Interactable
         {
             _noTicketScreen.SetActive(true);
             ABUtils.ScaleIn(_noTicketScreen.transform);
+            GetComponent<SoundClipPlayer>().PlayClip("NO_TICKETS_FOUND", 0.6f);
         });
-        Invoke(nameof(ClearAlert), 3f);
+        Invoke(nameof(ClearAlert), 5.544f);
     }
 
     void ClearAlert()
