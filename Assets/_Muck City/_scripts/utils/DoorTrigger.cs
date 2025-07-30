@@ -42,8 +42,9 @@ public class DoorTrigger : Interactable, IUseEnergy
     // public Action<string> OnInteracted;
 
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         if (_type == DoorTriggerType.HANDLE)
         {
             _interactionPrompt = "Close";

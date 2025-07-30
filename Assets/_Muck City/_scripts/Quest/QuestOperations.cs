@@ -27,7 +27,9 @@ public abstract class QuestOperation
 {
 
     public OperationLifeCycle _operationLifeCycle;
+    public bool _debug = false;
     public abstract void Execute(QuestStep questStep);
+
 }
 
 [Serializable]
@@ -40,7 +42,10 @@ public class InitQuestItems : QuestOperation
         for (int i = 0; i < _questItemsData.Count; i++)
         {
             questStep.AddQuestItem(_questItemsData[i]);
-            Debug.Log($"<color=cyan>Initializing Quest Item {_questItemsData[i]._name} </color>");
+            if (_debug)
+            {
+                Debug.Log($"<color=cyan>Initializing Quest Item {_questItemsData[i]._name} </color>");
+            }
         }
     }
 }
@@ -51,11 +56,14 @@ public class SpawnQuestItems : QuestOperation
 
     public override void Execute(QuestStep questStep)
     {
-        Debug.Log("Initializing Waypoint");
         for (int i = 0; i < _spawns.Count; i++)
         {
             GameObject obj = GameObject.Instantiate(_spawns[i]._prefab, _spawns[i]._spawnPos.position, Quaternion.Euler(_spawns[i]._spawnPos.rotation), questStep.transform);
             obj.transform.SetLocalPositionAndRotation(_spawns[i]._spawnPos.position, Quaternion.Euler(_spawns[i]._spawnPos.rotation));
+            if (_debug)
+            {
+                Debug.Log($"Spawned {_spawns[i]._prefab.name} at {_spawns[i]._spawnPos.position}");
+            }
         }
     }
 }

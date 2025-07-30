@@ -16,7 +16,9 @@ public class ObjectDetector
 
     LayerMask _interactionLayerMask;
 
-    public ObjectDetector(LayerMask layerMask)
+    public bool _debug = false;
+
+    public ObjectDetector(LayerMask layerMask, bool debug = false)
     {
         _interactionLayerMask = layerMask;
     }
@@ -107,31 +109,26 @@ public class ObjectDetector
             component = hitColliders[0].GetComponent<T>();
             if (hitColliders.Length > 1)
             {
-                Debug.Log($"<color=yellow> found {hitColliders.Length} items </color>");
+                if (_debug)
+                {
+                    Debug.Log($"<color=yellow> found {hitColliders.Length} items </color>");
+                }
                 foreach (var item in hitColliders)
                 {
                     if (item.TryGetComponent(out T itemComponent))
                     {
                         component = itemComponent;
-                        Debug.Log($"<color=blue> Selected  {itemComponent.GetType()} {component.GameObject.name} items </color>");
-                        if (item.TryGetComponent(out PodcastPlayer interactable))
+                        if (_debug)
                         {
-                            Debug.Log($" {item.name} {interactable.transform.position.x}{interactable.transform.position.y}{interactable.transform.position.z}");
-                            item.PingAndSelect();
-                        }
-                    }
-                    else
-                    {
-
-                        if (item.TryGetComponent(out PodcastPlayer interactable))
-                        {
-                            Debug.Log($" {item.name} {interactable.transform.position.x}{interactable.transform.position.y}{interactable.transform.position.z}");
-                            item.PingAndSelect();
+                            Debug.Log($"<color=blue> Selected  {itemComponent.GetType()} {component.GameObject.name} items </color>");
                         }
                     }
                 }
             }
-            Debug.Log($"<color=green> found  {component.GetType()} {component.GameObject.name}</color>");
+            if (_debug)
+            {
+                Debug.Log($"<color=green> found  {component.GetType()} {component.GameObject.name}</color>");
+            }
             return component;
         }
 

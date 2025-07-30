@@ -199,14 +199,14 @@ public abstract class QuestStep : MonoBehaviour
 
     [SerializeReference, TabGroup("Operations")] public List<QuestOperation> _operations;
     [TabGroup("Debug")]
-    public bool _debug = new();
+    public bool _debug = false;
 
     protected QuestPoint _activeQuestPoint;
 
 
     public virtual void Awake()
     {
-        _objectDetector = new(_detectionLayerMask);
+        _objectDetector = new(_detectionLayerMask, _debug);
     }
 
 
@@ -426,7 +426,10 @@ public abstract class QuestStep : MonoBehaviour
         List<QuestItemRef> data = _questItems.FindAll(x => x._name == name);
         if (data.Count == 0)
         {
-            Debug.LogError("No data found for " + name);
+            if (_debug)
+            {
+                Debug.Log("No data found for " + name);
+            }
             return;
         }
 

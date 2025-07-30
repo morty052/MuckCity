@@ -11,7 +11,7 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
     [TabGroup("Interaction")]
     [SerializeField] protected string _interactionPrompt;
     [TabGroup("Interaction")]
-    [SerializeField] Pos _promptPos;
+    [SerializeField, Tooltip("Use Local Position of the action text in interactable object")] Pos _promptPos;
     [TabGroup("Interaction")]
     public bool CanInteract => _canInteract;
     [TabGroup("Interaction")]
@@ -32,6 +32,8 @@ public class Interactable : MonoBehaviour, IInteractable, IFindable
     [SerializeField] bool _isQuestItem;
 
     public bool IsQuestItem { get => _isQuestItem; set => _isQuestItem = value; }
+
+
 
 
 

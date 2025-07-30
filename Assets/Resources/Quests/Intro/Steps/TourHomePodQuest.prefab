@@ -67,7 +67,7 @@ MonoBehaviour:
   - _name: Find Officers Mess
     _completesObjective: 1
     _spawnPosition:
-      position: {x: 2.2, y: -26.11, z: -351.03}
+      position: {x: 4.699997, y: -26.11, z: -351.03}
       rotation: {x: -0, y: 0, z: 0}
   - _name: ENTER_MAIN_ROOM
     _completesObjective: 0
@@ -95,6 +95,7 @@ MonoBehaviour:
   _objectDetector:
     _radius: 0
     _position: {x: 0, y: 0, z: 0}
+    _debug: 0
   _detectionLayerMask:
     serializedVersion: 2
     m_Bits: 1050624
@@ -103,8 +104,8 @@ MonoBehaviour:
     _conversationForQuest: {fileID: 967415334066115386, guid: 0236e1cf245c2a246ade3ee0b34e4ab7, type: 3}
     _npcSO: {fileID: 11400000, guid: e7643c4cd3609c8489350d05bd6382e5, type: 2}
     _specialPosition:
-      position: {x: 11.53, y: -27.71, z: -354.79}
-      rotation: {x: 0, y: 270, z: 0}
+      position: {x: 11.529999, y: -27.71, z: -352.29}
+      rotation: {x: -0, y: 270, z: 0}
     _mission:
       _title: 
       _missionStartPoint: {x: 0, y: 0, z: 0}
@@ -196,13 +197,13 @@ MonoBehaviour:
   _questCutScenes:
   - _name: INTRO_TO_HAZMAT_BILL
     _spawnPosition:
-      position: {x: 19.67, y: -27.07, z: -330.87}
+      position: {x: 24.578796, y: -27.07, z: -331.19}
       rotation: {x: -0, y: 89.99998, z: -0}
     _cutScenePlayer: {fileID: 7038046814094832206, guid: f1d798197feb0694dab2f20afd7eeff2, type: 3}
   _operations:
   - rid: 3260592457088761947
   - rid: 3260592433693720722
-  _debug: 0
+  _debug: 1
   references:
     version: 2
     RefIds:
@@ -210,29 +211,31 @@ MonoBehaviour:
       type: {class: InitQuestItems, ns: , asm: Assembly-CSharp}
       data:
         _operationLifeCycle: 1
+        _debug: 0
         _questItemsData:
         - _name: PROPERTY_INTERFACE
           _tag: Get Power Back On
-          _position: {x: 5.155, y: -27.2, z: -329.77}
+          _position: {x: 10.115852, y: -27.2, z: -329.77}
           _radius: 0
         - _name: Main Room Door
           _tag: Enter Main Room
-          _position: {x: 11.951864, y: -27.557478, z: -323.91522}
+          _position: {x: 16.912712, y: -27.557478, z: -323.91522}
           _radius: 1
         - _name: Phone
           _tag: Phone Pickup
-          _position: {x: 13.684793, y: -26.727, z: -317.016}
+          _position: {x: 18.69, y: -26.727, z: -316.96}
           _radius: 0
         - _name: RADIO
           _tag: 
-          _position: {x: 6.976, y: -27.154, z: -324.101}
+          _position: {x: 11.916748, y: -27.153997, z: -324.101}
           _radius: 0.5
     - rid: 3260592457088761947
       type: {class: SpawnQuestItems, ns: , asm: Assembly-CSharp}
       data:
         _operationLifeCycle: 0
+        _debug: 0
         _spawns:
         - _spawnPos:
-            position: {x: 13.610802, y: -26.727, z: -316.997}
+            position: {x: 18.690002, y: -26.727, z: -316.96}
             rotation: {x: -0, y: 55.999996, z: -0}
           _prefab: {fileID: 6361435369720535801, guid: e8c0445a17efd6a43aac203ae9e6f8e2, type: 3}

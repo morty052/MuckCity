@@ -26,6 +26,8 @@ namespace Systems.SceneManagement
 
         Scene _activeScene;
 
+        public bool _debug = false;
+
         public readonly SceneGroupManager _manager = new();
 
         void Awake()
@@ -33,13 +35,37 @@ namespace Systems.SceneManagement
             if (Instance == null)
             {
                 Instance = this;
-                _manager.OnSceneLoaded += sceneName => Debug.Log($"Loaded {sceneName}");
-                _manager.OnSceneUnLoaded += sceneName => Debug.Log($"UnLoaded {sceneName}");
-                _manager.OnSceneGroupLoaded += () => Debug.Log($"Scene group loaded");
+                _manager.OnSceneLoaded += OnSceneLoaded;
+                _manager.OnSceneUnLoaded += OnSceneUnloaded;
+                _manager.OnSceneGroupLoaded += OnSceneGroupLoaded;
             }
             else
             {
                 Destroy(gameObject);
+            }
+        }
+
+        private void OnSceneLoaded(string sceneName)
+        {
+            if (_debug)
+            {
+                Debug.Log($"Loaded {sceneName}");
+            }
+        }
+
+        private void OnSceneUnloaded(string sceneName)
+        {
+            if (_debug)
+            {
+                Debug.Log($"UnLoaded {sceneName}");
+            }
+        }
+
+        private void OnSceneGroupLoaded()
+        {
+            if (_debug)
+            {
+                Debug.Log($"Scene group loaded");
             }
         }
 

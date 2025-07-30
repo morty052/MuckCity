@@ -73,8 +73,12 @@ public class TourHomePodQuest : QuestStep
         ABUtils.DelayedInvoke(2, () => radio.PlayPodcast(FindClipByName("PODCAST_TO_PLAY_WHEN_OTHRO_WAKES_UP")._clip));
         // radio.PlayPodcast(FindClipByName("PODCAST_TO_PLAY_WHEN_OTHRO_WAKES_UP")._clip);
 
-        propertyInterface.ToggleCanInteract(false);
+        //* TURN OF ALL ELECTRONICS
         propertyInterface.PowerDownProperty(propertyInterface.PlayerLot);
+
+        //* STOP PLAYER FROM TURNING THEM ON
+        propertyInterface.ToggleCanInteract(false);
+
         // propertyInterface.TransferPropertyToPlayer(propertyInterface.PlayerLot);
 
 

@@ -121,10 +121,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41651c623665cd04c9dc41fcb7ff6a8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canInteract: 1
+  _interactionPrompt: Open
+  _promptPos:
+    position: {x: -0.257, y: 1.38, z: 2.535}
+    rotation: {x: -0, y: 270, z: 0}
+  _actionText: {fileID: 0}
+  _isQuestItem: 0
   _door: {fileID: 5142541001439834702}
   _isOpen: 0
-  _canInteract: 1
   _direction: 0
+  _type: 0
+  _doorHandle: {fileID: 0}
+  _oppositeDoorTrigger: {fileID: 0}
+  _backTrigger: {fileID: 0}
+  _frontTrigger: {fileID: 0}
 --- !u!1 &5142541001439834702
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,7 +564,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41651c623665cd04c9dc41fcb7ff6a8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canInteract: 1
+  _interactionPrompt: Open
+  _promptPos:
+    position: {x: 0.357, y: 1.38, z: 2.535}
+    rotation: {x: -0, y: 270, z: 0}
+  _actionText: {fileID: 0}
+  _isQuestItem: 0
   _door: {fileID: 5142541001439834702}
   _isOpen: 0
-  _canInteract: 1
   _direction: 1
+  _type: 0
+  _doorHandle: {fileID: 0}
+  _oppositeDoorTrigger: {fileID: 0}
+  _backTrigger: {fileID: 0}
+  _frontTrigger: {fileID: 0}
