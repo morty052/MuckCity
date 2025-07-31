@@ -19,6 +19,8 @@ namespace Systems.SceneManagement
         [SerializeField] Canvas _loadingCanvas;
         [SerializeField] Camera _loadingCam;
 
+        // public SceneData _gamePlayScene;
+
         [SerializeField, Space(5)] SceneGroup[] _sceneGroups;
 
         float _targetProgress;
@@ -27,6 +29,11 @@ namespace Systems.SceneManagement
         Scene _activeScene;
 
         public bool _debug = false;
+        private bool _playerIsInTransition;
+
+        public event Action<string> OnSceneLoaded = delegate { };
+        public event Action<string> OnSceneUnLoaded = delegate { };
+        public static event Action<SceneGroup> OnSceneGroupLoaded = delegate { };
 
         public readonly SceneGroupManager _manager = new();
 
@@ -35,9 +42,9 @@ namespace Systems.SceneManagement
             if (Instance == null)
             {
                 Instance = this;
-                _manager.OnSceneLoaded += OnSceneLoaded;
-                _manager.OnSceneUnLoaded += OnSceneUnloaded;
-                _manager.OnSceneGroupLoaded += OnSceneGroupLoaded;
+                _manager.OnSceneLoaded += HandleOnSceneLoaded;
+                _manager.OnSceneUnLoaded += HandleOnSceneUnloaded;
+                _manager.OnSceneGroupLoaded += HandleOnSceneGroupLoaded;
             }
             else
             {
@@ -45,15 +52,17 @@ namespace Systems.SceneManagement
             }
         }
 
-        private void OnSceneLoaded(string sceneName)
+        private void HandleOnSceneLoaded(string sceneName)
         {
             if (_debug)
             {
                 Debug.Log($"Loaded {sceneName}");
             }
+
+            OnSceneLoaded?.Invoke(sceneName);
         }
 
-        private void OnSceneUnloaded(string sceneName)
+        private void HandleOnSceneUnloaded(string sceneName)
         {
             if (_debug)
             {
@@ -61,12 +70,60 @@ namespace Systems.SceneManagement
             }
         }
 
-        private void OnSceneGroupLoaded()
+        private void HandleOnSceneGroupLoaded(SceneGroup sceneGroup)
         {
             if (_debug)
             {
                 Debug.Log($"Scene group loaded");
             }
+            if (_playerIsInTransition)
+            {
+                //* FIND THE LEVELS RESPAWN POINT
+                GameObject respawnPoint = GameObject.FindGameObjectWithTag("RespawnPoint");
+                //* PARENT PLAYER TO POINT
+                Player.Instance.transform.SetParent(respawnPoint.transform);
+
+                //* MAKE SURE PLAYER PLACED CORRECTLY
+                Player.Instance.transform.localPosition = Vector3.zero;
+
+                //* ACTIVATE PLAYER
+                Player.Instance.gameObject.SetActive(true);
+
+                //* RESET TRANSITION
+                _playerIsInTransition = false;
+
+                //* UPDATE DEFAULT SPAWN POINT TO LEVELS RESPAWN POINT
+                GameManager.Instance.SetSpawnPoint(respawnPoint);
+            }
+
+            //* PRIORITIZE SETTING REALM SCENE AS ACTIVE SCENE IF IT EXISTS
+            Scene realmScene = SceneManager.GetSceneByName(_manager.ActiveSceneGroup.FindSceneByName(SceneType.Realm));
+
+            if (realmScene.IsValid())
+            {
+                SceneManager.SetActiveScene(realmScene);
+            }
+            else
+            {
+                //* FALL BACK TO SETTING SCENE DATA MARKED AS ACTIVE AS ACTIVE SCENE IF IT EXISTS
+                Scene activeScene = SceneManager.GetSceneByName(_manager.ActiveSceneGroup.FindSceneByName(SceneType.ActiveScene));
+
+                if (activeScene.IsValid())
+                {
+                    SceneManager.SetActiveScene(activeScene);
+                }
+
+                else
+                {
+                    //* FALL BACK TO SETTING ENVIRONMENT SCENE AS ACTIVE SCENE
+                    Scene environmentScene = SceneManager.GetSceneByName(_manager.ActiveSceneGroup.FindSceneByName(SceneType.Environment));
+                    if (environmentScene.IsValid())
+                    {
+                        SceneManager.SetActiveScene(environmentScene);
+                    }
+                }
+            }
+            OnSceneGroupLoaded?.Invoke(sceneGroup);
         }
 
         async void Start()
@@ -115,7 +172,7 @@ namespace Systems.SceneManagement
             EnableLoadingCanvas(false);
             // _loadingCam.gameObject.SetActive(false);
         }
-        public async Task LoadSceneGroup(SceneGroup sceneGroup, bool useLoadingScreen = false)
+        public async Task LoadSceneGroup(SceneGroup sceneGroup, bool useLoadingScreen = false, bool useTransition = false)
         {
             _loadingBar.fillAmount = 0f;
             _targetProgress = 1f;
@@ -128,6 +185,12 @@ namespace Systems.SceneManagement
             if (useLoadingScreen)
             {
                 EnableLoadingCanvas();
+            }
+            if (useTransition)
+            {
+                Player.Instance.gameObject.SetActive(false);
+                EnableLoadingCanvas();
+                _playerIsInTransition = true;
             }
             await _manager.LoadScenes(sceneGroup, progress);
             if (useLoadingScreen)

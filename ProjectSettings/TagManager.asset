@@ -38,6 +38,7 @@ TagManager:
   - Cursor
   - InteractionHelper
   - Animal
+  - RespawnPoint
   layers:
   - Default
   - TransparentFX

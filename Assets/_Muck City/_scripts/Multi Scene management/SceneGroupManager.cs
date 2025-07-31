@@ -12,16 +12,16 @@ namespace Systems.SceneManagement
     {
         public event Action<string> OnSceneLoaded = delegate { };
         public event Action<string> OnSceneUnLoaded = delegate { };
-        public event Action OnSceneGroupLoaded = delegate { };
+        public event Action<SceneGroup> OnSceneGroupLoaded = delegate { };
 
-        SceneGroup ActiveSceneGroup;
+        public SceneGroup ActiveSceneGroup;
 
-        public async Task LoadScenes(SceneGroup group, IProgress<float> progress, bool reloadDupScenes = false)
+        public async Task LoadScenes(SceneGroup group, IProgress<float> progress, bool reloadDupScenes = false, bool unloadActiveScene = true)
         {
             ActiveSceneGroup = group;
             var loadedScenes = new List<string>();
 
-            await UnloadScenes();
+            await UnloadScenes(unloadActiveScene);
             int sceneCount = SceneManager.sceneCount;
 
             for (int i = 0; i < sceneCount; i++)
@@ -59,10 +59,10 @@ namespace Systems.SceneManagement
                 SceneManager.SetActiveScene(activeScene);
             }
 
-            OnSceneGroupLoaded?.Invoke();
+            OnSceneGroupLoaded?.Invoke(ActiveSceneGroup);
         }
 
-        private async Task UnloadScenes()
+        private async Task UnloadScenes(bool unloadActiveScene)
         {
             //* CREATE EMPTY LIST OF SCENE NAMES
             var scenes = new List<string>();
@@ -84,7 +84,7 @@ namespace Systems.SceneManagement
                 //* Get the scene name
                 var sceneName = sceneAt.name;
                 //*skip if its the active scene or boot strapper
-                if (sceneName.Equals(activeScene) || sceneName == "BootStrapper") continue;
+                if (unloadActiveScene == false && sceneName.Equals(activeScene) || sceneName == "BootStrapper" || sceneName == "GamePlay") continue;
 
                 //* add eligible scenes to list
                 scenes.Add(sceneName);

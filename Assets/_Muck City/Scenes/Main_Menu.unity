@@ -1472,7 +1472,7 @@ MonoBehaviour:
     Reference:
       asset: {fileID: 102900000, guid: a5aa46bebec44e44aa16b9bd5aa3e3a5, type: 3}
       guid: a5aa46bebec44e44aa16b9bd5aa3e3a5
-    SceneType: 0
+    SceneType: 6
   _lastSavedScene:
     Reference:
       asset: {fileID: 0}
@@ -1877,6 +1877,7 @@ MonoBehaviour:
   _detector:
     _radius: 0
     _position: {x: 0, y: 0, z: 0}
+    _debug: 0
   _detectLayer:
     serializedVersion: 2
     m_Bits: 0

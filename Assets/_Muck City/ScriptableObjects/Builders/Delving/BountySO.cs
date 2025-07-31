@@ -11,4 +11,6 @@ public class BountySO : ScriptableObject
     public Sprite _sprite;
 
     public Locations _lastKnownPos;
+
+    public RealmID _tiedRealm;
 }

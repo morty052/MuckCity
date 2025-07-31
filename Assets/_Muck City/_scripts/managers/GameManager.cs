@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     CatalogueManager _catalogueManager;
 
+    [SerializeField] GameObject _spawnPoint;
+
 
     public List<Locations> _marketingAreas = new();
 
@@ -50,5 +52,8 @@ public class GameManager : MonoBehaviour
         // Instantiate(_domeManagerPrefab);
     }
 
-
+    public void SetSpawnPoint(GameObject respawnPoint)
+    {
+        _spawnPoint.transform.position = respawnPoint.transform.position;
+    }
 }

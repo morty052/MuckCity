@@ -146,8 +146,8 @@ public class DomeManager : MonoBehaviour
         TimeService.OnSunSet += HandleSunDown;
         TimeService.OnSunRise += HandleSunUp;
 
-        GameEventsManager.OnAcceptBountyEvent += OnAcceptBounty;
-        GameEventsManager.OnAcceptContractEvent += OnAcceptContract;
+        // GameEventsManager.OnAcceptBountyEvent += OnAcceptBounty;
+        // GameEventsManager.OnAcceptContractEvent += OnAcceptContract;
     }
 
     void OnDisable()
@@ -156,8 +156,8 @@ public class DomeManager : MonoBehaviour
         GameEventsManager.OnEnterDistrictEvent -= HandleDistrictEntry;
         TimeService.OnSunSet -= HandleSunDown;
         TimeService.OnSunRise -= HandleSunUp;
-        GameEventsManager.OnAcceptBountyEvent -= OnAcceptBounty;
-        GameEventsManager.OnAcceptContractEvent -= OnAcceptContract;
+        // GameEventsManager.OnAcceptBountyEvent -= OnAcceptBounty;
+        // GameEventsManager.OnAcceptContractEvent -= OnAcceptContract;
     }
 
     private void OnAcceptContract(ContractSO sO)
@@ -165,6 +165,16 @@ public class DomeManager : MonoBehaviour
         ScriptedLocation scriptedLocation = _LocationsData.GetLocation(sO._keyLocation);
         Debug.Log(scriptedLocation.GetCleanName() + " Is a key location");
         Waypoint.Instance.Init(scriptedLocation._posData.position);
+    }
+
+    public ScriptedLocation UseApproximateLocation(Locations keyLocation, bool useWayPoint = true)
+    {
+        ScriptedLocation scriptedLocation = _LocationsData.GetLocation(keyLocation);
+        if (useWayPoint)
+        {
+            Waypoint.Instance.Init(scriptedLocation._posData.position);
+        }
+        return scriptedLocation;
     }
 
     private void OnAcceptBounty(BountySO sO)
