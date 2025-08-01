@@ -39,7 +39,6 @@ public class ContractGiver : Interactable, IBrowsable
     [SerializeField, TabGroup("Components")] GameObject _delverButtonPrefab;
     [SerializeField, TabGroup("Text Components")] TextMeshProUGUI _navbarText;
 
-    [SerializeField, TabGroup("Asset Groups")] AssetLabelReference _baseBounties;
     [SerializeField, TabGroup("Asset Groups")] AssetLabelReference _baseContracts;
     [SerializeField, TabGroup("Settings")] List<DelverScreenStruct> _screens = new();
     [SerializeField, TabGroup("Settings")] int _activeScreenIndex = 0;
@@ -55,10 +54,10 @@ public class ContractGiver : Interactable, IBrowsable
     [SerializeField, TabGroup("Events")] UnityEvent OnClose;
     [SerializeField, TabGroup("Events")] bool _debug;
 
-    HashSet<BountySO> _bountySOlist = new();
-    HashSet<ContractSO> _contractSOList = new();
-    HashSet<GameObject> _bountyList = new();
-    HashSet<GameObject> _contractList = new();
+    [ShowInInspector] HashSet<BountySO> _bountySOlist = new();
+    [ShowInInspector] HashSet<ContractSO> _contractSOList = new();
+    [ShowInInspector] HashSet<GameObject> _bountyList = new();
+    [ShowInInspector] HashSet<GameObject> _contractList = new();
 
     private bool _isConfirmingDelve = false;
     private bool _loadingBounties = true;
@@ -68,8 +67,7 @@ public class ContractGiver : Interactable, IBrowsable
     bool IsPopupActive => _screensParent.transform.Children().Any(x => x.gameObject.activeSelf);
     Transform ActivePopup => _screensParent.transform.Children().FirstOrDefault(x => x.gameObject.activeSelf);
 
-    AsyncOperationHandle<IList<BountySO>> _bountyLoadHandle;
-    AsyncOperationHandle<IList<ContractSO>> _contractLoadHandle;
+    AsyncOperationHandle<IList<DelveSO>> _contractLoadHandle;
     // public override void Start()
     // {
     //     base.Start();
@@ -119,9 +117,8 @@ public class ContractGiver : Interactable, IBrowsable
 
     void LoadAddressables()
     {
-        _bountyLoadHandle = Addressables.LoadAssetsAsync<BountySO>(_baseBounties, null);
-        _contractLoadHandle = Addressables.LoadAssetsAsync<ContractSO>(_baseContracts, null);
-        _bountyLoadHandle.Completed += OnCompleteLoadBounty;
+
+        _contractLoadHandle = Addressables.LoadAssetsAsync<DelveSO>(_baseContracts, null);
         _contractLoadHandle.Completed += OnCompleteLoadContract;
 
         // _bountyLoadHandle.Release();
@@ -129,25 +126,37 @@ public class ContractGiver : Interactable, IBrowsable
     }
 
 
-    void OnCompleteLoadBounty(AsyncOperationHandle<IList<BountySO>> handle)
+    // void OnCompleteLoadBounty(AsyncOperationHandle<IList<BountySO>> handle)
+    // {
+    //     for (int i = 0; i < handle.Result.Count; i++)
+    //     {
+    //         _bountySOlist.Add(handle.Result[i]);
+    //         Debug.Log(_bountySOlist.ElementAt(i).name);
+    //         CreateBountyButton(_bountySOlist.ElementAt(i), i);
+    //     }
+    //     handle.Completed -= OnCompleteLoadBounty;
+    //     _loadingBounties = false;
+    // }
+    void OnCompleteLoadContract(AsyncOperationHandle<IList<DelveSO>> handle)
     {
         for (int i = 0; i < handle.Result.Count; i++)
         {
-            _bountySOlist.Add(handle.Result[i]);
-            Debug.Log(_bountySOlist.ElementAt(i).name);
-            CreateBountyButton(_bountySOlist.ElementAt(i), i);
-        }
-        handle.Completed -= OnCompleteLoadBounty;
-        _loadingBounties = false;
-    }
-    void OnCompleteLoadContract(AsyncOperationHandle<IList<ContractSO>> handle)
-    {
-        for (int i = 0; i < handle.Result.Count; i++)
-        {
-            _contractSOList.Add(handle.Result[i]);
-            Debug.Log(_contractSOList.ElementAt(i).name);
+            DelveSO delveSO = handle.Result[i];
+            if (delveSO._delveType == DelveType.CONTRACT)
+            {
+                _contractSOList.Add(delveSO as ContractSO);
+                // Debug.Log(_contractSOList.ElementAt(i).name);
 
-            CreateContractButton(_contractSOList.ElementAt(i), i);
+                CreateContractButton(delveSO as ContractSO, _contractSOList.Count - 1);
+            }
+
+            if (delveSO._delveType == DelveType.BOUNTY)
+            {
+                _bountySOlist.Add(delveSO as BountySO);
+                // Debug.Log(delveSO.name);
+                CreateBountyButton(delveSO as BountySO, _bountySOlist.Count - 1);
+            }
+
         }
         handle.Completed -= OnCompleteLoadContract;
         _loadingContracts = false;
@@ -363,7 +372,6 @@ public class ContractGiver : Interactable, IBrowsable
     {
         _ui.SetActive(false);
         Player.Instance.UseAltControls(false);
-        _bountyLoadHandle.Release();
         _contractLoadHandle.Release();
         _activeScreenIndex = 0;
         ShowPopup(_activeScreenIndex);

@@ -5,6 +5,7 @@ using Sirenix.Utilities.Editor;
 using Unity.VisualScripting;
 using UnityEngine;
 
+
 [CreateAssetMenu(fileName = "Contract", menuName = "ScriptableObjects/Delving/Contract", order = 1)]
 public class ContractSO : DelveSO
 {
@@ -13,9 +14,8 @@ public class ContractSO : DelveSO
 
     public Locations _keyLocation;
 
-
-
     public Pos _itemSpawnPos;
+
 
 
 

@@ -20886,6 +20886,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Delve Givers Desk
       objectReference: {fileID: 0}
+    - target: {fileID: 770718361129181395, guid: b341ef12a9db6864c8b7f517600511b0, type: 3}
+      propertyPath: _baseContracts.m_LabelString
+      value: DELVING_SO'S
+      objectReference: {fileID: 0}
     - target: {fileID: 9168676392244449875, guid: b341ef12a9db6864c8b7f517600511b0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.6228304

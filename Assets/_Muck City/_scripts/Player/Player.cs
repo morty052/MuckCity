@@ -227,8 +227,8 @@ public class Player : MonoBehaviour, IHavePersistentData
     void Start()
     {
         _vThirdPersonCamera = FindFirstObjectByType<vThirdPersonCamera>();
-        _vThirdPersonInput.onUpdate += CheckForTriggerAction;
-        _isSubscribedToThirdPersonInputs = true;
+        // _vThirdPersonInput.onUpdate += CheckForTriggerAction;
+        // _isSubscribedToThirdPersonInputs = true;
 
         // Debug.Log($" Special Equipments : {_playerSaveData._specialEquipments.Count}");
         if (_useLastSavedPosition)
@@ -336,10 +336,10 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     void Interact()
     {
-        Debug.Log("Interact Pressed");
+        // Debug.Log("Interact Pressed");
         if (_lastInteractable != null)
         {
-            Debug.Log("Interacting with " + _lastInteractable.GameObject.name);
+            // Debug.Log("Interacting with " + _lastInteractable.GameObject.name);
             _lastInteractable.Interact();
         }
     }

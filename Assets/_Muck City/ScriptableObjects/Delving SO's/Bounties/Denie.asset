@@ -12,8 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1d562c6007433d468ccfa72e19923cc, type: 3}
   m_Name: Denie
   m_EditorClassIdentifier: 
+  _delveType: 1
   _bounty: 300
   _name: Denie
   _description: 'Lead Tech Officer Denie has gone missing '
   _sprite: {fileID: 0}
+  _tiedRealm: 0
+  _events: []
+  _id: 
   _lastKnownPos: 5
+  references:
+    version: 2
+    RefIds: []

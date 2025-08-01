@@ -2,8 +2,15 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+public enum DelveType
+{
+    CONTRACT,
+    BOUNTY
+}
+
 public class DelveSO : ScriptableObject
 {
+    public DelveType _delveType;
     public int _bounty;
     public string _name;
     public string _description;

@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Address: Contracts
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Contracts
+    - DELVING_SO'S
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 687f325b4370f9c45bdcf5b895826c50
     m_Address: Assets/_Muck City/ScriptableObjects/Realms
@@ -38,12 +38,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Contracts
+    - DELVING_SO'S
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bbb3169d364dc6f4d827e5d9fe512f76
     m_Address: Bounties
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Bounties
+    - DELVING_SO'S
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c906cbe5c8122444795a73a0806c1858
     m_Address: Delving SO's
@@ -56,6 +57,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Bounties
+    - DELVING_SO'S
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0e91e183ed520154482a8f0d1db9fed1, type: 2}
