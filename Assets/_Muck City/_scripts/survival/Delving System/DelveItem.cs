@@ -11,6 +11,7 @@ public class DelveItem : Interactable
 
     public override void Interact()
     {
+        Debug.Log("Retrieving Delve Item");
         DelveManager.Instance.OnRetrieveDelveItem(_id);
     }
 

@@ -33,7 +33,7 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     vItemManager _itemManager;
 
-    CancellationTokenSource cts = new();
+    // CancellationTokenSource cts = new();
 
     string _lastBlendedState;
 
@@ -152,6 +152,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     public bool IsInVehicle => _currentVehicle != null;
 
     public bool IsUnderGround => transform.position.y < _underGroundThreshold;
+    private bool _isSubscribedToThirdPersonInputs = false;
 
     public IDoQuickAction _activeQuickAction;
     void OnEnable()
@@ -162,6 +163,11 @@ public class Player : MonoBehaviour, IHavePersistentData
         GameEventsManager.OnCutSceneEndEvent += OnCutSceneEnd;
         GameEventsManager.OnCraftItemEvent += AddItemToInventory;
         AutoSaveManager.OnShouldAutoSave += AutoSave;
+
+        if (!_isSubscribedToThirdPersonInputs)
+        {
+            _vThirdPersonInput.onUpdate += CheckForTriggerAction;
+        }
     }
 
     void OnDisable()
@@ -169,7 +175,7 @@ public class Player : MonoBehaviour, IHavePersistentData
         GameEventsManager.OnConversationStartedEvent -= OnEnterConversation;
         GameEventsManager.OnConversationEndEvent -= OnExitConversation;
         GameEventsManager.OnCutSceneStartEvent -= OnCutSceneStart;
-        GameEventsManager.OnCutSceneEndEvent += OnCutSceneEnd;
+        GameEventsManager.OnCutSceneEndEvent -= OnCutSceneEnd;
         GameEventsManager.OnCraftItemEvent -= AddItemToInventory;
         AutoSaveManager.OnShouldAutoSave -= AutoSave;
 
@@ -177,8 +183,9 @@ public class Player : MonoBehaviour, IHavePersistentData
 
 
         _isRunning = false;
-        cts.Cancel();
+        // cts.Cancel();
         _vThirdPersonInput.onUpdate -= CheckForTriggerAction;
+        _isSubscribedToThirdPersonInputs = false;
 
         if (_lastBlendedState != null)
         {
@@ -203,10 +210,11 @@ public class Player : MonoBehaviour, IHavePersistentData
 
 
             LoadPersistentData();
+
+
             _interactionSystem = new InteractionSystem(_interactionRange, _detectionRate, transform, _interactionLayerMask, _defaultLayerMask);
-            // _specialEquipmentManager = new SpecialEquipmentManager();
+
             _postProcessManager = new(GetComponentInChildren<Volume>());
-            // DontDestroyOnLoad(gameObject);
         }
 
         else
@@ -220,6 +228,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     {
         _vThirdPersonCamera = FindFirstObjectByType<vThirdPersonCamera>();
         _vThirdPersonInput.onUpdate += CheckForTriggerAction;
+        _isSubscribedToThirdPersonInputs = true;
 
         // Debug.Log($" Special Equipments : {_playerSaveData._specialEquipments.Count}");
         if (_useLastSavedPosition)
@@ -244,6 +253,7 @@ public class Player : MonoBehaviour, IHavePersistentData
         }
         if (_interactionInput.GetButtonDown())
         {
+
             Interact();
         }
         if (_isInDialogue)
@@ -326,8 +336,10 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     void Interact()
     {
+        Debug.Log("Interact Pressed");
         if (_lastInteractable != null)
         {
+            Debug.Log("Interacting with " + _lastInteractable.GameObject.name);
             _lastInteractable.Interact();
         }
     }
@@ -516,10 +528,10 @@ public class Player : MonoBehaviour, IHavePersistentData
         gameObject.GetComponent<IInteractable>();
         while (_isRunning && (targetPosition - transform.position).magnitude > 0.5f)
         {
-            if (cts.IsCancellationRequested)
-            {
-                break;
-            }
+            // if (cts.IsCancellationRequested)
+            // {
+            //     break;
+            // }
             Debug.Log("Distance: " + (targetPosition - transform.position).magnitude);
             await Task.Yield();
         }

@@ -5,39 +5,7 @@ using Sirenix.OdinInspector;
 using Systems.SceneManagement;
 using UnityEngine;
 
-[Serializable]
-public abstract class ScriptedEvent
-{
-    public abstract void SetUp();
-}
 
-[Serializable]
-public class SpawnNpc : ScriptedEvent
-{
-    public List<SpawnStruct> _spawnData;
-
-    public override void SetUp()
-    {
-        Debug.Log("Initializing Npcs");
-        for (int i = 0; i < _spawnData.Count; i++)
-        {
-            SpawnStruct spawnStruct = _spawnData[i];
-            // Instantiate(spawnStruct._npc, spawnStruct._location.position, Quaternion.Euler(spawnStruct._location.rotation));
-            NpcManager.Instance.SpawnNPC(spawnStruct._npc, spawnStruct._location);
-        }
-    }
-}
-[Serializable]
-public class InitPointOfInterest : ScriptedEvent
-{
-    public Pos _location;
-
-    public override void SetUp()
-    {
-        Debug.Log("Initializing waypoint to point of interest");
-        Waypoint.Instance.Init(_location.position);
-    }
-}
 
 public class DelveManager : MonoBehaviour
 {
@@ -86,6 +54,25 @@ public class DelveManager : MonoBehaviour
         SceneLoader.OnSceneGroupLoaded -= OnSceneGroupLoaded;
     }
 
+    #region"Events driven funcs"
+
+    private void OnSceneGroupLoaded(SceneGroup sceneGroup)
+    {
+        if (_contractsThatNeedInit.Count > 0)
+        {
+
+            for (int i = 0; i < _contractsThatNeedInit.Count; i++)
+            {
+                string realmScene = sceneGroup.FindSceneByName(SceneType.Realm);
+                Debug.Log("Delve manager noticed sceneGroup loaded with realm scene " + realmScene + " and contract " + _contractsThatNeedInit.ElementAt(i).GetCleanNameFromEnum());
+                if (_contractsThatNeedInit.ElementAt(i).GetCleanNameFromEnum() == realmScene)
+                {
+                    FireScriptedEventsOnStart(_contractsThatNeedInit.ElementAt(i));
+                    _contractsThatNeedInit.Remove(_contractsThatNeedInit.ElementAt(i));
+                }
+            }
+        }
+    }
     public void OnStartTravelToRealm(RealmID realmID)
     {
         ContractSO contract = ActiveRealmHasContract(realmID);
@@ -100,55 +87,17 @@ public class DelveManager : MonoBehaviour
         }
     }
 
-    private void InitBounty(BountySO bounty)
+    public void OnRetrieveDelveItem(string id)
     {
-        throw new NotImplementedException();
+        ContractSO contractSO = _activeContracts.FirstOrDefault(x => x._id == id);
+        _activeRetrievals.Add(contractSO);
+        // GameEventsManager.OnRetrieveDelveItem?.Invoke(contractSO);
+        Debug.Log("Retreived " + contractSO.name);
     }
-
-    ContractSO ActiveRealmHasContract(RealmID realmID)
-    {
-        return _activeContracts.FirstOrDefault(x => x._tiedRealm == realmID);
-    }
-    BountySO ActiveRealmHasBounty(RealmID realmID)
-    {
-        return _activeBounties.FirstOrDefault(x => x._tiedRealm == realmID);
-    }
-
-    private void OnSceneGroupLoaded(SceneGroup sceneGroup)
-    {
-        if (_contractsThatNeedInit.Count > 0)
-        {
-
-            for (int i = 0; i < _contractsThatNeedInit.Count; i++)
-            {
-                string realmScene = sceneGroup.FindSceneByName(SceneType.Realm);
-                Debug.Log("Delve manager noticed sceneGroup loaded with realm scene " + realmScene + " and contract " + _contractsThatNeedInit.ElementAt(i).GetCleanNameFromEnum());
-                if (_contractsThatNeedInit.ElementAt(i).GetCleanNameFromEnum() == realmScene)
-                {
-                    InitContract(_contractsThatNeedInit.ElementAt(i));
-                    _contractsThatNeedInit.Remove(_contractsThatNeedInit.ElementAt(i));
-                }
-            }
-        }
-    }
-
     private void OnDepositDelveItem(ContractSO sO)
     {
         _activeRetrievals.Remove(sO);
     }
-
-    public bool PlayerHasDelveTicket()
-    {
-        return _activeDelveTicket != null;
-    }
-
-    [Button("Save")]
-    void SaveDelves()
-    {
-        ES3.Save("Bounties", _activeBounties);
-        ES3.Save("Contracts", _activeContracts);
-    }
-
 
     public void OnAcceptBounty(BountySO bountySO)
     {
@@ -160,30 +109,65 @@ public class DelveManager : MonoBehaviour
         _activeContracts.Add(contractSO);
         // InitContract(contractSO);
     }
+    #endregion
 
-    void InitContract(ContractSO contractSO)
+    #region"Scripted Events"
+    void FireScriptedEventsOnStart(DelveSO contractSO)
     {
-        Debug.Log("Initialized Contract Delve");
-        DelveItem item = Instantiate(contractSO._delveItem, contractSO._itemSpawnPos.position, Quaternion.Euler(contractSO._itemSpawnPos.rotation));
-        item._id = contractSO._id;
-        for (int i = 0; i < contractSO._events.Count; i++)
+        List<ScriptedEvent> scriptedEvents = contractSO._events.FindAll(x => x._eventLifecycle == ScriptedEventLifecycle.ON_START);
+        for (int i = 0; i < scriptedEvents.Count; i++)
         {
-            contractSO._events[i].SetUp();
+            scriptedEvents[i].SetUp(this, contractSO);
         }
-
     }
+    #endregion
 
-    public void OnRetrieveDelveItem(string id)
-    {
-        ContractSO contractSO = _activeContracts.FirstOrDefault(x => x._id == id);
-        _activeRetrievals.Add(contractSO);
-        // GameEventsManager.OnRetrieveDelveItem?.Invoke(contractSO);
-        Debug.Log("Retreived " + contractSO.name);
-    }
-
+    #region "Ticketing"
     public void IssueDelveTicket(DelveTicket delveTicket)
     {
         _activeDelveTicket = delveTicket;
         Debug.Log("Issued Delve Ticket" + delveTicket._ticketTier);
     }
+    #endregion
+
+    #region"Helpers"
+    ContractSO ActiveRealmHasContract(RealmID realmID)
+    {
+        return _activeContracts.FirstOrDefault(x => x._tiedRealm == realmID);
+    }
+    BountySO ActiveRealmHasBounty(RealmID realmID)
+    {
+        return _activeBounties.FirstOrDefault(x => x._tiedRealm == realmID);
+    }
+
+    public bool PlayerHasDelveTicket()
+    {
+        return _activeDelveTicket != null;
+    }
+    #endregion
+
+    private void InitBounty(BountySO bounty)
+    {
+        throw new NotImplementedException();
+    }
+
+    [Button("Save")]
+    void SaveDelves()
+    {
+        ES3.Save("Bounties", _activeBounties);
+        ES3.Save("Contracts", _activeContracts);
+    }
+
+    void InitContract(ContractSO contractSO)
+    {
+        for (int i = 0; i < contractSO._events.Count; i++)
+        {
+            contractSO._events[i].SetUp(this, contractSO);
+        }
+
+    }
+
+
+
+
 }
