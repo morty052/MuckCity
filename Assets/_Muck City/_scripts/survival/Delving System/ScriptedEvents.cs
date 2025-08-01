@@ -5,8 +5,8 @@ using UnityEngine;
 public enum ScriptedEventLifecycle
 {
     ON_START = 0,
-    ON_RETRIEVE = 0,
-    ON_COMPLETE = 0
+    ON_RETRIEVE = 1,
+    ON_COMPLETE = 2
 }
 
 [Serializable]

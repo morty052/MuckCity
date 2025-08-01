@@ -64,7 +64,7 @@ public class SocialCreditManager : MonoBehaviour, IHavePersistentData
         TriggerAutoSave();
     }
 
-    private void OnDepositDelveItem(ContractSO sO)
+    private void OnDepositDelveItem(DelveSO sO)
     {
         SocialCredit += sO._bounty;
         _socialCreditText.text = SocialCredit.ToString();

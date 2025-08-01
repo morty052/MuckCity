@@ -10,7 +10,7 @@ public class DelveDetailsDrawer : MonoBehaviour
     [SerializeField, TabGroup("Text Components")] TextMeshProUGUI _titleText;
     [SerializeField, TabGroup("Text Components")] TextMeshProUGUI _descriptionText;
 
-    public void DrawContract(ContractSO contract)
+    public void DrawContract(DelveSO contract)
     {
         // Debug.Log($"Contract {contract.name} selected");
         _rewardText.text = contract._bounty.ToString();

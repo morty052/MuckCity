@@ -11,7 +11,12 @@ public class SpecialEquipmentManager : MonoBehaviour
     public List<SpecialEquipmentID> specialEquipments = new();
     public List<SpecialEquipmentSO> _data = new();
     public List<SpecialEquipment> _equipments = new();
+    public SpecialEquipment _activeEquipment;
+
+    public GameObject _specialEquipmentWheel;
     private bool _debug;
+
+
 
     public SpecialEquipmentManager(bool debug = false)
     {
@@ -23,6 +28,8 @@ public class SpecialEquipmentManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            _specialEquipmentWheel.SetActive(false);
+
         }
 
         else
@@ -31,10 +38,30 @@ public class SpecialEquipmentManager : MonoBehaviour
         }
     }
 
-    // void Start()
-    // {
-    //     SetSpecialEquipments();
-    // }
+    void OnEnable()
+    {
+        AltInput.OnPressUseSpecialEquipment += OnPressUseSpecialEquipment;
+        AltInput.OnToggleEquipmentWheel += OnToggleEquipmentWheel;
+    }
+
+    void OnDisable()
+    {
+        AltInput.OnPressUseSpecialEquipment -= OnPressUseSpecialEquipment;
+        AltInput.OnToggleEquipmentWheel -= OnToggleEquipmentWheel;
+    }
+
+    public void OnToggleEquipmentWheel()
+    {
+        _specialEquipmentWheel.SetActive(!_specialEquipmentWheel.activeSelf);
+    }
+
+    private void OnPressUseSpecialEquipment()
+    {
+        if (_activeEquipment != null)
+        {
+            _activeEquipment.Use();
+        }
+    }
 
     public void AddSpecialEquipment(SpecialEquipmentID specialEquipment)
     {

@@ -10,6 +10,8 @@ public class MainMenu : MonoBehaviour
     [SerializeField] SceneData _startingGameScene;
     [SerializeField] SceneData _gamePlayScene;
     [SerializeField] SceneData _lastSavedScene;
+
+    public bool _debug = false;
     public async void StartGame()
     {
         // AsyncOperation op = SceneManager.LoadSceneAsync(_lastSavedScene, LoadSceneMode.Additive);
@@ -32,7 +34,11 @@ public class MainMenu : MonoBehaviour
 
         else
         {
-            Debug.Log($"<color=yellow> No  Saved Scene found </color>");
+            if (_debug)
+            {
+
+                Debug.Log($"<color=yellow> No  Saved Scene found </color>");
+            }
             _lastSavedScene = _startingGameScene;
         }
     }

@@ -37,116 +37,48 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     string _lastBlendedState;
 
-    [TabGroup("Inputs")]
-    public GenericInput _interactionInput = new("E", "Y", "Y");
-    [TabGroup("Inputs")]
-    public GenericInput _acceptInput = new("Y", "Y", "Y");
-    [TabGroup("Inputs")]
-    public GenericInput _showPhoneInput = new("C", "Y", "Y");
-    [TabGroup("Inputs")]
 
-    public GenericInput _endConvoInput = new("C", "Y", "Y");
-    [TabGroup("Inputs")]
+    [TabGroup("Inputs")] public GenericInput _interactionInput = new("E", "Y", "Y");
 
-    public GenericInput _exitInput = new("C", "Y", "Y");
-    [TabGroup("Inputs")]
+    [TabGroup("Inputs")] public GenericInput _acceptInput = new("Y", "Y", "Y");
 
-    public GenericInput _dialogueOneInput = new("C", "Y", "Y");
-    [TabGroup("Inputs")]
-
-    public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
-    [TabGroup("Inputs")]
-
-
-    [TabGroup("Inputs")]
-    public bool _isUsingAltInput = false;
-
-    [TabGroup("Inputs")]
-    [SerializeField] InputActionAsset _inputAsset;
-
-    [TabGroup("Inputs")]
-    public AltInput _altInput;
-
-    [TabGroup("Interaction")]
-    public float _interactionRange = 1f;
-
-    [TabGroup("Interaction")]
-    [SerializeField] LayerMask _interactionLayerMask = new();
-    [TabGroup("Interaction")]
-    [SerializeField] LayerMask _defaultLayerMask = new();
-
-    [TabGroup("Interaction")]
-
-    [TabGroup("Interaction")]
-    [SerializeField] float _detectionRate = 0.2f;
-
-    [TabGroup("Interaction")]
-    [SerializeField] IInteractable _lastInteractable;
-
-    [TabGroup("Interaction")]
-    [SerializeField] InteractionSystem _interactionSystem;
-
-
-    [TabGroup("Equipments")]
-    [SerializeField] Transform _backPackHolder;
-
-    [TabGroup("State")]
-    [SerializeField] private bool _isRunning = true;
-
-    [TabGroup("State")]
-    [SerializeField] bool _isInDialogue;
-
-    [TabGroup("State")]
-    [SerializeField] NPCConversation _activeConversation;
-
-    [TabGroup("State")]
-    [SerializeField] CraftingArea _activeCraftingArea;
-    [TabGroup("State")]
-    [SerializeField] Shop _activeShop;
-
-    [TabGroup("Components")]
-    public vThirdPersonCameraListData CameraStateList;
-
-    [TabGroup("Components")]
-    public Transform _combatHelperSphere;
-    [TabGroup("Components")]
-    public vFootStep _vFootStep;
-
-    [TabGroup("Components")]
-    public vThirdPersonCamera _vThirdPersonCamera;
-
-    [TabGroup("Components")]
-    [SerializeField] Camera _defaultCamera;
-    [TabGroup("Components")]
-    public Transform _headHolder;
-
-
-    [TabGroup("Phone")]
-    [SerializeField] GameObject _phoneModel;
-    [TabGroup("Phone")]
-    [SerializeField] Camera _phoneCamera;
-
-    [TabGroup("Phone")]
-    public Observer<bool> _isPhoneShowing = new(false);
-
-    [TabGroup("Storage")]
-    public BackPack _hotStorage;
-
-    [TabGroup("Storage")]
-    public Storage _activeStorage;
-
-
-    [TabGroup("Settings")]
-    public SaveAble SAVE_ID => SaveAble.PLAYER;
-
-    [TabGroup("Settings")]
-    [SerializeField] bool _useLastSavedPosition = false;
-
-    [TabGroup("Settings")]
-    [SerializeField] float _underGroundThreshold = 0;
-
-    [TabGroup("Effects")]
-    [SerializeField] PostProcessManager _postProcessManager;
+    [TabGroup("Inputs")] public GenericInput _showPhoneInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")] public GenericInput _endConvoInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")] public GenericInput _exitInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")] public GenericInput _dialogueOneInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")] public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")] public GenericInput _useHomeBeaconInput = new("C", "Y", "Y");
+    [TabGroup("Inputs")] public bool _isUsingAltInput = false;
+    [SerializeField, TabGroup("Inputs")] InputActionAsset _inputAsset;
+    [TabGroup("Inputs")] public AltInput _altInput;
+    [TabGroup("Interaction")] public float _interactionRange = 1f;
+    [SerializeField, TabGroup("Interaction")] LayerMask _interactionLayerMask = new();
+    [SerializeField, TabGroup("Interaction")] LayerMask _defaultLayerMask = new();
+    [SerializeField, TabGroup("Interaction")] float _detectionRate = 0.2f;
+    [SerializeField, TabGroup("Interaction")] IInteractable _lastInteractable;
+    [SerializeField, TabGroup("Interaction")] InteractionSystem _interactionSystem;
+    [SerializeField, TabGroup("Equipments")] Transform _backPackHolder;
+    [SerializeField, TabGroup("State")] private bool _isRunning = true;
+    [SerializeField, TabGroup("State")] bool _isInDialogue;
+    [SerializeField, TabGroup("State")] NPCConversation _activeConversation;
+    [SerializeField, TabGroup("State")] CraftingArea _activeCraftingArea;
+    [SerializeField, TabGroup("State")] Shop _activeShop;
+    [TabGroup("Components")] public vThirdPersonCameraListData CameraStateList;
+    [TabGroup("Components")] public Transform _combatHelperSphere;
+    [TabGroup("Components")] public vFootStep _vFootStep;
+    [TabGroup("Components")] public vThirdPersonCamera _vThirdPersonCamera;
+    [SerializeField, TabGroup("Components")] Camera _defaultCamera;
+    [TabGroup("Body Snaps")] public Transform _headHolder;
+    [TabGroup("Body Snaps")] public Transform _delveBuddySlot;
+    [SerializeField, TabGroup("Phone")] GameObject _phoneModel;
+    [SerializeField, TabGroup("Phone")] Camera _phoneCamera;
+    [TabGroup("Phone")] public Observer<bool> _isPhoneShowing = new(false);
+    [TabGroup("Storage")] public BackPack _hotStorage;
+    [TabGroup("Storage")] public Storage _activeStorage;
+    [TabGroup("Settings")] public SaveAble SAVE_ID => SaveAble.PLAYER;
+    [SerializeField, TabGroup("Settings")] bool _useLastSavedPosition = false;
+    [SerializeField, TabGroup("Settings")] float _underGroundThreshold = 0;
+    [SerializeField, TabGroup("Effects")] PostProcessManager _postProcessManager;
 
     public bool ShouldAutoSave { get => AutoSaveManager.ShouldAutoSave(SaveAble.PLAYER); }
     public bool IsInVehicle => _currentVehicle != null;
@@ -162,6 +94,8 @@ public class Player : MonoBehaviour, IHavePersistentData
         GameEventsManager.OnCutSceneStartEvent += OnCutSceneStart;
         GameEventsManager.OnCutSceneEndEvent += OnCutSceneEnd;
         GameEventsManager.OnCraftItemEvent += AddItemToInventory;
+
+        AltInput.OnToggleEquipmentWheel += OnToggleEquipmentWheel;
         AutoSaveManager.OnShouldAutoSave += AutoSave;
 
         if (!_isSubscribedToThirdPersonInputs)
@@ -179,6 +113,8 @@ public class Player : MonoBehaviour, IHavePersistentData
         GameEventsManager.OnCraftItemEvent -= AddItemToInventory;
         AutoSaveManager.OnShouldAutoSave -= AutoSave;
 
+        AltInput.OnToggleEquipmentWheel -= OnToggleEquipmentWheel;
+
         AutoSave();
 
 
@@ -194,6 +130,8 @@ public class Player : MonoBehaviour, IHavePersistentData
 
         _interactionSystem.Dispose();
     }
+
+
 
     void Awake()
     {
@@ -241,10 +179,6 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     }
 
-    // void Update()
-    // {
-    //     _altInput.Update();
-    // }
     private void CheckForTriggerAction()
     {
         if (_showPhoneInput.GetButtonDown())
@@ -308,12 +242,24 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     }
 
-    // void FixedUpdate()
-    // {
-    //     EnvironmentInteraction();
-    // }
+    private void OnToggleEquipmentWheel()
+    {
+        if (_vThirdPersonCamera.LockCamera == false)
+        {
+            LockAllInput(true);
+            _vThirdPersonCamera.LockCamera = true;
+            _vThirdPersonInput.ShowCursor(true);
+            _vThirdPersonInput.LockCursor(true);
+        }
 
-
+        else
+        {
+            LockAllInput(false);
+            _vThirdPersonCamera.LockCamera = false;
+            _vThirdPersonInput.ShowCursor(false);
+            _vThirdPersonInput.LockCursor(false);
+        }
+    }
     #region SAVE/LOAD
     public void AutoSave()
     {
@@ -389,41 +335,20 @@ public class Player : MonoBehaviour, IHavePersistentData
             _altInput._activeBrowsable = null;
         }
     }
+    public void TogglePlayerInput(bool state)
+    {
+        _isUsingAltInput = state;
+        _altInput.ToggleUseInput(state);
+        LockAllInput(state);
+        _vThirdPersonCamera.LockCamera = state;
+        _vThirdPersonInput.ShowCursor(state);
+        _vThirdPersonInput.LockCursor(state);
+    }
     private void OnCutSceneStart(TimelinePlayer player)
     {
 
         _vThirdPersonInput.lockMoveInput = true;
         _vThirdPersonController.StopCharacter();
-        // _vThirdPersonCamera.CameraStateList.tpCameraStates.Add(player._startingCamState);
-        // _vThirdPersonInput.customlookAtPoint = player._startingCamState.lookPoints[0].pointName;
-        // _vThirdPersonInput.ChangeCameraState(player._startingCamState.Name);
-        // _vThirdPersonCamera.ChangePoint(player._startingCamState.lookPoints[0].pointName);
-
-
-        // _vThirdPersonInput.ChangeCameraStateWithLerp(player._startingCamState.Name);
-        // _vThirdPersonCamera.ChangePoint(player._startingCamState.lookPoints[0].pointName);
-        // _vThirdPersonCamera.gameObject.SetActive(false);
-    }
-
-    public async Task PrepareForCutScene(TimelinePlayer player, float delay = 1f)
-    {
-        _vThirdPersonInput.lockMoveInput = true;
-        _vThirdPersonController.StopCharacter();
-
-        // _vThirdPersonCamera.CameraStateList.tpCameraStates.Add(player._startingCamState);
-
-        // _vThirdPersonCamera.ChangeState(player._startingCamState.Name);
-
-        // // _vThirdPersonCamera.ChangeState("INTRO_TO_HAZMAT_BILL");
-        // Debug.Log("cam is in" + _vThirdPersonCamera.currentState.Name);
-
-
-        // // _vThirdPersonCamera.ChangePoint(player._startingCamState.lookPoints[0].pointName);
-
-        // _lastBlendedState = player._startingCamState.Name;
-
-        await Task.Delay((int)(delay * 1000));
-        _vThirdPersonCamera.gameObject.SetActive(false);
     }
 
     private void OnCutSceneEnd()
@@ -472,73 +397,12 @@ public class Player : MonoBehaviour, IHavePersistentData
     }
 
 
-    public async void MoveToPosition(Vector3 targetPosition, bool rotateOnComplete = false, Action OnDestinationReached = null)
-    {
-        _vThirdPersonInput.lockMoveInput = true;
-        _vThirdPersonController.MoveToPosition(targetPosition);
-        await WatchForDestinationReached(targetPosition);
-        _vThirdPersonInput.lockMoveInput = false;
-        if (_isRunning)
-        {
-            if (rotateOnComplete)
-            {
-                Debug.Log("rotated on complete");
-                _vThirdPersonController.RotateToDirection(transform.forward);
-            }
-        }
-        OnDestinationReached?.Invoke();
-    }
-    public async void MoveToPosition(Transform targetPosition, bool rotateOnComplete = false, Action OnDestinationReached = null)
-    {
-        _vThirdPersonInput.lockMoveInput = true;
-        _vThirdPersonController.MoveToPosition(targetPosition.transform.position);
-        await WatchForDestinationReached(targetPosition.transform.position);
-        _vThirdPersonInput.lockMoveInput = false;
-        OnDestinationReached?.Invoke();
-        if (rotateOnComplete)
-        {
-            _vThirdPersonController.RotateToDirection(targetPosition.forward);
-        }
-    }
 
-
-    public void StopAutoMove()
-    {
-        _isRunning = false;
-        Invoke(nameof(ToggleIsRunning), 0.1f);
-    }
-
-    void ToggleIsRunning()
-    {
-        _isRunning = !_isRunning;
-    }
-    public void ToggleInputLock()
-    {
-        _vThirdPersonInput.lockMoveInput = !_vThirdPersonInput.lockMoveInput;
-    }
     public void LockAllInput(bool value)
     {
         _vThirdPersonInput.SetLockAllInput(value);
         _inventory.lockInventoryInput = value;
     }
-
-    async Task WatchForDestinationReached(Vector3 targetPosition)
-    {
-
-        gameObject.GetComponent<IInteractable>();
-        while (_isRunning && (targetPosition - transform.position).magnitude > 0.5f)
-        {
-            // if (cts.IsCancellationRequested)
-            // {
-            //     break;
-            // }
-            Debug.Log("Distance: " + (targetPosition - transform.position).magnitude);
-            await Task.Yield();
-        }
-    }
-
-
-
 
     public void EnterVehicleMode(Vehicle vehicle)
     {
@@ -560,120 +424,6 @@ public class Player : MonoBehaviour, IHavePersistentData
         _currentVehicle = null;
     }
 
-
-
-    // public void EnvironmentInteraction()
-    // {
-
-    //     Collider closestCollider = null;
-    //     float closestDistance = _interactionRange + 10f;
-
-    //     Collider[] hitColliders = Physics.OverlapSphere(transform.position + Vector3.up, _interactionRange, _interactionLayerMask);
-
-    //     foreach (Collider hitCollider in hitColliders)
-    //     {
-    //         float distance = Vector3.Distance(transform.position, hitCollider.transform.position);
-    //         if (distance < closestDistance)
-    //         {
-    //             // Debug.Log(hitCollider.name);
-    //             closestDistance = distance;
-    //             closestCollider = hitCollider;
-    //         }
-    //     }
-
-    //     if (closestCollider != null)
-    //     {
-    //         if (closestCollider.gameObject.GetComponent<IInteractable>() != null)
-    //         {
-    //             Debug.Log(closestCollider.name + " is interactable");
-    //             _lastInteractable = closestCollider.gameObject.GetComponent<IInteractable>();
-    //             if (_lastInteractable != null && _lastInteractable.CanInteract)
-    //             {
-    //                 _lastInteractable.DrawAttention();
-    //             }
-    //         }
-    //     }
-
-    //     if (hitColliders.Length == 0)
-    //     {
-    //         // HudManager.Instance.HideInteractPrompt();
-    //         _lastInteractable = null;
-    //     }
-
-    // }
-    // public void EnvironmentInteraction()
-    // {
-
-    //     Collider[] hitColliders = Physics.OverlapSphere(transform.position + Vector3.up, _interactionRange, _interactionLayerMask);
-    //     if (hitColliders.Length > 0)
-    //     {
-    //         foreach (Collider hitCollider in hitColliders)
-    //         {
-    //             IInteractable interactable = hitCollider.GetComponent<IInteractable>();
-    //             if (!interactable.IsHighlighted)
-    //             {
-    //                 interactable.ToggleDrawAttention();
-    //                 _closestInteractables.Add(interactable);
-    //                 Debug.Log("added interactable: " + interactable.GameObject.name);
-    //             }
-    //         }
-
-    //         // if (hitColliders.Length < _closestInteractables.Count)
-    //         // {
-    //         //     for (int i = _closestInteractables.Count - 1; i >= 0; i--)
-    //         //     {
-    //         //         IInteractable interactable = _closestInteractables[i];
-    //         //         if (Vector3.Distance(transform.position, interactable.GameObject.transform.position) > _interactionRange)
-    //         //         {
-    //         //             interactable.ToggleDrawAttention();
-    //         //             _closestInteractables.RemoveAt(i);
-    //         //         }
-    //         //     }
-    //         // }
-    //     }
-
-    //     if (_closestInteractables.Count > 0)
-    //     {
-    //         for (int i = _closestInteractables.Count - 1; i >= 0; i--)
-    //         {
-    //             IInteractable interactable = _closestInteractables[i];
-    //             if (Vector3.Distance(interactable.GameObject.transform.position, transform.position) > _interactionRange)
-    //             {
-    //                 interactable.ToggleDrawAttention();
-    //                 _closestInteractables.RemoveAt(i);
-    //             }
-    //         }
-    //     }
-
-    //     if (hitColliders.Length == 0)
-    //     {
-    //         if (_closestInteractables.Count > 0)
-    //         {
-    //             for (int i = _closestInteractables.Count - 1; i >= 0; i--)
-    //             {
-    //                 IInteractable interactable = _closestInteractables[i];
-    //                 interactable.ToggleDrawAttention();
-    //                 _closestInteractables.RemoveAt(i);
-    //             }
-    //         }
-    //     }
-
-    // }
-
-
-
-
-    // void OnDrawGizmos()
-    // {
-    //     Gizmos.color = Color.green;
-    //     Gizmos.DrawWireSphere(transform.position + Vector3.up, _interactionRange);
-    // }
-
-    public void SwitchControlScheme()
-    {
-        Debug.Log("Switching control scheme");
-        vShooterMeleeInput vShooterMeleeInput = GetComponent<vShooterMeleeInput>();
-    }
 
     public void EnterCraftingArea(CraftingArea craftingArea)
     {
@@ -775,6 +525,79 @@ public class Player : MonoBehaviour, IHavePersistentData
         UniversalAdditionalCameraData universalAdditionalCameraData = _defaultCamera.GetComponent<UniversalAdditionalCameraData>();
         universalAdditionalCameraData.cameraStack.Add(_phoneCamera);
     }
+
+
+
+    public async Task PrepareForCutScene(TimelinePlayer player, float delay = 1f)
+    {
+        _vThirdPersonInput.lockMoveInput = true;
+        _vThirdPersonController.StopCharacter();
+
+
+        await Task.Delay((int)(delay * 1000));
+        _vThirdPersonCamera.gameObject.SetActive(false);
+    }
+
+    async Task WatchForDestinationReached(Vector3 targetPosition)
+    {
+
+        gameObject.GetComponent<IInteractable>();
+        while (_isRunning && (targetPosition - transform.position).magnitude > 0.5f)
+        {
+            // if (cts.IsCancellationRequested)
+            // {
+            //     break;
+            // }
+            Debug.Log("Distance: " + (targetPosition - transform.position).magnitude);
+            await Task.Yield();
+        }
+    }
+
+    public async void MoveToPosition(Vector3 targetPosition, bool rotateOnComplete = false, Action OnDestinationReached = null)
+    {
+        _vThirdPersonInput.lockMoveInput = true;
+        _vThirdPersonController.MoveToPosition(targetPosition);
+        await WatchForDestinationReached(targetPosition);
+        _vThirdPersonInput.lockMoveInput = false;
+        if (_isRunning)
+        {
+            if (rotateOnComplete)
+            {
+                Debug.Log("rotated on complete");
+                _vThirdPersonController.RotateToDirection(transform.forward);
+            }
+        }
+        OnDestinationReached?.Invoke();
+    }
+    public async void MoveToPosition(Transform targetPosition, bool rotateOnComplete = false, Action OnDestinationReached = null)
+    {
+        _vThirdPersonInput.lockMoveInput = true;
+        _vThirdPersonController.MoveToPosition(targetPosition.transform.position);
+        await WatchForDestinationReached(targetPosition.transform.position);
+        _vThirdPersonInput.lockMoveInput = false;
+        OnDestinationReached?.Invoke();
+        if (rotateOnComplete)
+        {
+            _vThirdPersonController.RotateToDirection(targetPosition.forward);
+        }
+    }
+
+
+
+    // void ToggleIsRunning()
+    // {
+    //     _isRunning = !_isRunning;
+    // }
+    // public void ToggleInputLock()
+    // {
+    //     _vThirdPersonInput.lockMoveInput = !_vThirdPersonInput.lockMoveInput;
+    // }
+
+    // public void StopAutoMove()
+    // {
+    //     _isRunning = false;
+    //     Invoke(nameof(ToggleIsRunning), 0.1f);
+    // }
 
     void OnDrawGizmosSelected()
     {

@@ -22,6 +22,9 @@ public class AltInput : MonoBehaviour
 {
 
     public InputActionAsset _input;
+
+    #region Browsable Input
+
     public bool _isUsingAltInput;
     private InputAction _selectInput;
     private InputAction _upInput;
@@ -40,24 +43,29 @@ public class AltInput : MonoBehaviour
     private InputAction _buyInput;
     private InputAction _inspectInput;
 
-    // public static event Action<Inputs> OnButtonPress;
-
     private int _buyHoldCounter = 0;
     private int _buyHoldThreshold = 30;
 
     public IBrowsable _activeBrowsable;
+    #endregion
 
-    // public AltInput(InputActionAsset inputActions)
-    // {
-    //     _input = inputActions;
-    //     InitInputs();
-    //     _input.FindActionMap("Phone").Enable();
-    // }
+    #region Secondary Inputs
+    private InputAction _useEquipmentInput;
+    private InputAction _toggleEquipmentWheelInput;
+    #endregion
+
+    #region Events
+    public static Action OnPressUseSpecialEquipment;
+    public static Action OnToggleEquipmentWheel;
+    #endregion
+
 
     void OnEnable()
     {
         InitInputs();
+        InitSecondaryInputs();
         _input.FindActionMap("Phone").Enable();
+        _input.FindActionMap("Alts").Enable();
     }
 
 
@@ -70,7 +78,29 @@ public class AltInput : MonoBehaviour
 
     void Update()
     {
-        if (!_isUsingAltInput) return;
+        if (_isUsingAltInput)
+        {
+            HandleBrowsingInputs();
+        }
+
+        HandleSecondaryInputs();
+    }
+
+    void HandleSecondaryInputs()
+    {
+        if (_useEquipmentInput.WasPressedThisFrame())
+        {
+            OnPressUseSpecialEquipment?.Invoke();
+        }
+
+        if (_toggleEquipmentWheelInput.WasPressedThisFrame())
+        {
+            OnToggleEquipmentWheel?.Invoke();
+        }
+    }
+
+    void HandleBrowsingInputs()
+    {
         if (_selectInput.WasPressedThisFrame())
         {
             Debug.Log("Select Pressed");
@@ -142,6 +172,11 @@ public class AltInput : MonoBehaviour
         _exitInput = InputSystem.actions.FindAction("Exit");
         _buyInput = InputSystem.actions.FindAction("Buy");
         _inspectInput = InputSystem.actions.FindAction("Inspect");
+    }
+    void InitSecondaryInputs()
+    {
+        _useEquipmentInput = InputSystem.actions.FindAction("UseSpecialEquipment");
+        _toggleEquipmentWheelInput = InputSystem.actions.FindAction("ToggleEquipmentWheel");
     }
 
 

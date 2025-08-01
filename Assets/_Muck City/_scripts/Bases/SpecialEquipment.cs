@@ -5,7 +5,8 @@ public enum SpecialEquipmentID
     PHONE = 0,
     ARMOUR = 1,
     ROVER = 2,
-    GAS_MASK = 3
+    GAS_MASK = 3,
+    DELVE_BUDDY = 4
 }
 
 public class SpecialEquipment : Tradeable
@@ -14,6 +15,15 @@ public class SpecialEquipment : Tradeable
 
     [SerializeField] protected bool _debugEquipment;
     public virtual void Init()
+    {
+
+    }
+
+    public virtual void Equip()
+    {
+
+    }
+    public virtual void Use()
     {
 
     }

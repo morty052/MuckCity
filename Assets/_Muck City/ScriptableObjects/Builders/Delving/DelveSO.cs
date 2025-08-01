@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum DelveType
@@ -26,5 +28,18 @@ public class DelveSO : ScriptableObject
     public void GenerateID()
     {
         _id = name[..3] + System.Guid.NewGuid().ToString()[..4];
+    }
+
+    public string GetCleanNameFromEnum()
+    {
+        string[] splitName = _tiedRealm.ToString().Split("_");
+        if (splitName.Length > 1)
+        {
+            return string.Join(" ", splitName.Select(n => n.ToLower().FirstCharacterToUpper()));
+        }
+        else
+        {
+            return splitName[0].FirstCharacterToUpper();
+        }
     }
 }

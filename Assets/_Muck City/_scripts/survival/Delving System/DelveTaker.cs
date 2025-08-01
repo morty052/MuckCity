@@ -16,8 +16,8 @@ public class DelveTaker : Interactable, IBrowsable
     [SerializeField, TabGroup("Components")] GameObject _delverButtonPrefab;
     [SerializeField, TabGroup("Text Components")] TextMeshProUGUI _navbarText;
     [SerializeField, TabGroup("Events")] UnityEvent OnLoadingComplete;
-    [SerializeField, TabGroup("Events")] UnityEvent<ContractSO> OnClickContract;
-    [SerializeField, TabGroup("Events")] UnityEvent<ContractSO> OnCollectReward;
+    [SerializeField, TabGroup("Events")] UnityEvent<DelveSO> OnClickContract;
+    [SerializeField, TabGroup("Events")] UnityEvent<DelveSO> OnCollectReward;
     [SerializeField, TabGroup("Events")] UnityEvent OnCloseRewardPopup;
     [SerializeField, TabGroup("Events")] UnityEvent OnClose;
 
@@ -113,7 +113,7 @@ public class DelveTaker : Interactable, IBrowsable
     {
         for (int i = 0; i < DelveManager.Instance.Retrievals.Count; i++)
         {
-            ContractSO contractSO = DelveManager.Instance.Retrievals.ElementAt(i);
+            DelveSO contractSO = DelveManager.Instance.Retrievals.ElementAt(i);
             CreateCollectionButton(contractSO, i);
         }
         if (!HasContractToCollect)
@@ -137,7 +137,7 @@ public class DelveTaker : Interactable, IBrowsable
     /// <param name="bounty">The contract data used to configure the button.</param>
     /// <param name="index">The index of the contract, used to identify the button's action.</param>
 
-    void CreateCollectionButton(ContractSO bounty, int index)
+    void CreateCollectionButton(DelveSO bounty, int index)
     {
         GameObject button = Instantiate(_delverButtonPrefab, _sideBar.transform);
         button.GetComponentInChildren<TextMeshProUGUI>().text = $"{bounty._bounty}SC";
@@ -168,13 +168,13 @@ public class DelveTaker : Interactable, IBrowsable
         }
     }
 
-    ContractSO ActiveContract()
+    DelveSO ActiveContract()
     {
         if (DelveManager.Instance.Retrievals.Count == 0 || DelveManager.Instance.Retrievals.Count < _selectedItemIndex)
         {
             return null;
         }
-        ContractSO contractSO = DelveManager.Instance.Retrievals.ElementAt(_selectedItemIndex);
+        DelveSO contractSO = DelveManager.Instance.Retrievals.ElementAt(_selectedItemIndex);
         return contractSO;
     }
 

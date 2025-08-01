@@ -13,10 +13,10 @@ public class DelveManager : MonoBehaviour
 
     HashSet<BountySO> _activeBounties = new();
     HashSet<ContractSO> _activeContracts = new();
-    HashSet<ContractSO> _activeRetrievals = new();
-    public HashSet<ContractSO> Retrievals { get => _activeRetrievals; }
-    public HashSet<ContractSO> Contracts { get => _activeContracts; }
-    public HashSet<BountySO> Bounties { get => _activeBounties; }
+    HashSet<DelveSO> _activeRetrievals = new();
+    public HashSet<DelveSO> Retrievals { get => _activeRetrievals; }
+    // public HashSet<ContractSO> Contracts { get => _activeContracts; }
+    // public HashSet<BountySO> Bounties { get => _activeBounties; }
 
     public DelveTicket _activeDelveTicket;
 
@@ -64,7 +64,7 @@ public class DelveManager : MonoBehaviour
             for (int i = 0; i < _contractsThatNeedInit.Count; i++)
             {
                 string realmScene = sceneGroup.FindSceneByName(SceneType.Realm);
-                Debug.Log("Delve manager noticed sceneGroup loaded with realm scene " + realmScene + " and contract " + _contractsThatNeedInit.ElementAt(i).GetCleanNameFromEnum());
+                // Debug.Log("Delve manager noticed sceneGroup loaded with realm scene " + realmScene + " and contract " + _contractsThatNeedInit.ElementAt(i).GetCleanNameFromEnum());
                 if (_contractsThatNeedInit.ElementAt(i).GetCleanNameFromEnum() == realmScene)
                 {
                     FireScriptedEventsOnStart(_contractsThatNeedInit.ElementAt(i));
@@ -89,12 +89,13 @@ public class DelveManager : MonoBehaviour
 
     public void OnRetrieveDelveItem(string id)
     {
-        ContractSO contractSO = _activeContracts.FirstOrDefault(x => x._id == id);
+        DelveSO contractSO = _activeContracts.FirstOrDefault(x => x._id == id);
         _activeRetrievals.Add(contractSO);
+        FireScriptedEventsOnRetrieve(contractSO);
         // GameEventsManager.OnRetrieveDelveItem?.Invoke(contractSO);
         Debug.Log("Retreived " + contractSO.name);
     }
-    private void OnDepositDelveItem(ContractSO sO)
+    private void OnDepositDelveItem(DelveSO sO)
     {
         _activeRetrievals.Remove(sO);
     }
@@ -115,6 +116,16 @@ public class DelveManager : MonoBehaviour
     void FireScriptedEventsOnStart(DelveSO contractSO)
     {
         List<ScriptedEvent> scriptedEvents = contractSO._events.FindAll(x => x._eventLifecycle == ScriptedEventLifecycle.ON_START);
+        if (scriptedEvents.Count == 0) return;
+        for (int i = 0; i < scriptedEvents.Count; i++)
+        {
+            scriptedEvents[i].SetUp(this, contractSO);
+        }
+    }
+    void FireScriptedEventsOnRetrieve(DelveSO contractSO)
+    {
+        List<ScriptedEvent> scriptedEvents = contractSO._events.FindAll(x => x._eventLifecycle == ScriptedEventLifecycle.ON_RETRIEVE);
+        if (scriptedEvents.Count == 0) return;
         for (int i = 0; i < scriptedEvents.Count; i++)
         {
             scriptedEvents[i].SetUp(this, contractSO);
@@ -167,7 +178,16 @@ public class DelveManager : MonoBehaviour
 
     }
 
+    public void OnReturnToHomeRealm()
+    {
+        if (_activeRetrievals.Count > 0)
+        {
+            Debug.Log("DelveManager noticed you Returning to home realm with delve item ");
+        }
+        else
+        {
+            Debug.Log("DelveManager dint care about you Returning to home realm ");
+        }
 
-
-
+    }
 }

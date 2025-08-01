@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public Transform SpawnPoint { get => _spawnPoint.transform; }
+
     [SerializeField] private DeliveryManager _deliveryManagerPrefab;
     [SerializeField] private DomeManager _domeManagerPrefab;
 

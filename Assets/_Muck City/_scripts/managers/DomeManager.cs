@@ -160,29 +160,29 @@ public class DomeManager : MonoBehaviour
         // GameEventsManager.OnAcceptContractEvent -= OnAcceptContract;
     }
 
-    private void OnAcceptContract(ContractSO sO)
-    {
-        ScriptedLocation scriptedLocation = _LocationsData.GetLocation(sO._keyLocation);
-        Debug.Log(scriptedLocation.GetCleanName() + " Is a key location");
-        Waypoint.Instance.Init(scriptedLocation._posData.position);
-    }
+    // private void OnAcceptContract(ContractSO sO)
+    // {
+    //     ScriptedLocation scriptedLocation = _LocationsData.GetLocation(sO._keyLocation);
+    //     Debug.Log(scriptedLocation.GetCleanName() + " Is a key location");
+    //     Waypoint.Instance.Init(scriptedLocation._posData.position);
+    // }
 
-    public ScriptedLocation UseApproximateLocation(Locations keyLocation, bool useWayPoint = true)
-    {
-        ScriptedLocation scriptedLocation = _LocationsData.GetLocation(keyLocation);
-        if (useWayPoint)
-        {
-            Waypoint.Instance.Init(scriptedLocation._posData.position);
-        }
-        return scriptedLocation;
-    }
+    // public ScriptedLocation UseApproximateLocation(Locations keyLocation, bool useWayPoint = true)
+    // {
+    //     ScriptedLocation scriptedLocation = _LocationsData.GetLocation(keyLocation);
+    //     if (useWayPoint)
+    //     {
+    //         Waypoint.Instance.Init(scriptedLocation._posData.position);
+    //     }
+    //     return scriptedLocation;
+    // }
 
-    private void OnAcceptBounty(BountySO sO)
-    {
-        ScriptedLocation scriptedLocation = _LocationsData.GetLocation(sO._lastKnownPos);
-        Debug.Log(scriptedLocation.GetCleanName() + " Is the last known location");
-        Waypoint.Instance.Init(scriptedLocation._posData.position);
-    }
+    // private void OnAcceptBounty(BountySO sO)
+    // {
+    //     ScriptedLocation scriptedLocation = _LocationsData.GetLocation(sO._lastKnownPos);
+    //     Debug.Log(scriptedLocation.GetCleanName() + " Is the last known location");
+    //     Waypoint.Instance.Init(scriptedLocation._posData.position);
+    // }
 
     [Button]
     private void HandleSunDown()

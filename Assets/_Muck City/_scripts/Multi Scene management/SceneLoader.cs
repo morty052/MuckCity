@@ -80,20 +80,26 @@ namespace Systems.SceneManagement
             {
                 //* FIND THE LEVELS RESPAWN POINT
                 GameObject respawnPoint = GameObject.FindGameObjectWithTag("RespawnPoint");
-                //* PARENT PLAYER TO POINT
-                Player.Instance.transform.SetParent(respawnPoint.transform);
 
-                //* MAKE SURE PLAYER PLACED CORRECTLY
-                Player.Instance.transform.localPosition = Vector3.zero;
 
-                //* ACTIVATE PLAYER
-                Player.Instance.gameObject.SetActive(true);
+                //* Remove player parent if any
+                Player.Instance.transform.SetParent(null);
 
                 //* RESET TRANSITION
                 _playerIsInTransition = false;
 
                 //* UPDATE DEFAULT SPAWN POINT TO LEVELS RESPAWN POINT
                 GameManager.Instance.SetSpawnPoint(respawnPoint);
+
+                //* PARENT PLAYER TO POINT
+                Player.Instance.transform.SetParent(GameManager.Instance.SpawnPoint);
+
+                //* MAKE SURE PLAYER PLACED CORRECTLY
+                Player.Instance.transform.localPosition = Vector3.zero;
+
+
+                //* ACTIVATE PLAYER
+                Player.Instance.gameObject.SetActive(true);
             }
 
             //* PRIORITIZE SETTING REALM SCENE AS ACTIVE SCENE IF IT EXISTS

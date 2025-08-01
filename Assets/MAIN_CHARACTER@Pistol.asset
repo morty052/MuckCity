@@ -88,8 +88,8 @@ MonoBehaviour:
       position: {x: 0, y: 0, z: 0}
       eulerAngles: {x: -0, y: 0, z: 0}
     supportHandOffset:
-      position: {x: -0.3645399, y: -0.87110174, z: -0.004356146}
-      eulerAngles: {x: -0, y: 0, z: 0}
+      position: {x: -0.06876827, y: -0.04943606, z: -0.018345078}
+      eulerAngles: {x: 12.278956, y: 354.88092, z: 265.9208}
     supportHintOffset:
       position: {x: 0, y: 0, z: 0}
       eulerAngles: {x: -0, y: 0, z: 0}
