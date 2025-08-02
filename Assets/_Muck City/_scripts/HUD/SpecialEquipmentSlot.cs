@@ -11,44 +11,61 @@ public interface IOnClickSlotReceiver
 
 public class SpecialEquipmentSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    [SerializeField] Color _defaultColor;
-    [SerializeField] Color _activeColor;
-    [SerializeField] Image _backgroundImage;
+    [SerializeField] Color _backgroundColor;
+    [SerializeField] Image _icon;
+    [SerializeField] Image _slotBackgroundImage;
+    [SerializeField] Image _unUsedSlotImage;
 
     public string _slotId;
 
     public IOnClickSlotReceiver _onClickSlotReceiver;
 
+    public bool _isInUse = false;
+
     void Start()
     {
-        // Preserve current alpha
-        Color colorWithAlpha = new(
-            _activeColor.r,
-            _activeColor.g,
-            _activeColor.b,
-            _activeColor.a // Keep current alpha
-        );
+        _slotBackgroundImage.fillAmount = 0;
+        // _unUsedSlotImage.gameObject.SetActive(true);
+        // _icon.gameObject.SetActive(false);
+    }
+
+    public void Init(string slotId, IOnClickSlotReceiver onClickSlotReceiver, Sprite icon, Color backgroundColor = default)
+    {
+        _isInUse = true;
+        _slotId = slotId;
+        _onClickSlotReceiver = onClickSlotReceiver;
+        _icon.sprite = icon;
+        _icon.gameObject.SetActive(true);
+        // _unUsedSlotImage.gameObject.SetActive(false);
+        if (backgroundColor != default)
+        {
+            // _backgroundColor = backgroundColor;
+            _slotBackgroundImage.color = _backgroundColor;
+        }
 
     }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!_isInUse) return;
         Debug.Log("Mouse entered UI element!");
-        _backgroundImage.DOColor(_activeColor, 0.2f);
-        _backgroundImage.DOFade(1, 0.1f);
-        _backgroundImage.transform.DOScale(new Vector3(1.1f, 1.1f, 1.1f), 0.2f);
-
+        _slotBackgroundImage.DOFillAmount(1, 0.2f);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (!_isInUse) return;
         Debug.Log("Mouse exited UI element!");
-        _backgroundImage.DOColor(_defaultColor, 0.2f).OnComplete(() => _backgroundImage.transform.DOScale(Vector3.one, 0.2f));
-
+        _slotBackgroundImage.DOFillAmount(0, 0.2f);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!_isInUse) return;
         Debug.Log("Mouse clicked UI element!");
-        _onClickSlotReceiver.OnSlotClicked(_slotId);
+        if (_onClickSlotReceiver != null)
+        {
+            _onClickSlotReceiver.OnSlotClicked(_slotId);
+        }
     }
 }

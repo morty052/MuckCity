@@ -12,6 +12,7 @@ public enum DelveBuddyFunctions
 public abstract class DelveBuddyFunction
 {
     public DelveBuddyFunctions _id;
+    public Sprite _icon;
     [HideInInspector] public DelveBuddy _delveBuddy;
     public abstract void Use(DelveBuddy delveBuddy);
     public abstract void Init(DelveBuddy delveBuddy);
@@ -35,7 +36,7 @@ public class SpawnReturnBeacon : DelveBuddyFunction
     {
         if (_returnBeaconInstance == null)
         {
-            _returnBeaconInstance = GameObject.Instantiate(_returnBeaconPrefab);
+            _returnBeaconInstance = GameObject.Instantiate(_returnBeaconPrefab, GameManager.Instance.SpawnPoint.transform);
             _returnBeaconInstance.gameObject.SetActive(false);
         }
         SpecialEquipmentManager.Instance._activeEquipment = _delveBuddy;
@@ -59,7 +60,8 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
         {
             _installedFunctions[i].Init(this);
             SpecialEquipmentSlot specialEquipmentSlot = equipmentSlots[i].GetComponent<SpecialEquipmentSlot>();
-            specialEquipmentSlot._slotId = _installedFunctions[i]._id.ToString();
+            specialEquipmentSlot.Init(_installedFunctions[i]._id.ToString(), this, _installedFunctions[i]._icon);
+            // specialEquipmentSlot._slotId = _installedFunctions[i]._id.ToString();
             specialEquipmentSlot._onClickSlotReceiver = this;
         }
     }
