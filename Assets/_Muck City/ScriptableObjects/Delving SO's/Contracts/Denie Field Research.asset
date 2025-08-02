@@ -24,7 +24,8 @@ MonoBehaviour:
   _OnEnterRealm:
   - rid: 3428096988752117857
   - rid: 3428096988752117859
-  _onRetrieveEvents: []
+  _onRetrieveEvents:
+  - rid: 3428096988752117876
   _onDepositEvents: []
   _keyLocation: 4
   references:
@@ -60,3 +61,13 @@ MonoBehaviour:
         _executionDelay: 6
         phoneTriggerType: 0
         _chat: {fileID: 11400000, guid: 08db74162ac0a8740bacb9c607d7e743, type: 2}
+    - rid: 3428096988752117876
+      type: {class: PlayTimeLine, ns: , asm: Assembly-CSharp}
+      data:
+        _eventLifecycle: 2
+        _executionDelay: 0
+        _timeLinePlayerPrefab: {fileID: 4291043988437489660, guid: 9a741b75446f2c04a8636ec9390a7d4b, type: 3}
+        _spawnPos:
+          position: {x: -6.77, y: 1.681, z: 5.14}
+          rotation: {x: -0, y: 44.999996, z: 0}
+        _playOnAwake: 0

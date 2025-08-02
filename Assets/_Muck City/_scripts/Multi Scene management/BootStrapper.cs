@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class BootStrapper : MonoBehaviour
 {
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static async void Init()
     {
 

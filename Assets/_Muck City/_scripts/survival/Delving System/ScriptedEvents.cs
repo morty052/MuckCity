@@ -21,14 +21,14 @@ public abstract class ScriptedEvent
 
 }
 
-[Serializable]
 public class SpawnNpc : ScriptedEvent
 {
     public List<SpawnStruct> _spawnData;
 
-    public override Task DelayedExecute(DelveManager delveManager, DelveSO delveSO)
+    public override async Task DelayedExecute(DelveManager delveManager, DelveSO delveSO)
     {
-        throw new NotImplementedException();
+        await Task.Delay((int)(_executionDelay * 1000));
+        Execute(delveManager, delveSO);
     }
 
     public override void Execute(DelveManager delveManager, DelveSO delveSO)
@@ -42,14 +42,15 @@ public class SpawnNpc : ScriptedEvent
         }
     }
 }
-[Serializable]
+
 public class InitPointOfInterest : ScriptedEvent
 {
     public Pos _location;
 
-    public override Task DelayedExecute(DelveManager delveManager, DelveSO delveSO)
+    public override async Task DelayedExecute(DelveManager delveManager, DelveSO delveSO)
     {
-        throw new NotImplementedException();
+        await Task.Delay((int)(_executionDelay * 1000));
+        Execute(delveManager, delveSO);
     }
 
     public override void Execute(DelveManager delveManager, DelveSO delveSO)
@@ -71,9 +72,10 @@ public class SpawnDelveItem : ScriptedEvent
         item._id = delveSO._id;
     }
 
-    public override Task DelayedExecute(DelveManager delveManager, DelveSO delveSO)
+    public override async Task DelayedExecute(DelveManager delveManager, DelveSO delveSO)
     {
-        throw new NotImplementedException();
+        await Task.Delay((int)(_executionDelay * 1000));
+        Execute(delveManager, delveSO);
     }
 }
 
@@ -89,6 +91,27 @@ public class InteractWithCompad : ScriptedEvent
         {
             Phone.Instance.ReceiveInstantMessage(_chat);
         }
+    }
+
+    public override async Task DelayedExecute(DelveManager delveManager, DelveSO delveSO)
+    {
+        await Task.Delay((int)(_executionDelay * 1000));
+        Execute(delveManager, delveSO);
+    }
+}
+public class PlayTimeLine : ScriptedEvent
+{
+    public TimelinePlayer _timeLinePlayerPrefab;
+
+    public Pos _spawnPos;
+
+    public bool _playOnAwake;
+
+
+    public override void Execute(DelveManager delveManager, DelveSO delveSO)
+    {
+        TimelinePlayer timelinePlayer = GameObject.Instantiate(_timeLinePlayerPrefab, _spawnPos.position, Quaternion.Euler(_spawnPos.rotation));
+        timelinePlayer._enablePlayOnAwake = _playOnAwake;
     }
 
     public override async Task DelayedExecute(DelveManager delveManager, DelveSO delveSO)

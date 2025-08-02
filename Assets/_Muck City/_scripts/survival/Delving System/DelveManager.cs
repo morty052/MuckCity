@@ -126,7 +126,6 @@ public class DelveManager : MonoBehaviour
             {
                 scriptedEvent.DelayedExecute(this, contractSO);
             }
-            // contractSO._OnAccept[i].Execute(this, contractSO);
         }
     }
     void FireScriptedEventsOnEnterRealm(DelveSO contractSO)
@@ -149,11 +148,18 @@ public class DelveManager : MonoBehaviour
     }
     void FireScriptedEventsOnRetrieve(DelveSO contractSO)
     {
-        List<ScriptedEvent> scriptedEvents = contractSO._OnEnterRealm.FindAll(x => x._eventLifecycle == ScriptedEventLifecycle.ON_RETRIEVE);
-        if (scriptedEvents.Count == 0) return;
-        for (int i = 0; i < scriptedEvents.Count; i++)
+        if (contractSO._onRetrieveEvents.Count == 0) return;
+        for (int i = 0; i < contractSO._onRetrieveEvents.Count; i++)
         {
-            scriptedEvents[i].Execute(this, contractSO);
+            ScriptedEvent scriptedEvent = contractSO._onRetrieveEvents[i];
+            if (scriptedEvent._executionDelay == 0)
+            {
+                scriptedEvent.Execute(this, contractSO);
+            }
+            else
+            {
+                scriptedEvent.DelayedExecute(this, contractSO);
+            }
         }
     }
     #endregion
