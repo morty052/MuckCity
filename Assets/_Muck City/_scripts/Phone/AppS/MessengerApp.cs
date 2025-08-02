@@ -637,7 +637,9 @@ public class MessengerApp : PhoneApp
     {
         Conversation conversation = convo.GetSpeechNodes();
 
+        //* CACHE THE CHAT ROOT NODE
         _rootNode = conversation.Root;
+
         _activeNode = _rootNode;
 
         SetActiveConvo(convo);

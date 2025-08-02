@@ -41,7 +41,6 @@ public class DelveManager : MonoBehaviour
     void OnEnable()
     {
         GameEventsManager.OnAcceptBountyEvent += OnAcceptBounty;
-        GameEventsManager.OnAcceptContractEvent += OnAcceptContract;
         GameEventsManager.OnDepositDelveItemEvent += OnDepositDelveItem;
         SceneLoader.OnSceneGroupLoaded += OnSceneGroupLoaded;
     }
@@ -49,7 +48,6 @@ public class DelveManager : MonoBehaviour
     void OnDisable()
     {
         GameEventsManager.OnAcceptBountyEvent -= OnAcceptBounty;
-        GameEventsManager.OnAcceptContractEvent -= OnAcceptContract;
         GameEventsManager.OnDepositDelveItemEvent -= OnDepositDelveItem;
         SceneLoader.OnSceneGroupLoaded -= OnSceneGroupLoaded;
     }
@@ -67,7 +65,7 @@ public class DelveManager : MonoBehaviour
                 // Debug.Log("Delve manager noticed sceneGroup loaded with realm scene " + realmScene + " and contract " + _contractsThatNeedInit.ElementAt(i).GetCleanNameFromEnum());
                 if (_contractsThatNeedInit.ElementAt(i).GetCleanNameFromEnum() == realmScene)
                 {
-                    FireScriptedEventsOnStart(_contractsThatNeedInit.ElementAt(i));
+                    FireScriptedEventsOnEnterRealm(_contractsThatNeedInit.ElementAt(i));
                     _contractsThatNeedInit.Remove(_contractsThatNeedInit.ElementAt(i));
                 }
             }
@@ -108,27 +106,54 @@ public class DelveManager : MonoBehaviour
     public void OnAcceptContract(ContractSO contractSO)
     {
         _activeContracts.Add(contractSO);
-        // InitContract(contractSO);
+        FireScriptedEventsOnAccept(contractSO);
     }
     #endregion
 
     #region"Scripted Events"
-    void FireScriptedEventsOnStart(DelveSO contractSO)
+    void FireScriptedEventsOnAccept(DelveSO contractSO)
     {
-        List<ScriptedEvent> scriptedEvents = contractSO._events.FindAll(x => x._eventLifecycle == ScriptedEventLifecycle.ON_START);
-        if (scriptedEvents.Count == 0) return;
-        for (int i = 0; i < scriptedEvents.Count; i++)
+
+        if (contractSO._OnAccept.Count == 0) return;
+        for (int i = 0; i < contractSO._OnAccept.Count; i++)
         {
-            scriptedEvents[i].SetUp(this, contractSO);
+            ScriptedEvent scriptedEvent = contractSO._OnAccept[i];
+            if (scriptedEvent._executionDelay == 0)
+            {
+                scriptedEvent.Execute(this, contractSO);
+            }
+            else
+            {
+                scriptedEvent.DelayedExecute(this, contractSO);
+            }
+            // contractSO._OnAccept[i].Execute(this, contractSO);
+        }
+    }
+    void FireScriptedEventsOnEnterRealm(DelveSO contractSO)
+    {
+
+        if (contractSO._OnEnterRealm.Count == 0) return;
+        for (int i = 0; i < contractSO._OnEnterRealm.Count; i++)
+        {
+            ScriptedEvent scriptedEvent = contractSO._OnEnterRealm[i];
+            if (scriptedEvent._executionDelay == 0)
+            {
+                scriptedEvent.Execute(this, contractSO);
+            }
+            else
+            {
+                scriptedEvent.DelayedExecute(this, contractSO);
+            }
+            // contractSO._OnAccept[i].Execute(this, contractSO);
         }
     }
     void FireScriptedEventsOnRetrieve(DelveSO contractSO)
     {
-        List<ScriptedEvent> scriptedEvents = contractSO._events.FindAll(x => x._eventLifecycle == ScriptedEventLifecycle.ON_RETRIEVE);
+        List<ScriptedEvent> scriptedEvents = contractSO._OnEnterRealm.FindAll(x => x._eventLifecycle == ScriptedEventLifecycle.ON_RETRIEVE);
         if (scriptedEvents.Count == 0) return;
         for (int i = 0; i < scriptedEvents.Count; i++)
         {
-            scriptedEvents[i].SetUp(this, contractSO);
+            scriptedEvents[i].Execute(this, contractSO);
         }
     }
     #endregion
@@ -171,9 +196,9 @@ public class DelveManager : MonoBehaviour
 
     void InitContract(ContractSO contractSO)
     {
-        for (int i = 0; i < contractSO._events.Count; i++)
+        for (int i = 0; i < contractSO._OnEnterRealm.Count; i++)
         {
-            contractSO._events[i].SetUp(this, contractSO);
+            contractSO._OnEnterRealm[i].Execute(this, contractSO);
         }
 
     }

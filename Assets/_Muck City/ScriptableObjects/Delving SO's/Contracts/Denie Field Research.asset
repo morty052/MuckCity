@@ -12,49 +12,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c0db184dcfdf4443a9cefedd82c35df, type: 3}
   m_Name: Denie Field Research
   m_EditorClassIdentifier: 
+  _delveType: 0
   _bounty: 20
   _name: Razer Mushrooms Wanted
   _description: Find 5 Razer mushrooms
   _sprite: {fileID: 0}
   _tiedRealm: 0
-  _events:
-  - rid: 3260592411991343181
-  - rid: 3260592557401833590
-  - rid: 3428096966076661860
   _id: Denac30
-  _delveItem: {fileID: 1580796860582888537, guid: 7e09f31bed025444992296d2c35d2e60, type: 3}
+  _OnAccept:
+  - rid: 3428096988752117864
+  _OnEnterRealm:
+  - rid: 3428096988752117857
+  - rid: 3428096988752117859
+  _onRetrieveEvents: []
+  _onDepositEvents: []
   _keyLocation: 4
-  _itemSpawnPos:
-    position: {x: 0.554, y: -26.589, z: -353.806}
-    rotation: {x: -0, y: 44.999996, z: 0}
   references:
     version: 2
     RefIds:
-    - rid: 3260592411991343181
-      type: {class: SpawnNpc, ns: , asm: Assembly-CSharp}
-      data:
-        _eventLifecycle: 0
-        _spawnData:
-        - _location:
-            position: {x: -13.58, y: -2.8606522, z: -13.673836}
-            rotation: {x: -0, y: 0, z: 0}
-          _npc: {fileID: 11400000, guid: 3dc1897638a179844856db23cd6c23a0, type: 2}
-        - _location:
-            position: {x: -1.271, y: 2.82, z: 30.97}
-            rotation: {x: -0, y: 0, z: 0}
-          _npc: {fileID: 11400000, guid: bb9775a2f7763f34d85213b8e63a5e04, type: 2}
-    - rid: 3260592557401833590
-      type: {class: InitPointOfInterest, ns: , asm: Assembly-CSharp}
-      data:
-        _eventLifecycle: 0
-        _location:
-          position: {x: -10.9, y: -9.57, z: -27.21}
-          rotation: {x: 0.9062137, y: 163.68394, z: 2.1747322}
-    - rid: 3428096966076661860
+    - rid: 3428096988752117857
       type: {class: SpawnDelveItem, ns: , asm: Assembly-CSharp}
       data:
-        _eventLifecycle: 0
+        _eventLifecycle: 1
+        _executionDelay: 0
         _delveItem: {fileID: 797285378465496453, guid: b677a1ea72ff5084d805068f5ed2a3d8, type: 3}
         _location:
           position: {x: -1.254, y: 1.681, z: 0.499}
           rotation: {x: 270, y: 0, z: 0}
+    - rid: 3428096988752117859
+      type: {class: SpawnNpc, ns: , asm: Assembly-CSharp}
+      data:
+        _eventLifecycle: 1
+        _executionDelay: 0
+        _spawnData:
+        - _location:
+            position: {x: -1.271, y: 2.82, z: 30.97}
+            rotation: {x: -0, y: 0, z: 0}
+          _npc: {fileID: 11400000, guid: bb9775a2f7763f34d85213b8e63a5e04, type: 2}
+        - _location:
+            position: {x: -13.58, y: -2.8606522, z: -13.673836}
+            rotation: {x: -0, y: 0, z: 0}
+          _npc: {fileID: 11400000, guid: 3dc1897638a179844856db23cd6c23a0, type: 2}
+    - rid: 3428096988752117864
+      type: {class: InteractWithCompad, ns: , asm: Assembly-CSharp}
+      data:
+        _eventLifecycle: 0
+        _executionDelay: 6
+        phoneTriggerType: 0
+        _chat: {fileID: 11400000, guid: 08db74162ac0a8740bacb9c607d7e743, type: 2}

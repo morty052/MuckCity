@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DialogueEditor;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 
@@ -15,7 +16,15 @@ public class Chat : ScriptableObject
 
     [SerializeReference] public List<DecisionEffect> _effects;
 
-    private Conversation _conversation;
+    [ShowInInspector] private Conversation _conversation;
+
+    void OnEnable()
+    {
+        if (_convo != null && _conversation == null)
+        {
+            _conversation = _convo.Deserialize();
+        }
+    }
 
     public void Complete()
     {
@@ -27,6 +36,7 @@ public class Chat : ScriptableObject
         return _conversation;
     }
 
+    [Button]
     public void SetSpeechNodes()
     {
         _conversation = _convo.Deserialize();

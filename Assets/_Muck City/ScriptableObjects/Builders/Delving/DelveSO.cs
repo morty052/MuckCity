@@ -12,19 +12,25 @@ public enum DelveType
 
 public class DelveSO : ScriptableObject
 {
-    public DelveType _delveType;
-    public int _bounty;
-    public string _name;
-    public string _description;
-    public Sprite _sprite;
+    [TabGroup("Data")] public DelveType _delveType;
+    [TabGroup("Data")] public int _bounty;
+    [TabGroup("Data")] public string _name;
+    [TabGroup("Data")] public string _description;
+    [TabGroup("Data")] public Sprite _sprite;
 
-    public RealmID _tiedRealm;
-    [SerializeReference] public List<ScriptedEvent> _events;
+    [TabGroup("Data")] public RealmID _tiedRealm;
+    [TabGroup("Data")] public string _id;
 
-    public string _id;
+    [SerializeReference, TabGroup("On Accept")] public List<ScriptedEvent> _OnAccept;
+    [SerializeReference, TabGroup("On Enter Realm")] public List<ScriptedEvent> _OnEnterRealm;
+    [SerializeReference, TabGroup("Retrieve")] public List<ScriptedEvent> _onRetrieveEvents;
+    [SerializeReference, TabGroup("Deposit")] public List<ScriptedEvent> _onDepositEvents;
 
 
-    [Button("Generate ID")]
+
+
+
+    [TabGroup("Funcs"), Button("Generate ID")]
     public void GenerateID()
     {
         _id = name[..3] + System.Guid.NewGuid().ToString()[..4];

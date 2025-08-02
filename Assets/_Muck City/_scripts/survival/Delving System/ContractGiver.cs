@@ -359,7 +359,6 @@ public class ContractGiver : Interactable, IBrowsable
                 // DelveManager.Instance.OnAcceptBounty(_bountySOlist.ElementAt(_selectedItemIndex));
                 break;
             case DelverScreenName.CONTRACTS:
-                // GameEventsManager.OnAcceptContractEvent.Invoke(_contractSOList.ElementAt(_selectedItemIndex));
                 DelveManager.Instance.OnAcceptContract(_contractSOList.ElementAt(_selectedItemIndex));
                 break;
             default:

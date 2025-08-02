@@ -49,14 +49,14 @@ public class SpecialEquipmentSlot : MonoBehaviour, IPointerEnterHandler, IPointe
     {
         if (!_isInUse) return;
         Debug.Log("Mouse entered UI element!");
-        _slotBackgroundImage.DOFillAmount(1, 0.2f);
+        _slotBackgroundImage.DOFillAmount(1, 0.2f).OnComplete(() => _slotBackgroundImage.transform.DOScale(Vector3.one * 1.1f, 0.1f)); ;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!_isInUse) return;
         Debug.Log("Mouse exited UI element!");
-        _slotBackgroundImage.DOFillAmount(0, 0.2f);
+        _slotBackgroundImage.DOFillAmount(0, 0.2f).OnComplete(() => _slotBackgroundImage.transform.DOScale(Vector3.one, 0.1f));
     }
 
     public void OnPointerClick(PointerEventData eventData)
