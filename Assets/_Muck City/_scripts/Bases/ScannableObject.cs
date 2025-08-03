@@ -33,9 +33,16 @@ public class ScannableObject : MonoBehaviour, IScannableObject
 
     public string ScanText { get; }
 
+    public bool _canScan = true;
+    public bool _scanned = false;
+
+    public bool CanScan => _canScan && !_scanned;
+
     public virtual void OnScan()
     {
         Debug.Log($"<color=cyan> Entity {transform.name} Has been Scanned </color>");
         ScannedObjectUI.Instance.OnScanObject(_scanDetails);
+        _scanned = true;
+        _canScan = false;
     }
 }

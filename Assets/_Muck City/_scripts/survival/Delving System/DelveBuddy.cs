@@ -18,6 +18,8 @@ public abstract class DelveBuddyFunction
     public Sprite _icon;
 
     public bool _updateOnAim;
+
+    protected Camera cam;
     [HideInInspector] public DelveBuddy _delveBuddy;
     public abstract void Use(DelveBuddy delveBuddy);
     public abstract void Init(DelveBuddy delveBuddy);
@@ -40,7 +42,7 @@ public class SpawnReturnBeacon : DelveBuddyFunction
     public float _raycastDistance = 100f;
 
     private bool _lockedInPlace = false;
-    private Camera cam;
+
 
     public string _summonPortalAnimationName;
 
@@ -143,6 +145,40 @@ public class SpawnReturnBeacon : DelveBuddyFunction
 }
 public class ScanEntity : DelveBuddyFunction
 {
+    public float _raycastDistance = 50;
+
+
+
+    public float _timeToScan = 3.5f; // Total time in seconds
+    public float _scanRate = 1f;
+
+    public float _timeOnScannable = 0;
+    public LayerMask _scannableLayer = new();
+
+    public override void Init(DelveBuddy delveBuddy)
+    {
+        _delveBuddy = delveBuddy;
+        cam = Camera.main;
+
+        //* ACTIVATE UPDATE FUNCTION
+        _updateOnAim = true;
+    }
+
+
+    public override void Equip()
+    {
+        _delveBuddy.OnInstantiateProjectileEvent += OnInstantiateProjectile;
+    }
+
+    public override void UnEquip()
+    {
+        _delveBuddy.OnInstantiateProjectileEvent -= OnInstantiateProjectile;
+    }
+
+    public override void Update()
+    {
+        RayCastForScannable();
+    }
 
     public override void Use(DelveBuddy delveBuddy)
     {
@@ -151,15 +187,6 @@ public class ScanEntity : DelveBuddyFunction
         // _returnBeaconInstance.transform.SetParent(SpecialEquipmentManager.Instance.transform);
     }
 
-    public override void Equip()
-    {
-        _delveBuddy.OnInstantiateProjectileEvent += OnInstantiateProjectile;
-    }
-
-    public override void Init(DelveBuddy delveBuddy)
-    {
-        _delveBuddy = delveBuddy;
-    }
 
     private void OnInstantiateProjectile(vProjectileControl control)
     {
@@ -171,19 +198,31 @@ public class ScanEntity : DelveBuddyFunction
     {
         if (hit.transform.TryGetComponent(out IScannableObject entity))
         {
-            entity.OnScan();
+            if (entity.CanScan)
+            {
+                _timeOnScannable += _scanRate * Time.deltaTime;
+                Debug.Log("Time Spent Scanning " + _timeOnScannable);
+                if (_timeOnScannable >= _timeToScan)
+                {
+                    entity.OnScan();
+                }
+
+            }
         }
     }
 
-    public override void Update()
+    void RayCastForScannable()
     {
-        throw new NotImplementedException();
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f)); // Center of screen
+        if (Physics.Raycast(ray, out RaycastHit hit, _raycastDistance, _scannableLayer))
+        {
+            OnScanObject(hit);
+        }
     }
 
-    public override void UnEquip()
-    {
-        _delveBuddy.OnInstantiateProjectileEvent -= OnInstantiateProjectile;
-    }
+
+
+
 }
 public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
 {
@@ -312,3 +351,24 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
 }
 
 
+public class TimedCounter
+{
+    private float duration = 20f; // Total time in seconds
+    private float elapsedTime = 0f;
+    private float currentValue = 0f;
+
+    void Update()
+    {
+        if (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            currentValue = Mathf.Lerp(0f, 20f, elapsedTime / duration);
+            Debug.Log("Counter: " + currentValue.ToString("F2"));
+        }
+        else
+        {
+            currentValue = 20f;
+            Debug.Log("Finished! Final Value: " + currentValue);
+        }
+    }
+}

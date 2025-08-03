@@ -13,9 +13,32 @@ public class RadialMenu : MonoBehaviour
     public float startAngle = 0f;
     public bool clockwise = true;
 
+    public RectTransform _dial; // The rotating UI element
+    public Transform _centerPoint; // The center of the circle (can be the dial itself)
+
+    DialRotator _dialRotator;
+
+    public bool UseDial => _dial != null;
+
+    void Awake()
+    {
+        if (UseDial)
+        {
+            _dialRotator = new(_dial, _centerPoint);
+        }
+    }
+
     void Start()
     {
         ArrangeInCircle();
+    }
+
+    void Update()
+    {
+        if (UseDial)
+        {
+            _dialRotator.Update();
+        }
     }
 
     public List<RectTransform> GetSlots()
@@ -43,5 +66,37 @@ public class RadialMenu : MonoBehaviour
 
             uiElements[i].anchoredPosition = position;
         }
+    }
+}
+
+
+
+public class DialRotator
+{
+    [Header("Dial Settings")]
+    public RectTransform _dial; // The rotating UI element
+    public Transform _centerPoint; // The center of the circle (can be the dial itself)
+
+    [Header("Target")]
+    public Transform _selectedTarget; // The target to look at
+
+    public DialRotator(RectTransform dial, Transform centerPoint)
+    {
+        _dial = dial;
+        _centerPoint = centerPoint;
+    }
+
+    public void Update()
+    {
+        if (_selectedTarget == null || _dial == null || _centerPoint == null) return;
+
+        // Get direction from center to target
+        Vector2 direction = _selectedTarget.position - _centerPoint.position;
+
+        // Calculate angle in degrees
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Apply rotation (UI uses Z-axis for rotation)
+        _dial.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 }

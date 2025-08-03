@@ -895,19 +895,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 357844595321947639, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.4354358
+      value: -4.364197
       objectReference: {fileID: 0}
     - target: {fileID: 357844595321947639, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.051
+      value: 2.841858
       objectReference: {fileID: 0}
     - target: {fileID: 357844595321947639, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.3227355
+      value: -769.4151
       objectReference: {fileID: 0}
     - target: {fileID: 357844595321947639, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8215636
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 357844595321947639, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_LocalRotation.x
@@ -915,7 +915,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 357844595321947639, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.5701169
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 357844595321947639, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_LocalRotation.z
@@ -939,7 +939,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1439857161583918802, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: field of view
-      value: 60.000004
+      value: 60.09288
       objectReference: {fileID: 0}
     - target: {fileID: 1439857161583918802, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: far clip plane
@@ -955,7 +955,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1439857161583918802, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 2149572599
+      value: 2954878967
       objectReference: {fileID: 0}
     - target: {fileID: 1964099787604229005, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_Cameras.Array.size
