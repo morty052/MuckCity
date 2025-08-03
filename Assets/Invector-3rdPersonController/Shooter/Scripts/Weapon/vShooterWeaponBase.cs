@@ -94,6 +94,7 @@ namespace Invector.vShooter
         public UnityEvent onShot, onEmptyClip;
 
         public OnInstantiateProjectile onInstantiateProjectile;
+        public bool _isMuted;
 
         protected virtual float _nextShootTime { get; set; }
         protected virtual float _nextEmptyClipTime { get; set; }
@@ -155,6 +156,12 @@ namespace Invector.vShooter
 
         public virtual void Shoot(Vector3 startPoint, Vector3 endPoint, Transform _sender = null, UnityAction<bool> successfulShot = null)
         {
+            //* ONLY FIRE ON SHOT EVENT FOR DELVE BUDDY
+            if (_isMuted)
+            {
+                onShot.Invoke();
+                return;
+            }
             if (HasAmmo())
             {
                 if (!CanDoShot)
