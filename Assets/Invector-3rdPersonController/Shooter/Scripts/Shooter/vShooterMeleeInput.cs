@@ -1106,6 +1106,7 @@ namespace Invector.vCharacterController
                 animator.SetLayerWeight(onlyArmsLayer, onlyArmsLayerWeight);
             }
             if (CurrentActiveWeapon && IsAiming) animator.SetLayerWeight(shotLayer, isUsingScopeView ? CurrentActiveWeapon.scopeShootAnimationWeight : 1f);
+
             if (CurrentActiveWeapon && !shooterManager.useDefaultMovesetWhenNotAiming || IsAiming)
             {
                 // set the move set id (base layer) 

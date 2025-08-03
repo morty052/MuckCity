@@ -61,7 +61,7 @@ public class AltInput : MonoBehaviour
     public static Action<bool> OnEnterAimDelveBuddy;
     #endregion
 
-    bool _isAimingDelveBuddy;
+    bool _isDelveBuddyEquipped;
 
 
     void OnEnable()
@@ -102,7 +102,7 @@ public class AltInput : MonoBehaviour
             OnToggleEquipmentWheel?.Invoke();
         }
 
-        HandleAimBuddy();
+        HandleEquipBuddy();
     }
 
     void HandleBrowsingInputs()
@@ -210,12 +210,12 @@ public class AltInput : MonoBehaviour
     //         _isAimingDelveBuddy = false;
     //     }
     // }
-    public void HandleAimBuddy()
+    public void HandleEquipBuddy()
     {
         if (_aimDelveBuddyInput.WasPressedThisFrame())
         {
-            _isAimingDelveBuddy = !_isAimingDelveBuddy;
-            OnEnterAimDelveBuddy?.Invoke(_isAimingDelveBuddy);
+            _isDelveBuddyEquipped = !_isDelveBuddyEquipped;
+            OnEnterAimDelveBuddy?.Invoke(_isDelveBuddyEquipped);
         }
     }
     public void HandleBuyButton()

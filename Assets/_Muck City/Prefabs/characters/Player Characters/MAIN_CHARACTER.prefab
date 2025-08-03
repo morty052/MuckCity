@@ -41160,7 +41160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openCloseEvents: 1
   openCloseWindow: 1
-  selectedToolbar: 9
+  selectedToolbar: 6
   _isDead: 1
   _currentHealth: 0
   isImmortal: 0
@@ -41320,7 +41320,7 @@ MonoBehaviour:
   _isGrounded: 0
   groundLayer:
     serializedVersion: 2
-    m_Bits: 65
+    m_Bits: 536870977
   groundMinDistance: 0.1
   groundMaxDistance: 0.5
   sphereCastRadius: 0.3
@@ -41710,7 +41710,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openCloseEvents: 0
   openCloseWindow: 1
-  selectedToolbar: 4
+  selectedToolbar: 3
   canUseMeleeBlock_H: 0
   canUseMeleeWeakAttack_H: 1
   canUseMeleeStrongAttack_H: 1
@@ -42346,15 +42346,7 @@ MonoBehaviour:
   selectedToolbar: 0
   inventory: {fileID: 0}
   itemListData: {fileID: 11400000, guid: f3af3dd65ef4901459859e26be3dfaf0, type: 2}
-  startItems:
-  - id: 31
-    name: 
-    amount: 1
-    attributes: []
-    changeAttributes: 0
-    autoEquip: 1
-    addToEquipArea: 1
-    indexArea: 0
+  startItems: []
   equipPoints:
   - equipPointName: LeftArm
     area: {fileID: 0}
@@ -42708,6 +42700,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f979304cc7c3d634086e6b5bce0d83b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _vShooterManager: {fileID: 0}
+  _vThirdPersonInput: {fileID: 0}
+  _vShooterMeleeInput: {fileID: 0}
   _interactionInput:
     useInput: 1
     isAxisInUse: 0
@@ -61608,8 +61603,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodySnap: {fileID: 8446249107444951019}
-  boneToSnap: {fileID: 3623037914373028417}
-  boneName: LeftHand
+  boneToSnap: {fileID: 8883458643682603318}
+  boneName: LeftLowerArm
 --- !u!1 &7892214565365945689
 GameObject:
   m_ObjectHideFlags: 0

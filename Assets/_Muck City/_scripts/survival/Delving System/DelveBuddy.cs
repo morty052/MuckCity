@@ -16,10 +16,14 @@ public abstract class DelveBuddyFunction
 {
     public DelveBuddyFunctions _id;
     public Sprite _icon;
+
+    public bool _updateOnAim;
     [HideInInspector] public DelveBuddy _delveBuddy;
     public abstract void Use(DelveBuddy delveBuddy);
     public abstract void Init(DelveBuddy delveBuddy);
     public abstract void Equip();
+
+    public abstract void Update();
 }
 
 public class SpawnReturnBeacon : DelveBuddyFunction
@@ -27,6 +31,17 @@ public class SpawnReturnBeacon : DelveBuddyFunction
     [SerializeField] ReturnBeacon _returnBeaconPrefab;
 
     private ReturnBeacon _returnBeaconInstance;
+
+    private Transform _playerAimReference;
+
+    public LayerMask _groundLayer = new();
+
+    private bool _canPlace;
+
+    private float _raycastDistance = 100f;
+
+    private bool _lockedInPlace = false;
+    public Camera cam;
     public override void Use(DelveBuddy delveBuddy)
     {
         Debug.Log("Using Delve Buddy Function" + _id);
@@ -37,17 +52,78 @@ public class SpawnReturnBeacon : DelveBuddyFunction
     }
     public override void Equip()
     {
-        if (_returnBeaconInstance == null)
-        {
-            _returnBeaconInstance = GameObject.Instantiate(_returnBeaconPrefab, GameManager.Instance.SpawnPoint.transform);
-            _returnBeaconInstance.gameObject.SetActive(false);
-        }
         SpecialEquipmentManager.Instance._activeEquipment = _delveBuddy;
     }
 
     public override void Init(DelveBuddy delveBuddy)
     {
+        if (_returnBeaconInstance == null)
+        {
+            _returnBeaconInstance = GameObject.Instantiate(_returnBeaconPrefab, GameManager.Instance.SpawnPoint.transform);
+            _returnBeaconInstance.gameObject.SetActive(false);
+        }
         _delveBuddy = delveBuddy;
+        _playerAimReference = delveBuddy._vShooterWeapon.aimReference;
+
+        delveBuddy._vShooterWeapon.onShot.AddListener(HandlePlaceMent);
+
+        delveBuddy.OnToggleAim += OnToggleAim;
+
+        cam = Camera.main;
+    }
+
+    private void OnToggleAim(bool isAiming)
+    {
+        if (isAiming)
+        {
+            _lockedInPlace = false;
+        }
+    }
+
+    private void HandlePlaceMent()
+    {
+        if (_canPlace)
+        {
+            _lockedInPlace = true;
+            _canPlace = false;
+            // ToggleEquipBuddy();
+            // ABUtils.DelayedInvoke(0.2f, () => ToggleEquipBuddy(true));
+        }
+
+
+    }
+
+    void ToggleEquipBuddy(bool state = false)
+    {
+        _delveBuddy.EquipDelveBuddy(state);
+    }
+
+    public override void Update()
+    {
+        if (_lockedInPlace) return;
+        RayCastForDrop();
+    }
+
+    void RayCastForDrop()
+    {
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f)); // Center of screen
+        if (Physics.Raycast(ray, out RaycastHit hit, _raycastDistance, _groundLayer))
+        {
+            _canPlace = true;
+            PreviewBeacon(hit.point, Quaternion.LookRotation(hit.normal));
+        }
+
+        else
+        {
+            _canPlace = false;
+        }
+
+    }
+
+    void PreviewBeacon(Vector3 position, Quaternion rotation)
+    {
+        _returnBeaconInstance.gameObject.SetActive(true);
+        _returnBeaconInstance.transform.SetPositionAndRotation(position, Quaternion.identity);
     }
 }
 public class ScanEntity : DelveBuddyFunction
@@ -87,6 +163,11 @@ public class ScanEntity : DelveBuddyFunction
             entity.OnScan();
         }
     }
+
+    public override void Update()
+    {
+        throw new NotImplementedException();
+    }
 }
 public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
 {
@@ -99,22 +180,27 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
     public vShooterWeapon _vShooterWeapon;
 
     public Action<vProjectileControl> OnInstantiateProjectileEvent;
-
-    Animator _animator;
+    public Action<bool> OnToggleAim;
+    public Action OnDisableAim;
 
     void Awake()
     {
         _vShooterWeapon = GetComponent<vShooterWeapon>();
+        _vShooterWeapon._ignoreIdleAnim = true;
+        _vShooterWeapon.onEnableAim.AddListener(ToggleAiming);
+        _vShooterWeapon.onDisableAim.AddListener(ToggleAiming);
+
+
     }
 
     void OnEnable()
     {
-        AltInput.OnEnterAimDelveBuddy += HandleEnterAimDelveBuddy;
+        AltInput.OnEnterAimDelveBuddy += EquipDelveBuddy;
     }
 
     void OnDisable()
     {
-        AltInput.OnEnterAimDelveBuddy -= HandleEnterAimDelveBuddy;
+        AltInput.OnEnterAimDelveBuddy -= EquipDelveBuddy;
     }
 
     public void OnInstantiateProjectile(vProjectileControl projectile)
@@ -122,23 +208,16 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
         OnInstantiateProjectileEvent?.Invoke(projectile);
     }
 
-    void Update()
-    {
-        if (!_isAiming) return;
 
-    }
-
-    private void HandleEnterAimDelveBuddy(bool isAiming)
+    public void EquipDelveBuddy(bool shouldEquip)
     {
-        if (isAiming)
+        if (shouldEquip)
         {
-            _isAiming = true;
-            Player.Instance._vShooterManager.SetLeftWeapon(gameObject);
 
+            Player.Instance._vShooterManager.SetLeftWeapon(gameObject);
         }
         else
         {
-            _isAiming = false;
             Player.Instance._vShooterManager.SetLeftWeapon(null);
         }
     }
@@ -156,7 +235,18 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
             SpecialEquipmentSlot specialEquipmentSlot = equipmentSlots[i].GetComponent<SpecialEquipmentSlot>();
             specialEquipmentSlot.Init(_installedFunctions[i]._id.ToString(), this, _installedFunctions[i]._icon);
         }
+
+        _selectedFunction = _installedFunctions[0];
     }
+
+    void Update()
+    {
+        if (_isAiming && _selectedFunction != null && _selectedFunction._updateOnAim)
+        {
+            _selectedFunction.Update();
+        }
+    }
+
     public override void Use()
     {
         _selectedFunction.Use(this);
@@ -166,9 +256,23 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
     {
         transform.SetParent(Player.Instance._delveBuddySlot);
         transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-        _animator = Player.Instance.transform.GetComponent<Animator>();
-        GetComponent<vShooterWeapon>()._ignoreIdleAnim = true;
     }
+
+
+    public void ToggleAiming()
+    {
+        _isAiming = !_isAiming;
+        if (_isAiming)
+        {
+            OnToggleAim?.Invoke(true);
+        }
+        else
+        {
+            OnToggleAim?.Invoke(false);
+        }
+        Player.Instance._vShooterMeleeInput.SwitchCameraSide();
+    }
+
 
     public void OnSlotClicked(string slotId)
     {
@@ -183,5 +287,26 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
 
         //*HIDE ABILITY WHEEL
         AltInput.OnToggleEquipmentWheel?.Invoke();
+    }
+}
+
+
+
+public class CenterRaycast
+{
+    public Camera cam; // Assign your camera in the Inspector
+    public float rayDistance = 100f;
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0)) // Trigger on left-click
+        {
+            Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f)); // Center of screen
+            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
+            {
+                Debug.Log("Hit: " + hit.collider.name);
+                // You can add more logic here, like interacting with the object
+            }
+        }
     }
 }

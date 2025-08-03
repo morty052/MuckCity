@@ -152,6 +152,8 @@ public class Player : MonoBehaviour, IHavePersistentData
             _inventory = GetComponentInChildren<vInventory>();
             _vShooterMeleeInput = GetComponent<vShooterMeleeInput>();
 
+
+
             _altInput = GetComponent<AltInput>();
 
 
@@ -622,7 +624,8 @@ public class Player : MonoBehaviour, IHavePersistentData
     [Button]
     public void SetDelvEbuddy(vShooterWeapon shooterWeapon)
     {
-        _vShooterManager.SetLeftWeapon(shooterWeapon.gameObject);
+        // _vShooterManager.SetLeftWeapon(shooterWeapon.gameObject);
+        _vShooterMeleeInput.SwitchCameraSide();
     }
 }
 
