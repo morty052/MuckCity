@@ -250,7 +250,11 @@ namespace Invector.vShooter
                     SetRightWeapon(weaponR.gameObject);
                 }
 
-                if (weaponL != null && !weaponL.TryGetComponent(out DelveBuddy melee))
+                // if (weaponL != null && !weaponL.TryGetComponent(out DelveBuddy melee))
+                // {
+                //     SetLeftWeapon(weaponL.gameObject);
+                // }
+                if (weaponL != null)
                 {
                     SetLeftWeapon(weaponL.gameObject);
                 }

@@ -196,18 +196,26 @@ public class AltInput : MonoBehaviour
 
 
 
+    // public void HandleAimBuddy()
+    // {
+    //     if (_aimDelveBuddyInput.IsPressed())
+    //     {
+    //         if (_isAimingDelveBuddy) return;
+    //         _isAimingDelveBuddy = true;
+    //         OnEnterAimDelveBuddy?.Invoke(true);
+    //     }
+    //     else if (_aimDelveBuddyInput.WasReleasedThisFrame())
+    //     {
+    //         OnEnterAimDelveBuddy?.Invoke(false);
+    //         _isAimingDelveBuddy = false;
+    //     }
+    // }
     public void HandleAimBuddy()
     {
-        if (_aimDelveBuddyInput.IsPressed())
+        if (_aimDelveBuddyInput.WasPressedThisFrame())
         {
-            if (_isAimingDelveBuddy) return;
-            OnEnterAimDelveBuddy?.Invoke(true);
-            _isAimingDelveBuddy = true;
-        }
-        else if (_aimDelveBuddyInput.WasReleasedThisFrame())
-        {
-            OnEnterAimDelveBuddy?.Invoke(false);
-            _isAimingDelveBuddy = false;
+            _isAimingDelveBuddy = !_isAimingDelveBuddy;
+            OnEnterAimDelveBuddy?.Invoke(_isAimingDelveBuddy);
         }
     }
     public void HandleBuyButton()

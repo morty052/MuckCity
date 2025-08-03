@@ -23,8 +23,8 @@ namespace Invector.vShooter
     public class vShooterWeapon : vShooterWeaponBase
     {
         public enum AutoReloadStyle
-        {            
-            WhenAiming,WhenShot,WhenAmmoAvailable
+        {
+            WhenAiming, WhenShot, WhenAmmoAvailable
         }
         #region variables
         [System.Serializable]
@@ -211,6 +211,7 @@ namespace Invector.vShooter
         #endregion
 
         [System.NonSerialized] private float testTime;
+        public bool _ignoreIdleAnim;
 
         protected virtual void OnDrawGizmos()
         {

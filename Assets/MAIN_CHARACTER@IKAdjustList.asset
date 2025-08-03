@@ -18,3 +18,15 @@ MonoBehaviour:
   ikTargetRotationOffsetL: {x: 0, y: 0, z: 0}
   weaponIKAdjusts:
   - {fileID: 11400000, guid: 769822f0571077c4aa2c961b59cfedb0, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: b715e3157a694ee48a7fddf74b6fef8c, type: 2}

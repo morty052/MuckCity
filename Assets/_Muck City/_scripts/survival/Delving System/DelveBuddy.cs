@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Invector.vCharacterController;
 using Invector.vShooter;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public enum DelveBuddyFunctions
@@ -98,6 +100,8 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
 
     public Action<vProjectileControl> OnInstantiateProjectileEvent;
 
+    Animator _animator;
+
     void Awake()
     {
         _vShooterWeapon = GetComponent<vShooterWeapon>();
@@ -118,13 +122,19 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
         OnInstantiateProjectileEvent?.Invoke(projectile);
     }
 
+    void Update()
+    {
+        if (!_isAiming) return;
+
+    }
+
     private void HandleEnterAimDelveBuddy(bool isAiming)
     {
         if (isAiming)
         {
             _isAiming = true;
             Player.Instance._vShooterManager.SetLeftWeapon(gameObject);
-            SpecialEquipmentManager.Instance._activeEquipment = this;
+
         }
         else
         {
@@ -156,6 +166,8 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
     {
         transform.SetParent(Player.Instance._delveBuddySlot);
         transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        _animator = Player.Instance.transform.GetComponent<Animator>();
+        GetComponent<vShooterWeapon>()._ignoreIdleAnim = true;
     }
 
     public void OnSlotClicked(string slotId)

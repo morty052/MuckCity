@@ -1,14 +1,13 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using DialogueEditor;
 using Invector;
 using Invector.vCamera;
 using Invector.vCharacterController;
+using Invector.vCharacterController.vActions;
 using Invector.vItemManager;
 using Invector.vShooter;
 using Sirenix.OdinInspector;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -26,7 +25,10 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     vThirdPersonController _vThirdPersonController;
     [HideInInspector] public vShooterManager _vShooterManager;
-    vThirdPersonInput _vThirdPersonInput;
+    public vThirdPersonInput _vThirdPersonInput;
+    public vShooterMeleeInput _vShooterMeleeInput;
+
+    vGenericAnimation _vGenericAnimation;
 
     vInventory _inventory;
 
@@ -146,7 +148,9 @@ public class Player : MonoBehaviour, IHavePersistentData
             _vShooterManager = GetComponent<vShooterManager>();
             _vFootStep = GetComponent<vFootStep>();
             _itemManager = GetComponent<vItemManager>();
+            _vGenericAnimation = GetComponent<vGenericAnimation>();
             _inventory = GetComponentInChildren<vInventory>();
+            _vShooterMeleeInput = GetComponent<vShooterMeleeInput>();
 
             _altInput = GetComponent<AltInput>();
 
@@ -609,18 +613,16 @@ public class Player : MonoBehaviour, IHavePersistentData
     }
 
     [Button]
-    public void EnterAimMode()
+    public void PlayAnimation(string animationName, float duration = 1f)
     {
-        if (_vThirdPersonCamera.currentState.Name != "Aiming")
-        {
-            _vThirdPersonCamera.ChangeState("Aiming");
-        }
-
-        else
-        {
-            _vThirdPersonCamera.ChangeState("Default");
-        }
-
+        _vGenericAnimation.animationClip = animationName;
+        _vGenericAnimation.animationEnd = duration;
+        _vGenericAnimation.PlayAnimation();
+    }
+    [Button]
+    public void SetDelvEbuddy(vShooterWeapon shooterWeapon)
+    {
+        _vShooterManager.SetLeftWeapon(shooterWeapon.gameObject);
     }
 }
 

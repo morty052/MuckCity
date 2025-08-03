@@ -1101,7 +1101,10 @@ namespace Invector.vCharacterController
 
             // turn on the onlyarms layer to aim 
             onlyArmsLayerWeight = Mathf.Lerp(onlyArmsLayerWeight, (CurrentActiveWeapon || isEquipping) ? 1f : 0f, shooterManager.onlyArmsSpeed * vTime.fixedDeltaTime);
-            animator.SetLayerWeight(onlyArmsLayer, onlyArmsLayerWeight);
+            if (CurrentActiveWeapon && !CurrentActiveWeapon._ignoreIdleAnim)
+            {
+                animator.SetLayerWeight(onlyArmsLayer, onlyArmsLayerWeight);
+            }
             if (CurrentActiveWeapon && IsAiming) animator.SetLayerWeight(shotLayer, isUsingScopeView ? CurrentActiveWeapon.scopeShootAnimationWeight : 1f);
             if (CurrentActiveWeapon && !shooterManager.useDefaultMovesetWhenNotAiming || IsAiming)
             {
@@ -1262,9 +1265,9 @@ namespace Invector.vCharacterController
                         var hits = Physics.RaycastAll(ray, cameraMain.farClipPlane, shooterManager.damageLayer);
                         ///Try to find other hit point next to character transform                     
                         for (int i = 0; i < hits.Length; i++)
-                        {                           
+                        {
                             if (hits[i].distance < dist && hits[i].collider.gameObject != collider.gameObject && !hits[i].collider.transform.IsChildOf(transform))
-                            {                             
+                            {
                                 dist = hits[i].distance;
                                 hit = hits[i];
                                 canAimToHit = true;
@@ -1289,7 +1292,7 @@ namespace Invector.vCharacterController
             }
             DesiredAimPosition = desiredAimPoint;
             localAimPosition = cameraMain.transform.InverseTransformPoint(DesiredAimPosition);
-         
+
 
         }
 
@@ -1324,7 +1327,7 @@ namespace Invector.vCharacterController
             {
                 bool canAimToHit = false;
                 var dist = cameraMain.farClipPlane;
-               
+
                 //Check if hit object is child of  character transform
                 if (hit.collider.transform.IsChildOf(transform))
                 {
@@ -1334,7 +1337,7 @@ namespace Invector.vCharacterController
                     var hits = Physics.RaycastAll(castRay, castDistance, castLayer);
                     ///Try to find other hit point next to character transform
                     for (int i = 0; i < hits.Length; i++)
-                    {                        
+                    {
                         if (hits[i].distance < dist && hits[i].collider.gameObject != collider.gameObject && !hits[i].collider.transform.IsChildOf(transform))
                         {
                             dist = hits[i].distance;
@@ -1363,7 +1366,7 @@ namespace Invector.vCharacterController
             {
                 shooterManager.CameraSway();
             }
-           
+
         }
 
         public override void ControlRotation()
@@ -1449,7 +1452,7 @@ namespace Invector.vCharacterController
                 checkCanAimOffsetStartY = Mathf.Lerp(checkCanAimOffsetStartY, IsCrouching ? shooterManager.checkAimCrouchedOffsetStartY : shooterManager.checkAimStandingOffsetStartY, checkAimSmooth * Time.fixedDeltaTime);
                 checkCanAimOffsetEndX = Mathf.Lerp(checkCanAimOffsetEndX, IsCrouching ? shooterManager.checkAimCrouchedOffsetEndX : shooterManager.checkAimStandingOffsetEndX, checkAimSmooth * Time.fixedDeltaTime);
                 checkCanAimOffsetEndY = Mathf.Lerp(checkCanAimOffsetEndY, IsCrouching ? shooterManager.checkAimCrouchedOffsetEndY : shooterManager.checkAimStandingOffsetEndY, checkAimSmooth * Time.fixedDeltaTime);
-                
+
                 var startX = checkCanAimOffsetStartX;
                 var startY = checkCanAimOffsetStartY;
                 var endX = checkCanAimOffsetEndX;
@@ -1469,7 +1472,7 @@ namespace Invector.vCharacterController
                 end = newEndPoint;
             }
         }
-        public delegate void UpdateCheckAimPointsEvent(ref float startX, ref float endX,ref float startY,ref float endY);
+        public delegate void UpdateCheckAimPointsEvent(ref float startX, ref float endX, ref float startY, ref float endY);
         public UpdateCheckAimPointsEvent onUpdateCheckAimPointsEvent;
         protected virtual void OnFinishUpdateIK()
         {
@@ -1504,7 +1507,7 @@ namespace Invector.vCharacterController
                 CurrentActiveWeapon.handIKTargetOffset.localEulerAngles = isUsingLeftHand ? WeaponIKAdjustList.ikTargetRotationOffsetL : WeaponIKAdjustList.ikTargetRotationOffsetR;
             }
 
-            if (!CurrentWeaponIK )
+            if (!CurrentWeaponIK)
             {
                 LeftIK.UpdateIK();
                 RightIK.UpdateIK();
@@ -1514,7 +1517,7 @@ namespace Invector.vCharacterController
                 return;
             }
             bool isValidIK = !IsIgnoreIK && !cc.customAction && !isReloading && !isEquipping && CurrentWeaponIK != null && CurrentIKAdjust != null;
-            weaponIKWeight = Mathf.Lerp(weaponIKWeight, isValidIK ? 1 : 0, shooterManager.ikAdjustSmooth*Time.fixedDeltaTime);
+            weaponIKWeight = Mathf.Lerp(weaponIKWeight, isValidIK ? 1 : 0, shooterManager.ikAdjustSmooth * Time.fixedDeltaTime);
             if (weaponIKWeight <= 0)
             {
                 return;
@@ -1580,7 +1583,7 @@ namespace Invector.vCharacterController
                 targetIK = LeftIK;
             }
             bool useIK = isUsingLeftHand ? shooterManager.useLeftIK : shooterManager.useRightIK;
-            if ((!shooterManager || !CurrentActiveWeapon ||  IsIgnoreIK || isEquipping) ||
+            if ((!shooterManager || !CurrentActiveWeapon || IsIgnoreIK || isEquipping) ||
                 (cc.IsAnimatorTag("Shot Fire") && CurrentActiveWeapon.disableIkOnShot))
             {
                 useIK = false;
@@ -1588,7 +1591,7 @@ namespace Invector.vCharacterController
 
             bool useIkConditions = false;
             var animatorInput = System.Math.Round(cc.inputMagnitude, 1);
-            if(!useIK)
+            if (!useIK)
             {
                 useIkConditions = false;
             }
@@ -1655,7 +1658,7 @@ namespace Invector.vCharacterController
                     supportIKWeight = Mathf.Lerp(supportIKWeight, 0, shooterManager.armIKSmoothOut * vTime.fixedDeltaTime);
                 }
 
-                if (supportIKWeight <= 0 )
+                if (supportIKWeight <= 0)
                 {
                     if (!IsSupportHandIKEnabled && shooterManager.CurrentWeaponIK)
                     {
@@ -1729,7 +1732,7 @@ namespace Invector.vCharacterController
                 arm.maxHorizontalAligmentAngle = shooterManager.maxHorizontalAimAngle;
                 if (shooterManager.showCheckAimGizmos) arm.DrawBones(Color.blue);
                 ///Align arm to target aim position      
-               
+
                 arm.AlignToArmToPosition(targetArmAlignmentPosition, armAlignmentWeight, CurrentActiveWeapon.alignRightUpperArmToAim, CurrentActiveWeapon.alignRightHandToAim);
                 if (shooterManager.showCheckAimGizmos) arm.DrawHelpers(Color.green);
             }
@@ -1786,11 +1789,11 @@ namespace Invector.vCharacterController
             {
                 aimConditions = true;
             }
-            _aimCondition = aimConditions; 
+            _aimCondition = aimConditions;
             checkAimConditionOverride?.Invoke(startPoint, endPoint, ref _aimCondition);
             aimConditions = _aimCondition;
         }
-        public delegate void CheckAimConditionsEvent( Vector3 startPoint, Vector3 endPoint,ref bool aimConditions);
+        public delegate void CheckAimConditionsEvent(Vector3 startPoint, Vector3 endPoint, ref bool aimConditions);
         public CheckAimConditionsEvent checkAimConditionOverride;
         protected virtual Vector3 targetArmAlignmentPosition
         {
