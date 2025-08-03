@@ -163,7 +163,7 @@ MonoBehaviour:
     rotationOffSet: {x: 0, y: 0, z: 0}
     cullingHeight: 1.5
     cullingMinDist: 0.1
-    fov: 35
+    fov: 1
     useZoom: 0
     fixedAngle: {x: 0, y: 0}
     lookPoints: []

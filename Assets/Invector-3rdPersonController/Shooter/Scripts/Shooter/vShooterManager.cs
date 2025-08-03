@@ -18,7 +18,7 @@ namespace Invector.vShooter
         /// Event called when equip or unequip a weapon, (Weapon, isLeftWeapon)
         /// </summary>
         [System.Serializable]
-        public class EquipWeaponEvent : UnityEngine.Events.UnityEvent<vShooterWeapon,bool> { }
+        public class EquipWeaponEvent : UnityEngine.Events.UnityEvent<vShooterWeapon, bool> { }
         public delegate void AmmoHandle(int ammoID, ref int ammo);
 
         [vEditorToolbar("Melee Overrides")]
@@ -52,7 +52,7 @@ namespace Invector.vShooter
 
         [vEditorToolbar("Aim")]
         [Tooltip("The min distance that Hit point can be, the min distance will be used to indicate the target point in the crosshair")]
-        public float maxAimHitPointIndicator=30f;
+        public float maxAimHitPointIndicator = 30f;
         [Tooltip("The min distance that Hit point can be, the min distance will be used to calculate the point using camera position and camera forward relative to muzzle position")]
         public float minAimHitPointDistance;
         [Tooltip("If the Aim Hit point is behind weapon muzzle, the aim point will be the default point")]
@@ -106,13 +106,13 @@ namespace Invector.vShooter
         [Tooltip("Sync the weapon aim to the camera aim")]
         public bool raycastAimTarget = true;
         [Tooltip("rotate arm ik to aim hit point, if false the arms will rotate to  camera forward distance 100")]
-        public bool alignArmToHitPoint = true;     
+        public bool alignArmToHitPoint = true;
         [Tooltip("Check this to use IK on the left hand")]
         public bool useLeftIK = true, useRightIK = true;
         [vSeparator("--- Start PlayMode to edit the IK Adjust ---")]
         public vWeaponIKAdjustList weaponIKAdjustList;
         public float ikAdjustSmooth = 20;
-        public AnimationCurve ikAdjustWeightCurve = new AnimationCurve(new Keyframe(0,0),new Keyframe(1, 1)); 
+        public AnimationCurve ikAdjustWeightCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
         [vEditorToolbar("Ammo")]
         [SerializeField] protected bool allAmmoInfinity;
         [Tooltip("Use the vAmmoDisplay to shot ammo count")]
@@ -205,8 +205,8 @@ namespace Invector.vShooter
 
         protected int extraAmmo;
 
-        public virtual int ExtraAmmo => extraAmmo;      
-      
+        public virtual int ExtraAmmo => extraAmmo;
+
         [vEditorToolbar("Debug")]
         public bool showCheckAimGizmos;
 
@@ -217,7 +217,7 @@ namespace Invector.vShooter
             animator = GetComponent<Animator>();
             if (applyRecoilToCamera)
             {
-                tpCamera = FindObjectOfType<vCamera.vThirdPersonCamera>();
+                tpCamera = FindFirstObjectByType<vCamera.vThirdPersonCamera>();
             }
             ammoManager = GetComponent<vAmmoManager>();
             if (ammoManager != null)
@@ -250,7 +250,7 @@ namespace Invector.vShooter
                     SetRightWeapon(weaponR.gameObject);
                 }
 
-                if (weaponL != null)
+                if (weaponL != null && !weaponL.TryGetComponent(out DelveBuddy melee))
                 {
                     SetLeftWeapon(weaponL.gameObject);
                 }
@@ -304,7 +304,7 @@ namespace Invector.vShooter
 
         protected virtual void SetLeftWeapon(vShooterWeapon weapon)
         {
-         
+
             if (weapon)
             {
                 lWeapon = weapon;
@@ -355,18 +355,18 @@ namespace Invector.vShooter
             {
                 var w = weapon.GetComponent<vShooterWeapon>();
                 SetRightWeapon(w);
-             
+
             }
             else
             {
-                if(rWeapon) onUnequipWeapon.Invoke(rWeapon, false);
+                if (rWeapon) onUnequipWeapon.Invoke(rWeapon, false);
                 rWeapon = null;
             }
         }
 
         protected virtual void SetRightWeapon(vShooterWeapon weapon)
         {
-          
+
             if (weapon)
             {
                 rWeapon = weapon;
@@ -404,10 +404,10 @@ namespace Invector.vShooter
                 onEquipWeapon.Invoke(weapon, false);
             }
             else
-            {                
+            {
                 if (rWeapon) onUnequipWeapon.Invoke(rWeapon, false);
                 rWeapon = null;
-                
+
             }
         }
 
@@ -457,7 +457,7 @@ namespace Invector.vShooter
 
         protected virtual void GetAmmoDisplays()
         {
-            var ammoDisplays = FindObjectsOfType<vAmmoDisplay>();
+            var ammoDisplays = FindObjectsByType<vAmmoDisplay>(FindObjectsSortMode.None);
             if (ammoDisplays.Length > 0)
             {
                 if (!ammoDisplayL)
@@ -471,6 +471,7 @@ namespace Invector.vShooter
                 }
             }
         }
+
 
         public virtual int GetMoveSetID()
         {
@@ -628,7 +629,7 @@ namespace Invector.vShooter
                     }
                     else
                     {
-                        if (!(weapon.isInfinityAmmo || AllAmmoInfinity)&& WeaponAmmo(weapon).count < needAmmo)
+                        if (!(weapon.isInfinityAmmo || AllAmmoInfinity) && WeaponAmmo(weapon).count < needAmmo)
                         {
                             needAmmo = WeaponAmmo(weapon).count;
                         }

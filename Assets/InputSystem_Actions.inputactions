@@ -496,6 +496,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "AimDelveBuddy",
+                    "type": "Button",
+                    "id": "90293c6a-2cb1-4ffe-8a31-80d3984ade10",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -540,6 +549,28 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "ToggleEquipmentWheel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9922913b-e1d9-45cb-8ccf-006ba202f741",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "AimDelveBuddy",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8eaabea3-7232-4da9-bd68-683cb14a991b",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "AimDelveBuddy",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

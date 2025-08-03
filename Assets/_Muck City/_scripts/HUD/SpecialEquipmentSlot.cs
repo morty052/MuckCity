@@ -22,6 +22,8 @@ public class SpecialEquipmentSlot : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public bool _isInUse = false;
 
+    public bool _debug;
+
     void Start()
     {
         _slotBackgroundImage.fillAmount = 0;
@@ -55,17 +57,26 @@ public class SpecialEquipmentSlot : MonoBehaviour, IPointerEnterHandler, IPointe
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!_isInUse) return;
-        Debug.Log("Mouse exited UI element!");
         _slotBackgroundImage.DOFillAmount(0, 0.2f).OnComplete(() => _slotBackgroundImage.transform.DOScale(Vector3.one, 0.1f));
+        if (_debug)
+        {
+            Debug.Log("Mouse exited UI element!");
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!_isInUse) return;
-        Debug.Log("Mouse clicked UI element!");
+
         if (_onClickSlotReceiver != null)
         {
             _onClickSlotReceiver.OnSlotClicked(_slotId);
+        }
+
+        if (_debug)
+        {
+
+            Debug.Log("Mouse clicked UI element!");
         }
     }
 }

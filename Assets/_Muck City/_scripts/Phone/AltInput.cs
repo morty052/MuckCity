@@ -52,12 +52,16 @@ public class AltInput : MonoBehaviour
     #region Secondary Inputs
     private InputAction _useEquipmentInput;
     private InputAction _toggleEquipmentWheelInput;
+    private InputAction _aimDelveBuddyInput;
     #endregion
 
     #region Events
     public static Action OnPressUseSpecialEquipment;
     public static Action OnToggleEquipmentWheel;
+    public static Action<bool> OnEnterAimDelveBuddy;
     #endregion
+
+    bool _isAimingDelveBuddy;
 
 
     void OnEnable()
@@ -97,6 +101,8 @@ public class AltInput : MonoBehaviour
         {
             OnToggleEquipmentWheel?.Invoke();
         }
+
+        HandleAimBuddy();
     }
 
     void HandleBrowsingInputs()
@@ -177,6 +183,7 @@ public class AltInput : MonoBehaviour
     {
         _useEquipmentInput = InputSystem.actions.FindAction("UseSpecialEquipment");
         _toggleEquipmentWheelInput = InputSystem.actions.FindAction("ToggleEquipmentWheel");
+        _aimDelveBuddyInput = InputSystem.actions.FindAction("AimDelveBuddy");
     }
 
 
@@ -189,6 +196,20 @@ public class AltInput : MonoBehaviour
 
 
 
+    public void HandleAimBuddy()
+    {
+        if (_aimDelveBuddyInput.IsPressed())
+        {
+            if (_isAimingDelveBuddy) return;
+            OnEnterAimDelveBuddy?.Invoke(true);
+            _isAimingDelveBuddy = true;
+        }
+        else if (_aimDelveBuddyInput.WasReleasedThisFrame())
+        {
+            OnEnterAimDelveBuddy?.Invoke(false);
+            _isAimingDelveBuddy = false;
+        }
+    }
     public void HandleBuyButton()
     {
 

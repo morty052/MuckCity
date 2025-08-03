@@ -6,7 +6,9 @@ using Invector;
 using Invector.vCamera;
 using Invector.vCharacterController;
 using Invector.vItemManager;
+using Invector.vShooter;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -23,6 +25,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     public static Player Instance { get; private set; }
 
     vThirdPersonController _vThirdPersonController;
+    [HideInInspector] public vShooterManager _vShooterManager;
     vThirdPersonInput _vThirdPersonInput;
 
     vInventory _inventory;
@@ -140,6 +143,7 @@ public class Player : MonoBehaviour, IHavePersistentData
             Instance = this;
             _vThirdPersonController = GetComponent<vThirdPersonController>();
             _vThirdPersonInput = GetComponent<vThirdPersonInput>();
+            _vShooterManager = GetComponent<vShooterManager>();
             _vFootStep = GetComponent<vFootStep>();
             _itemManager = GetComponent<vItemManager>();
             _inventory = GetComponentInChildren<vInventory>();
@@ -604,7 +608,20 @@ public class Player : MonoBehaviour, IHavePersistentData
         Gizmos.DrawSphere(transform.position + Vector3.up, _interactionRange);
     }
 
+    [Button]
+    public void EnterAimMode()
+    {
+        if (_vThirdPersonCamera.currentState.Name != "Aiming")
+        {
+            _vThirdPersonCamera.ChangeState("Aiming");
+        }
 
+        else
+        {
+            _vThirdPersonCamera.ChangeState("Default");
+        }
+
+    }
 }
 
 
