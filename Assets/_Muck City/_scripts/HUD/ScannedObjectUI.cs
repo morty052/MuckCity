@@ -21,8 +21,14 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
 
     [SerializeField, TabGroup("Quick Preview")] GameObject _preview;
     [SerializeField, TabGroup("Quick Preview")] TextMeshProUGUI _previewNameText;
+
     [SerializeField, TabGroup("Scan UI")] Image _scanBarImage;
     [SerializeField, TabGroup("Scan UI")] GameObject _scanBar;
+
+    [SerializeField, TabGroup("Scan Tv")] GameObject _scanTV;
+    [SerializeField, TabGroup("Scan Tv")] TextMeshProUGUI _scanTVItemNameText;
+    [SerializeField, TabGroup("Scan Tv")] TextMeshProUGUI _scanTVItemDescription;
+    [SerializeField, TabGroup("Scan Tv")] Transform _scanTVItemUseParent;
 
     [ShowInInspector] public HashSet<ScanDetails> _discoverableItems = new();
     private bool _scanInProgress;
@@ -110,7 +116,12 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
             _scanInProgress = true;
         }
         _scanBarImage.fillAmount = progress;
+        if (progress >= 1)
+        {
+            HideScanBar();
+        }
     }
+
 
     public void HideScanBar()
     {
@@ -119,4 +130,6 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
         _scanBar.transform.DOScale(Vector3.zero, 0.3f);
         _scanInProgress = false;
     }
+
+
 }

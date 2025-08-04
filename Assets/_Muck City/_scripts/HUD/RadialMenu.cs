@@ -46,6 +46,15 @@ public class RadialMenu : MonoBehaviour
         return uiElements;
     }
 
+    public void OnSlotClicked(SpecialEquipmentSlot slot)
+    {
+
+    }
+    public void OnSlotHovered(SpecialEquipmentSlot slot)
+    {
+        _dialRotator._selectedTarget = slot.transform;
+    }
+
     [Button("Arrange")]
     public void ArrangeInCircle()
     {
@@ -86,6 +95,21 @@ public class DialRotator
         _centerPoint = centerPoint;
     }
 
+    // public void Update()
+    // {
+    //     if (_selectedTarget == null || _dial == null || _centerPoint == null) return;
+
+    //     // Get direction from center to target
+    //     Vector2 direction = _selectedTarget.position - _centerPoint.position;
+
+    //     // Calculate angle in degrees
+    //     float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+    //     // Apply rotation (UI uses Z-axis for rotation)
+    //     _dial.rotation = Quaternion.Euler(0f, 0f, angle);
+    // }
+
+
     public void Update()
     {
         if (_selectedTarget == null || _dial == null || _centerPoint == null) return;
@@ -96,7 +120,7 @@ public class DialRotator
         // Calculate angle in degrees
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        // Apply rotation (UI uses Z-axis for rotation)
-        _dial.rotation = Quaternion.Euler(0f, 0f, angle);
+        // Apply rotation (UI uses Z-axis for rotation) with lerping
+        _dial.rotation = Quaternion.Slerp(_dial.rotation, Quaternion.Euler(0f, 0f, angle), Time.deltaTime * 5f);
     }
 }

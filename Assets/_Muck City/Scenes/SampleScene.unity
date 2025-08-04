@@ -1566,7 +1566,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1964099787604229005, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_Cameras.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1964099787604229005, guid: 74e8ad374e707c84fba66429e6bbd7e0, type: 3}
       propertyPath: m_RenderPostProcessing
@@ -3479,7 +3479,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &915422893
 RectTransform:
   m_ObjectHideFlags: 0

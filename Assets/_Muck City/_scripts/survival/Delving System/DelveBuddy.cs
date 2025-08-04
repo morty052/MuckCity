@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Invector.vShooter;
 using UnityEngine;
@@ -124,7 +125,36 @@ public class SpawnReturnBeacon : DelveBuddyFunction
     void PreviewBeacon(Vector3 position, Quaternion rotation)
     {
         _returnBeaconInstance.gameObject.SetActive(true);
-        _returnBeaconInstance.transform.SetPositionAndRotation(position, Quaternion.identity);
+        // _returnBeaconInstance.transform.SetPositionAndRotation(position, Quaternion.identity);
+        _returnBeaconInstance.transform.position = Vector3.Lerp(_returnBeaconInstance.transform.position, position, 0.1f);
+    }
+
+    // void PreviewBeacon(Vector3 position, Quaternion rotation)
+    // {
+    //     _returnBeaconInstance.gameObject.SetActive(true);
+    //     _delveBuddy.StartCoroutine(MoveBeaconToPosition(position, Quaternion.identity));
+    // }
+
+    IEnumerator MoveBeaconToPosition(Vector3 targetPosition, Quaternion targetRotation)
+    {
+        float duration = 0.5f; // adjust this value to change the speed of the movement
+        float elapsedTime = 0;
+
+        Vector3 startPosition = _returnBeaconInstance.transform.position;
+        Quaternion startRotation = _returnBeaconInstance.transform.rotation;
+
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            _returnBeaconInstance.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+            _returnBeaconInstance.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, t);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        _returnBeaconInstance.transform.position = targetPosition;
+        _returnBeaconInstance.transform.rotation = targetRotation;
     }
 
 

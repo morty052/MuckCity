@@ -24,6 +24,13 @@ public class SpecialEquipmentSlot : MonoBehaviour, IPointerEnterHandler, IPointe
 
     public bool _debug;
 
+    private RadialMenu _radialMenu;
+
+    void Awake()
+    {
+        _radialMenu = GetComponentInParent<RadialMenu>();
+    }
+
     void Start()
     {
         _slotBackgroundImage.fillAmount = 0;
@@ -51,7 +58,8 @@ public class SpecialEquipmentSlot : MonoBehaviour, IPointerEnterHandler, IPointe
     {
         if (!_isInUse) return;
         Debug.Log("Mouse entered UI element!");
-        _slotBackgroundImage.DOFillAmount(1, 0.2f).OnComplete(() => _slotBackgroundImage.transform.DOScale(Vector3.one * 1.1f, 0.1f)); ;
+        _slotBackgroundImage.DOFillAmount(1, 0.2f).OnComplete(() => _slotBackgroundImage.transform.DOScale(Vector3.one * 1.1f, 0.1f));
+        _radialMenu.OnSlotHovered(this);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -71,7 +79,10 @@ public class SpecialEquipmentSlot : MonoBehaviour, IPointerEnterHandler, IPointe
         if (_onClickSlotReceiver != null)
         {
             _onClickSlotReceiver.OnSlotClicked(_slotId);
+            _slotBackgroundImage.fillAmount = 0;
         }
+
+        _radialMenu.OnSlotClicked(this);
 
         if (_debug)
         {
