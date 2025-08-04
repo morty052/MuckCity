@@ -33,6 +33,8 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
     [ShowInInspector] public HashSet<ScanDetails> _discoverableItems = new();
     private bool _scanInProgress;
 
+    [SerializeField, TabGroup("Debug")] IScannableObject _lastScannedItem;
+
 
 
     void Awake()
@@ -44,6 +46,7 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
             _preview.SetActive(false);
             _scanBar.transform.localScale = Vector3.zero;
             _scanBarImage.fillAmount = 0;
+            HideScanTv();
             LoadPersistentData();
         }
         else
@@ -74,6 +77,9 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
         _scannedObjectName.text = name;
         _scannedObjectDescription.text = description;
         _previewNameText.text = name;
+
+        _scanTVItemDescription.text = description;
+        _scanTVItemNameText.text = name;
     }
 
     public void OnScanObject(ScanDetails scanDetails)
@@ -84,6 +90,7 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
         Player.Instance._activeQuickAction = this;
         Invoke(nameof(ResetQuickAction), 3f);
         DocumentItem(scanDetails);
+        ShowScanTv();
     }
 
     void ResetQuickAction()
@@ -110,7 +117,7 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
     {
         if (!_scanInProgress)
         {
-            _scanBar.transform.parent = transform;
+            _scanBar.transform.SetParent(transform);
             _scanBar.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             _scanBar.transform.DOScale(new Vector3(0.01f, 0.01f, 0.01f), 0.3f);
             _scanInProgress = true;
@@ -119,13 +126,28 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
         if (progress >= 1)
         {
             HideScanBar();
+            _lastScannedItem = transform.GetComponent<IScannableObject>();
         }
+    }
+
+    void ShowScanTv()
+    {
+        _scanTV.transform.SetParent(_lastScannedItem.GameObject.transform);
+        _scanTV.SetActive(true);
+        _scanTV.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        _scanTV.transform.DOScale(new Vector3(0.01f, 0.01f, 0.01f), 0.3f);
+    }
+    void HideScanTv()
+    {
+
+        _scanTV.transform.DOScale(Vector3.zero, 0.3f).onComplete = () => { _scanTV.SetActive(false); };
+        _scanTV.transform.SetParent(null);
     }
 
 
     public void HideScanBar()
     {
-        _scanBar.transform.parent = null;
+        _scanBar.transform.SetParent(null);
         _scanBarImage.fillAmount = 0;
         _scanBar.transform.DOScale(Vector3.zero, 0.3f);
         _scanInProgress = false;

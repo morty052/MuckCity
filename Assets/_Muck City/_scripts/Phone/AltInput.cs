@@ -220,8 +220,6 @@ public class AltInput : MonoBehaviour
     }
     public void HandleBuyButton()
     {
-
-
         if (_buyInput.IsPressed())
         {
             _buyHoldCounter++; // increment counter while button is held down
@@ -239,6 +237,9 @@ public class AltInput : MonoBehaviour
             _buyHoldCounter = 0; // reset counter when button is released
         }
     }
+
+
+
 
 }
 
