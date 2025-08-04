@@ -4,17 +4,17 @@ using UnityEngine.UI;
 [System.Serializable]
 public struct ScanDetails
 {
+    public DiscoverableItem _id;
     public string _scanName;
     public string _scanDescription;
-    public string _scanText;
 
     public Image _scanImage;
 
-    public ScanDetails(string scanName, string scanDescription, string scanText, Image scanImage)
+    public ScanDetails(DiscoverableItem id, string scanName, string scanDescription, Image scanImage)
     {
+        _id = id;
         _scanName = scanName;
         _scanDescription = scanDescription;
-        _scanText = scanText;
         _scanImage = scanImage;
     }
 }
@@ -33,16 +33,13 @@ public class ScannableObject : MonoBehaviour, IScannableObject
 
     public string ScanText { get; }
 
-    public bool _canScan = true;
-    public bool _scanned = false;
+    public bool CanScan => !ScannedObjectUI.Instance._discoverableItems.Contains(_scanDetails);
 
-    public bool CanScan => _canScan && !_scanned;
+
 
     public virtual void OnScan()
     {
         Debug.Log($"<color=cyan> Entity {transform.name} Has been Scanned </color>");
         ScannedObjectUI.Instance.OnScanObject(_scanDetails);
-        _scanned = true;
-        _canScan = false;
     }
 }

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Invector.vCharacterController;
 using Invector.vShooter;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public enum DelveBuddyFunctions
@@ -201,12 +199,14 @@ public class ScanEntity : DelveBuddyFunction
             if (entity.CanScan)
             {
                 _timeOnScannable += _scanRate * Time.deltaTime;
-                Debug.Log("Time Spent Scanning " + _timeOnScannable);
+                float progress = Mathf.Clamp01(_timeOnScannable / _timeToScan);
+                float fillAmount = Mathf.Lerp(0f, 1f, progress);
+                Debug.Log($"progress {progress}, timeOnScannable {_timeOnScannable}, timeToScan {_timeToScan}");
+                ScannedObjectUI.Instance.ProgressScan(fillAmount, hit.transform);
                 if (_timeOnScannable >= _timeToScan)
                 {
                     entity.OnScan();
                 }
-
             }
         }
     }
@@ -217,6 +217,11 @@ public class ScanEntity : DelveBuddyFunction
         if (Physics.Raycast(ray, out RaycastHit hit, _raycastDistance, _scannableLayer))
         {
             OnScanObject(hit);
+        }
+        else
+        {
+            _timeOnScannable = 0;
+            ScannedObjectUI.Instance.HideScanBar();
         }
     }
 
