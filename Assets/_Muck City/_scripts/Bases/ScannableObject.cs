@@ -30,7 +30,7 @@ public class ScannableObject : MonoBehaviour, IScannableObject
 
     public GameObject _ScanCanvas;
 
-    public VisualEffect _harvestEffect;
+
     public string ScanDescription { get => _scanDetails._scanDescription; }
 
     public string ScanName { get => _scanDetails._scanName; }
@@ -41,54 +41,13 @@ public class ScannableObject : MonoBehaviour, IScannableObject
     public bool CanScan => !ScannedObjectUI.Instance._discoverableItems.Contains(_scanDetails);
 
 
-    void Start()
-    {
-        _harvestEffect = ScannedObjectUI.Instance._harvestVFX;
-    }
 
 
     public virtual void OnScan()
     {
         Debug.Log($"<color=cyan> Entity {transform.name} Has been Scanned </color>");
         ScannedObjectUI.Instance.OnScanObject(_scanDetails);
-
     }
-
-    [Button]
-    public virtual void Harvest(Transform player)
-    {
-        Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
-
-        // *Get Direction of transform to player
-        // Vector3 dir = (player.position - transform.position).normalized * Vector3.Distance(transform.position, player.position);
-        Vector3 dir = new(5, 5, 10);
-        if (ABUtils.IsAhead(transform, player))
-        {
-            dir = new(5, 5, 10);
-        }
-
-        else
-        {
-            dir = new(5, 5, -10);
-        }
-
-        _harvestEffect.SetVector3("Suck Direction", dir);
-
-        _harvestEffect.SetMesh("Sampled Mesh", mesh);
-
-        _harvestEffect.Stop();
-        gameObject.SetActive(false);
-        _harvestEffect.transform.position = transform.position;
-        _harvestEffect.gameObject.SetActive(true);
-
-        _harvestEffect.Play();
-        ABUtils.StartLerp(_harvestEffect.transform, player, 3, 0.5f);
-
-
-        Debug.Log($"dir {dir}, IsAhead {ABUtils.IsAhead(transform, player)}");
-
-    }
-
 
 }
 

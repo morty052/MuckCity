@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using System.Threading.Tasks;
+using Invector.vItemManager;
 
 public static class ABUtils
 {
@@ -34,12 +35,12 @@ public static class ABUtils
         return dot > 0f;
     }
 
-    public static async void StartLerp(Transform floater, Transform target, float duration, float delay = 0)
+    public static async void StartLerp(Transform floater, Transform target, float duration, float delay = 0, AnimationCurve animationCurve = null, Action OnComplete = null)
     {
-        await LerpToTarget(floater, target.position, duration, delay);
+        await LerpToTarget(floater, target.position, duration, delay, OnComplete, animationCurve);
     }
 
-    private static async Task LerpToTarget(Transform obj, Vector3 destination, float duration, float delay = 0)
+    private static async Task LerpToTarget(Transform obj, Vector3 destination, float duration, float delay = 0, Action OnComplete = null, AnimationCurve animationCurve = null)
     {
         await Task.Delay((int)(delay * 1000));
         Vector3 startPos = obj.position;
@@ -49,10 +50,15 @@ public static class ABUtils
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
+            if (animationCurve != null)
+            {
+                t = animationCurve.Evaluate(elapsed / duration);
+            }
             obj.position = Vector3.Lerp(startPos, destination, t);
             await Task.Yield(); // Wait for next frame
         }
 
         obj.position = destination; // Snap to final position
+        OnComplete?.Invoke();
     }
 }

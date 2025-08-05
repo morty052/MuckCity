@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Invector.vShooter;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.VFX;
 
 
 public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
@@ -15,7 +16,8 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
 
     [SerializeReference] public List<DelveBuddyFunction> _installedFunctions;
 
-
+    public Transform _effectsParent;
+    public VisualEffect _harvestEffect;
     [SerializeField] private bool _isAiming;
     public vShooterWeapon _vShooterWeapon;
 
@@ -28,6 +30,7 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
         _vShooterWeapon._ignoreIdleAnim = true;
         _vShooterWeapon.onEnableAim.AddListener(ToggleAiming);
         _vShooterWeapon.onDisableAim.AddListener(ToggleAiming);
+        _effectsParent.SetParent(null);
     }
 
     void OnEnable()

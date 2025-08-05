@@ -264,19 +264,33 @@ public class Harvest : DelveBuddyFunction
     public float _harvestDuration = 3.5f; // Total time in seconds
     public float _scanRate = 1f;
     public float _timeOnScannable = 0;
+
+    public float _attractionSpeed = 1.5f;
+
+    public float _attractionDelay = 3;
     public LayerMask _harvestableLayer = new();
 
     public VisualEffect _harvestEffect;
+    VFXController _harvestEffectController;
 
     public override void Init(DelveBuddy delveBuddy)
     {
         _delveBuddy = delveBuddy;
+
+        _harvestEffect = delveBuddy._harvestEffect;
+
+        _harvestEffectController = _harvestEffect.GetComponent<VFXController>();
+
+        // _harvestEffect.Stop();
+        // _harvestEffect.pause = true;
 
         //* ACTIVATE UPDATE ON AIM FUNCTION
         _updateOnAim = true;
 
         //* DEACTIVATE UPDATE ALWAYS FUNCTION
         updateAlways = false;
+
+        cam = Camera.main;
     }
 
     public override void Equip()
@@ -303,16 +317,17 @@ public class Harvest : DelveBuddyFunction
     {
         if (hit.transform.TryGetComponent(out IHarvestableObject entity))
         {
-            if (entity.CanScan)
+            if (entity.CanHarvest)
             {
                 _timeOnScannable += _scanRate * Time.deltaTime;
                 float progress = Mathf.Clamp01(_timeOnScannable / _harvestDuration);
                 float fillAmount = Mathf.Lerp(0f, 1f, progress);
-                Debug.Log($"progress {progress}, timeOnScannable {_timeOnScannable}, timeToScan {_harvestDuration}");
+                // Debug.Log($"progress {progress}, timeOnScannable {_timeOnScannable}, timeToScan {_harvestDuration}");
                 ScannedObjectUI.Instance.ProgressScan(fillAmount, hit.transform);
                 if (_timeOnScannable >= _harvestDuration)
                 {
                     entity.OnHarvest();
+                    HarvestEntity(entity.GameObject.transform);
                 }
             }
         }
@@ -346,11 +361,11 @@ public class Harvest : DelveBuddyFunction
         Vector3 dir;
         if (ABUtils.IsAhead(entity, _delveBuddy.transform))
         {
-            dir = new(5, 5, 10);
+            dir = new(0, 5, 10);
         }
         else
         {
-            dir = new(5, 5, -10);
+            dir = new(0, 5, 10);
         }
 
         //* UPDATE PARTICLE EFFECT SUCK DIRECTION
@@ -363,28 +378,39 @@ public class Harvest : DelveBuddyFunction
         // _harvestEffect.Reinit();
 
         //* STOP PARTICLE EFFECT
-        _harvestEffect.Stop();
+        // _harvestEffect.Stop();
 
         //* DISABLE ENTITY
-        entity.gameObject.SetActive(false);
+        // entity.gameObject.SetActive(false);
 
         //* MOVE PARTICLE EFFECT POSITION TO ENTITY POSITION
         _harvestEffect.transform.position = entity.position;
 
-        //*ENABLE PARTICLE EFFECT 
-        _harvestEffect.gameObject.SetActive(true);
+        _harvestEffect.transform.localRotation = Quaternion.identity;
+
+        // //* SET LERP TARGET TO DELVE BUDDY
+        // _harvestEffectController.SetLerpTarget(_delveBuddy.transform);
+
+
+
 
         //* PLAY PARTICLE EFFECT
         _harvestEffect.Play();
 
-        ABUtils.StartLerp(_harvestEffect.transform, _delveBuddy.transform, 1.5f, 3f);
+        //*ENABLE PARTICLE EFFECT 
+        _harvestEffect.gameObject.SetActive(true);
+
+        // ABUtils.DelayedInvoke(_attractionDelay, () => ABUtils.StartLerp(_harvestEffect.transform, _delveBuddy.transform, _attractionSpeed, 0, _harvestEffectController._lerpCurve, () => _harvestEffectController.ResetParticle()));
+        ABUtils.DelayedInvoke(4f, () => _harvestEffectController.ResetParticle());
+
+        // ABUtils.StartLerp(_harvestEffect.transform, _delveBuddy.transform, _attractionSpeed, _attractionDelay);
 
 
         Debug.Log($"dir {dir}, IsAhead {ABUtils.IsAhead(entity, _delveBuddy.transform)}");
-        if (!Application.isPlaying)
-        {
-            entity.gameObject.SetActive(true);
-        }
+        // if (!Application.isPlaying)
+        // {
+        //     entity.gameObject.SetActive(true);
+        // }
     }
 
 }

@@ -12,7 +12,7 @@ public interface IHarvestableObject
 {
     public GameObject GameObject { get; }
 
-    public bool CanScan { get; }
+    public bool CanHarvest { get; }
 
     public void OnHarvest();
 }
