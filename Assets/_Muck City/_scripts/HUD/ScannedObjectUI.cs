@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 
 public enum DiscoverableItem
 {
@@ -34,8 +35,7 @@ public class ScannedObjectUI : MonoBehaviour, IDoQuickAction
     private bool _scanInProgress;
 
     [SerializeField, TabGroup("Debug")] IScannableObject _lastScannedItem;
-
-
+    public VisualEffect _harvestVFX;
 
     void Awake()
     {

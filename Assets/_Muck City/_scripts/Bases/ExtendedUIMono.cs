@@ -24,4 +24,35 @@ public static class ABUtils
         await Task.Delay((int)delay * 1000);
         action?.Invoke();
     }
+
+    public static bool IsAhead(Transform reference, Transform target)
+    {
+        Vector3 toTarget = (target.position - reference.position).normalized;
+        float dot = Vector3.Dot(reference.forward, toTarget);
+
+        // If dot > 0, target is in front; if dot < 0, it's behind
+        return dot > 0f;
+    }
+
+    public static async void StartLerp(Transform floater, Transform target, float duration, float delay = 0)
+    {
+        await LerpToTarget(floater, target.position, duration, delay);
+    }
+
+    private static async Task LerpToTarget(Transform obj, Vector3 destination, float duration, float delay = 0)
+    {
+        await Task.Delay((int)(delay * 1000));
+        Vector3 startPos = obj.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            obj.position = Vector3.Lerp(startPos, destination, t);
+            await Task.Yield(); // Wait for next frame
+        }
+
+        obj.position = destination; // Snap to final position
+    }
 }

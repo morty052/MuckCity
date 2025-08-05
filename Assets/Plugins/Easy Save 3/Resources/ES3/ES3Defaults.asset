@@ -44,6 +44,7 @@ MonoBehaviour:
     - MalbersAnimations.Editor
     - MalbersAnimations.InputSystem
     - Sirenix.OdinInspector.Modules.Unity.Addressables
+    - Unity.RenderPipelines.Core.Samples.Runtime
     showAdvancedSettings: 0
   addMgrToSceneAutomatically: 0
   autoUpdateReferences: 0

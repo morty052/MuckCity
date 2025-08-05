@@ -1,13 +1,16 @@
 using System;
 using System.Collections;
 using Invector.vShooter;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.VFX;
 
 public enum DelveBuddyFunctions
 {
-    RETURN_BEACON,
-    SCAN_ENTITY
+    RETURN_BEACON = 0,
+    SCAN_ENTITY = 1,
+    HARVEST = 2
 }
 
 [Serializable]
@@ -175,12 +178,8 @@ public class SpawnReturnBeacon : DelveBuddyFunction
 public class ScanEntity : DelveBuddyFunction
 {
     public float _raycastDistance = 50;
-
-
-
     public float _timeToScan = 3.5f; // Total time in seconds
     public float _scanRate = 1f;
-
     public float _timeOnScannable = 0;
     public LayerMask _scannableLayer = new();
 
@@ -196,15 +195,14 @@ public class ScanEntity : DelveBuddyFunction
         updateAlways = false;
     }
 
-
     public override void Equip()
     {
-        _delveBuddy.OnInstantiateProjectileEvent += OnInstantiateProjectile;
+        // _delveBuddy.OnInstantiateProjectileEvent += OnInstantiateProjectile;
     }
 
     public override void UnEquip()
     {
-        _delveBuddy.OnInstantiateProjectileEvent -= OnInstantiateProjectile;
+        // _delveBuddy.OnInstantiateProjectileEvent -= OnInstantiateProjectile;
     }
 
     public override void Update()
@@ -220,11 +218,11 @@ public class ScanEntity : DelveBuddyFunction
     }
 
 
-    private void OnInstantiateProjectile(vProjectileControl control)
-    {
-        // Debug.Log($"<color=cyan> Scanned Entity </color>");
-        control.onCastCollider.AddListener(OnScanObject);
-    }
+    // private void OnInstantiateProjectile(vProjectileControl control)
+    // {
+    //     // Debug.Log($"<color=cyan> Scanned Entity </color>");
+    //     control.onCastCollider.AddListener(OnScanObject);
+    // }
 
     void OnScanObject(RaycastHit hit)
     {
@@ -259,7 +257,134 @@ public class ScanEntity : DelveBuddyFunction
         }
     }
 
+}
+public class Harvest : DelveBuddyFunction
+{
+    public float _harvestDistance = 50;
+    public float _harvestDuration = 3.5f; // Total time in seconds
+    public float _scanRate = 1f;
+    public float _timeOnScannable = 0;
+    public LayerMask _harvestableLayer = new();
+
+    public VisualEffect _harvestEffect;
+
+    public override void Init(DelveBuddy delveBuddy)
+    {
+        _delveBuddy = delveBuddy;
+
+        //* ACTIVATE UPDATE ON AIM FUNCTION
+        _updateOnAim = true;
+
+        //* DEACTIVATE UPDATE ALWAYS FUNCTION
+        updateAlways = false;
+    }
+
+    public override void Equip()
+    {
+
+    }
+
+    public override void UnEquip()
+    {
+
+    }
+
+    public override void Update()
+    {
+        RayCastForScannable();
+    }
+
+    public override void Use(DelveBuddy delveBuddy)
+    {
+        Debug.Log("Using Delve Buddy Function" + _id);
+    }
+
+    void OnScanObject(RaycastHit hit)
+    {
+        if (hit.transform.TryGetComponent(out IHarvestableObject entity))
+        {
+            if (entity.CanScan)
+            {
+                _timeOnScannable += _scanRate * Time.deltaTime;
+                float progress = Mathf.Clamp01(_timeOnScannable / _harvestDuration);
+                float fillAmount = Mathf.Lerp(0f, 1f, progress);
+                Debug.Log($"progress {progress}, timeOnScannable {_timeOnScannable}, timeToScan {_harvestDuration}");
+                ScannedObjectUI.Instance.ProgressScan(fillAmount, hit.transform);
+                if (_timeOnScannable >= _harvestDuration)
+                {
+                    entity.OnHarvest();
+                }
+            }
+        }
+    }
+
+    void RayCastForScannable()
+    {
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f)); // Center of screen
+        if (Physics.Raycast(ray, out RaycastHit hit, _harvestDistance, _harvestableLayer))
+        {
+            OnScanObject(hit);
+        }
+        else
+        {
+            _timeOnScannable = 0;
+            ScannedObjectUI.Instance.HideScanBar();
+        }
+    }
+
+    [Button]
+    public virtual void HarvestEntity(Transform entity)
+    {
+        if (!Application.isPlaying)
+        {
+            _delveBuddy = GameObject.FindFirstObjectByType<DelveBuddy>();
+        }
+
+        Mesh mesh = entity.GetComponent<MeshFilter>().sharedMesh;
+
+        // *CHECK IF PLAYER IS AHEAD OR BEHIND ENTITY
+        Vector3 dir;
+        if (ABUtils.IsAhead(entity, _delveBuddy.transform))
+        {
+            dir = new(5, 5, 10);
+        }
+        else
+        {
+            dir = new(5, 5, -10);
+        }
+
+        //* UPDATE PARTICLE EFFECT SUCK DIRECTION
+        _harvestEffect.SetVector3("Suck Direction", dir);
+
+        //* SET EFFECT MESH TO ENTITY MESH
+        _harvestEffect.SetMesh("Sampled Mesh", mesh);
+
+        //* RESTART PARTICLE EFFECT
+        // _harvestEffect.Reinit();
+
+        //* STOP PARTICLE EFFECT
+        _harvestEffect.Stop();
+
+        //* DISABLE ENTITY
+        entity.gameObject.SetActive(false);
+
+        //* MOVE PARTICLE EFFECT POSITION TO ENTITY POSITION
+        _harvestEffect.transform.position = entity.position;
+
+        //*ENABLE PARTICLE EFFECT 
+        _harvestEffect.gameObject.SetActive(true);
+
+        //* PLAY PARTICLE EFFECT
+        _harvestEffect.Play();
+
+        ABUtils.StartLerp(_harvestEffect.transform, _delveBuddy.transform, 1.5f, 3f);
 
 
+        Debug.Log($"dir {dir}, IsAhead {ABUtils.IsAhead(entity, _delveBuddy.transform)}");
+        if (!Application.isPlaying)
+        {
+            entity.gameObject.SetActive(true);
+        }
+    }
 
 }

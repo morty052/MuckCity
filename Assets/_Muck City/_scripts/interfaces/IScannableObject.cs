@@ -8,3 +8,11 @@ public interface IScannableObject
 
     public void OnScan();
 }
+public interface IHarvestableObject
+{
+    public GameObject GameObject { get; }
+
+    public bool CanScan { get; }
+
+    public void OnHarvest();
+}
