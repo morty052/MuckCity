@@ -1,10 +1,6 @@
-using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.VFX;
-using System.Threading.Tasks;
-
-
+using System.Collections.Generic;
+using Invector.vItemManager;
 
 public class HarvestableObject : MonoBehaviour, IHarvestableObject
 {
@@ -13,10 +9,16 @@ public class HarvestableObject : MonoBehaviour, IHarvestableObject
 
     public bool CanHarvest => true;
 
+    public List<ItemReference> _items = new();
+
 
     public void OnHarvest()
     {
         gameObject.SetActive(false);
+        for (int i = 0; i < _items.Count; i++)
+        {
+            Player.Instance.AddItemToInventory(_items[i]);
+        }
     }
 }
 

@@ -625,10 +625,6 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     }
 
-    void ResetAnimationListeners()
-    {
-        _vGenericAnimation.OnEndAnimation.RemoveAllListeners();
-    }
     [Button]
     public void SetDelvEbuddy(vShooterWeapon shooterWeapon)
     {

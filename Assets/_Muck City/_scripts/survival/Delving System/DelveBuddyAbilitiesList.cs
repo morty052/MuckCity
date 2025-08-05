@@ -326,8 +326,8 @@ public class Harvest : DelveBuddyFunction
                 ScannedObjectUI.Instance.ProgressScan(fillAmount, hit.transform);
                 if (_timeOnScannable >= _harvestDuration)
                 {
-                    entity.OnHarvest();
-                    HarvestEntity(entity.GameObject.transform);
+
+                    HarvestEntity(entity.GameObject.transform, () => entity.OnHarvest());
                 }
             }
         }
@@ -348,7 +348,7 @@ public class Harvest : DelveBuddyFunction
     }
 
     [Button]
-    public virtual void HarvestEntity(Transform entity)
+    public virtual void HarvestEntity(Transform entity, Action OnHarvest = null)
     {
         if (!Application.isPlaying)
         {
@@ -381,7 +381,7 @@ public class Harvest : DelveBuddyFunction
         // _harvestEffect.Stop();
 
         //* DISABLE ENTITY
-        // entity.gameObject.SetActive(false);
+        entity.gameObject.SetActive(false);
 
         //* MOVE PARTICLE EFFECT POSITION TO ENTITY POSITION
         _harvestEffect.transform.position = entity.position;
@@ -401,7 +401,11 @@ public class Harvest : DelveBuddyFunction
         _harvestEffect.gameObject.SetActive(true);
 
         // ABUtils.DelayedInvoke(_attractionDelay, () => ABUtils.StartLerp(_harvestEffect.transform, _delveBuddy.transform, _attractionSpeed, 0, _harvestEffectController._lerpCurve, () => _harvestEffectController.ResetParticle()));
-        ABUtils.DelayedInvoke(4f, () => _harvestEffectController.ResetParticle());
+        ABUtils.DelayedInvoke(4f, () =>
+        {
+            _harvestEffectController.ResetParticle();
+            OnHarvest?.Invoke();
+        });
 
         // ABUtils.StartLerp(_harvestEffect.transform, _delveBuddy.transform, _attractionSpeed, _attractionDelay);
 
