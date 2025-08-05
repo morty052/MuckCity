@@ -130,7 +130,7 @@ public class CraftingArea : Equipment
             requiredItemIcon._sprite.sprite = requiredItem._sprite;
             requiredItemIcon._sprite.gameObject.SetActive(true);
 
-            bool hasEnoughToCraft = Player.Instance.IsItemInInventory(requiredItem._id);
+            bool hasEnoughToCraft = InventoryManager.Instance.IsItemInInventory(requiredItem._id);
             if (!hasEnoughToCraft)
             {
                 requiredItemIcon._sprite.gameObject.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);

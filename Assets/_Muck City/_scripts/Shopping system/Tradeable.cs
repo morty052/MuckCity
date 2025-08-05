@@ -33,7 +33,7 @@ public class Tradeable : MonoBehaviour
             SpecialEquipmentManager.Instance.AddSpecialEquipment(shopItemSO as SpecialEquipmentSO);
             return;
         }
-        Player.Instance.AddItemToInventory(shopItemSO._itemReference);
+        InventoryManager.Instance.AddItemToInventory(shopItemSO._itemReference);
     }
     public virtual void OnSell()
     {

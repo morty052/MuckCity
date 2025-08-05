@@ -19,7 +19,7 @@ public struct PlayerSaveData
 
     public PlayerSaveData(Player player)
     {
-        _hotStorage = player._hotStorage;
+        _hotStorage = InventoryManager.Instance._hotStorage;
         _position = new(player.transform.position, player.transform.rotation.eulerAngles);
     }
 }

@@ -259,14 +259,14 @@ public class OnScreenDebugger : MonoBehaviour
     public void SetActiveStorage()
     {
         GameObject storage = Instantiate(_activeStorage.gameObject, transform.position, Quaternion.identity);
-        Player.Instance.EquipBackPack(storage.transform);
+        InventoryManager.Instance.EquipBackPack(storage.transform);
     }
     [Button, TabGroup("Crafting")]
     public void AddDebugItems()
     {
         foreach (RawMaterialContainer item in _debugItems)
         {
-            Player.Instance.AddItemToInventory(item._reference);
+            InventoryManager.Instance.AddItemToInventory(item._reference);
         }
     }
     [Button, TabGroup("Crafting")]

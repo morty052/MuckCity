@@ -14,7 +14,7 @@ public class BackPack : Storage
         if (_isUnequipped)
         {
             HudManager.Instance.HideInteractPrompt();
-            Player.Instance.EquipBackPack(transform);
+            InventoryManager.Instance.EquipBackPack(transform);
 
         }
     }

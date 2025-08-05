@@ -17,7 +17,7 @@ public class HarvestableObject : MonoBehaviour, IHarvestableObject
         gameObject.SetActive(false);
         for (int i = 0; i < _items.Count; i++)
         {
-            Player.Instance.AddItemToInventory(_items[i]);
+            InventoryManager.Instance.AddItemToInventory(_items[i]);
         }
     }
 }

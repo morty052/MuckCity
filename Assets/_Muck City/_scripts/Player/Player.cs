@@ -30,13 +30,14 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     vGenericAnimation _vGenericAnimation;
 
-    vInventory _inventory;
+
+    vItemManager _itemManager;
 
     Vehicle _currentVehicle;
 
     private PlayerSaveData _playerSaveData;
 
-    vItemManager _itemManager;
+
 
     // CancellationTokenSource cts = new();
 
@@ -52,7 +53,6 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Inputs")] public GenericInput _exitInput = new("C", "Y", "Y");
     [TabGroup("Inputs")] public GenericInput _dialogueOneInput = new("C", "Y", "Y");
     [TabGroup("Inputs")] public GenericInput _dialogueTwoInput = new("C", "Y", "Y");
-    [TabGroup("Inputs")] public GenericInput _useHomeBeaconInput = new("C", "Y", "Y");
     [TabGroup("Inputs")] public bool _isUsingAltInput = false;
     [SerializeField, TabGroup("Inputs")] InputActionAsset _inputAsset;
     [TabGroup("Inputs")] public AltInput _altInput;
@@ -62,7 +62,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     [SerializeField, TabGroup("Interaction")] float _detectionRate = 0.2f;
     [SerializeField, TabGroup("Interaction")] IInteractable _lastInteractable;
     [SerializeField, TabGroup("Interaction")] InteractionSystem _interactionSystem;
-    [SerializeField, TabGroup("Equipments")] Transform _backPackHolder;
+
     [SerializeField, TabGroup("State")] private bool _isRunning = true;
     [SerializeField, TabGroup("State")] bool _isInDialogue;
     [SerializeField, TabGroup("State")] NPCConversation _activeConversation;
@@ -73,13 +73,13 @@ public class Player : MonoBehaviour, IHavePersistentData
     [TabGroup("Components")] public vFootStep _vFootStep;
     [TabGroup("Components")] public vThirdPersonCamera _vThirdPersonCamera;
     [SerializeField, TabGroup("Components")] Camera _defaultCamera;
+    [TabGroup("Body Snaps")] public Transform _backPackHolder;
     [TabGroup("Body Snaps")] public Transform _headHolder;
     [TabGroup("Body Snaps")] public Transform _delveBuddySlot;
     [SerializeField, TabGroup("Phone")] GameObject _phoneModel;
     [SerializeField, TabGroup("Phone")] Camera _phoneCamera;
     [TabGroup("Phone")] public Observer<bool> _isPhoneShowing = new(false);
-    [TabGroup("Storage")] public BackPack _hotStorage;
-    [TabGroup("Storage")] public Storage _activeStorage;
+
     [TabGroup("Settings")] public SaveAble SAVE_ID => SaveAble.PLAYER;
     [SerializeField, TabGroup("Settings")] bool _useLastSavedPosition = false;
     [SerializeField, TabGroup("Settings")] float _underGroundThreshold = 0;
@@ -98,7 +98,6 @@ public class Player : MonoBehaviour, IHavePersistentData
         GameEventsManager.OnConversationEndEvent += OnExitConversation;
         GameEventsManager.OnCutSceneStartEvent += OnCutSceneStart;
         GameEventsManager.OnCutSceneEndEvent += OnCutSceneEnd;
-        GameEventsManager.OnCraftItemEvent += AddItemToInventory;
 
         AltInput.OnToggleEquipmentWheel += OnToggleEquipmentWheel;
         AutoSaveManager.OnShouldAutoSave += AutoSave;
@@ -115,7 +114,6 @@ public class Player : MonoBehaviour, IHavePersistentData
         GameEventsManager.OnConversationEndEvent -= OnExitConversation;
         GameEventsManager.OnCutSceneStartEvent -= OnCutSceneStart;
         GameEventsManager.OnCutSceneEndEvent -= OnCutSceneEnd;
-        GameEventsManager.OnCraftItemEvent -= AddItemToInventory;
         AutoSaveManager.OnShouldAutoSave -= AutoSave;
 
         AltInput.OnToggleEquipmentWheel -= OnToggleEquipmentWheel;
@@ -147,13 +145,8 @@ public class Player : MonoBehaviour, IHavePersistentData
             _vThirdPersonInput = GetComponent<vThirdPersonInput>();
             _vShooterManager = GetComponent<vShooterManager>();
             _vFootStep = GetComponent<vFootStep>();
-            _itemManager = GetComponent<vItemManager>();
             _vGenericAnimation = GetComponent<vGenericAnimation>();
-            _inventory = GetComponentInChildren<vInventory>();
             _vShooterMeleeInput = GetComponent<vShooterMeleeInput>();
-
-
-
             _altInput = GetComponent<AltInput>();
 
 
@@ -411,7 +404,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     public void LockAllInput(bool value)
     {
         _vThirdPersonInput.SetLockAllInput(value);
-        _inventory.lockInventoryInput = value;
+        InventoryManager.Instance._inventory.lockInventoryInput = value;
     }
 
     public void EnterVehicleMode(Vehicle vehicle)
@@ -447,80 +440,6 @@ public class Player : MonoBehaviour, IHavePersistentData
     }
 
 
-    #region Inventory Usage
-
-    public void CheckIfItemInInventory()
-    {
-        // _inventory.ContainItem();
-
-    }
-    public void UseItem(vItem item)
-    {
-        switch (item.type)
-        {
-            case vItemType.Consumable:
-                Debug.Log("Consumable item: " + item.name);
-                Instantiate(item.dropObject, transform.position, Quaternion.identity);
-                break;
-            case vItemType.ShooterWeapon:
-                break;
-            default:
-                Debug.LogWarning("Item type not handled: " + item.type);
-                break;
-        }
-    }
-    public void EquipItem(vEquipArea equipArea, vItem item)
-    {
-        // switch (item.type)
-        // {
-        //     case vItemType.Consumable:
-        //         Debug.Log("Consumable item: " + item.name);
-        //         Instantiate(item.dropObject, transform.position, Quaternion.identity);
-        //         break;
-        //     case vItemType.ShooterWeapon:
-        //         break;
-        //     default:
-        //         Debug.LogWarning("Item type not handled: " + item.type);
-        //         break;
-        // }
-    }
-
-    public void EquipBackPack(Transform backPack)
-    {
-        backPack.SetParent(_backPackHolder);
-        backPack.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-        BackPack b = backPack.GetComponent<BackPack>();
-        _hotStorage = b;
-        _activeStorage = b;
-
-    }
-
-    public void AddItemToInventory(ItemReference item)
-    {
-        _itemManager.AddItem(item);
-        if (_hotStorage != null)
-        {
-            _hotStorage.AddItem(item);
-        }
-
-    }
-
-
-
-
-    public bool IsItemInInventory(int id)
-    {
-        if (_activeStorage == null)
-        {
-            return false;
-        }
-        bool hasItem = _activeStorage.IsItemInInventory(id);
-        return hasItem;
-    }
-
-
-
-    #endregion
 
     public void SetInteractableObject(IInteractable interactable)
     {

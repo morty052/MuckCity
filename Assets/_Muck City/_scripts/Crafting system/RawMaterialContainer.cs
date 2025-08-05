@@ -48,7 +48,7 @@ public class RawMaterialContainer : Tradeable, IInteractable, IPoolable
 
     public void PickUp()
     {
-        Player.Instance.AddItemToInventory(_reference);
+        InventoryManager.Instance.AddItemToInventory(_reference);
         HideInteractionPrompt();
         Destroy(gameObject);
     }
