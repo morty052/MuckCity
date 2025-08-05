@@ -615,11 +615,19 @@ public class Player : MonoBehaviour, IHavePersistentData
     }
 
     [Button]
-    public void PlayAnimation(string animationName, float duration = 1f)
+    public void PlayAnimation(string animationName, float duration = 1f, Action OnComplete = null)
     {
+
         _vGenericAnimation.animationClip = animationName;
         _vGenericAnimation.animationEnd = duration;
         _vGenericAnimation.PlayAnimation();
+        ABUtils.DelayedInvoke(duration, () => OnComplete?.Invoke());
+
+    }
+
+    void ResetAnimationListeners()
+    {
+        _vGenericAnimation.OnEndAnimation.RemoveAllListeners();
     }
     [Button]
     public void SetDelvEbuddy(vShooterWeapon shooterWeapon)

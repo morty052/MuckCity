@@ -30,6 +30,7 @@ namespace Systems.SceneManagement
 
         public bool _debug = false;
         private bool _playerIsInTransition;
+        public bool _loadMenuOnStart = true;
 
         public event Action<string> OnSceneLoaded = delegate { };
         public event Action<string> OnSceneUnLoaded = delegate { };
@@ -134,6 +135,11 @@ namespace Systems.SceneManagement
 
         async void Start()
         {
+            if (!_loadMenuOnStart)
+            {
+                Debug.Log(" loading menu on start was disabled");
+                return;
+            }
             await LoadSceneGroup(0);
         }
 

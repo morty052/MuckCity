@@ -11,6 +11,7 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
     DelveBuddyFunction _selectedFunction;
 
     [HideInInspector] public InputAction _fireInput;
+    [HideInInspector] public InputAction _delveBuddySecondaryFire;
 
     [SerializeReference] public List<DelveBuddyFunction> _installedFunctions;
 
@@ -31,7 +32,8 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
 
     void OnEnable()
     {
-        _fireInput = InputSystem.actions.FindAction("Select");
+        _fireInput = InputSystem.actions.FindAction("DelveBuddyFire");
+        _delveBuddySecondaryFire = InputSystem.actions.FindAction("DelveBuddySecondaryFire");
         AltInput.OnEnterAimDelveBuddy += EquipDelveBuddy;
     }
 
@@ -79,11 +81,16 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
 
     void Update()
     {
-
-        if (_isAiming && _selectedFunction != null && _selectedFunction._updateOnAim)
+        if (_selectedFunction == null) return;
+        if (_selectedFunction.updateAlways)
         {
             _selectedFunction.Update();
         }
+        if (_isAiming && !_selectedFunction.updateAlways && _selectedFunction._updateOnAim)
+        {
+            _selectedFunction.Update();
+        }
+
     }
 
     public override void Use()
@@ -136,25 +143,3 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
     }
 }
 
-
-public class TimedCounter
-{
-    private float duration = 20f; // Total time in seconds
-    private float elapsedTime = 0f;
-    private float currentValue = 0f;
-
-    void Update()
-    {
-        if (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            currentValue = Mathf.Lerp(0f, 20f, elapsedTime / duration);
-            Debug.Log("Counter: " + currentValue.ToString("F2"));
-        }
-        else
-        {
-            currentValue = 20f;
-            Debug.Log("Finished! Final Value: " + currentValue);
-        }
-    }
-}

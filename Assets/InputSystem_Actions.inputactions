@@ -505,6 +505,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "DelveBuddyFire",
+                    "type": "Button",
+                    "id": "220cd8dd-0e63-4b49-83ad-b21897eab965",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DelveBuddySecondaryFire",
+                    "type": "Button",
+                    "id": "40e25bc3-7882-4f4c-bf2b-1180aab72107",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -571,6 +589,50 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "AimDelveBuddy",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "04966d5f-e392-42b4-ab45-372eaa5a9337",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "DelveBuddyFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "99c76003-5095-4bef-92bd-b17db274d250",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "DelveBuddyFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "72687f53-640d-4b03-941d-d1ee1b4b2876",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "DelveBuddySecondaryFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7286ce33-3a4b-4147-8075-91627b0ed780",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "DelveBuddySecondaryFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

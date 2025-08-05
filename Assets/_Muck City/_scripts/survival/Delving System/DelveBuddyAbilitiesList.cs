@@ -17,6 +17,7 @@ public abstract class DelveBuddyFunction
     public Sprite _icon;
 
     public bool _updateOnAim;
+    public bool updateAlways = false;
 
     protected Camera cam;
     [HideInInspector] public DelveBuddy _delveBuddy;
@@ -25,6 +26,7 @@ public abstract class DelveBuddyFunction
 
     private float _timeHeldDown = 0;
 
+
     public abstract void Use(DelveBuddy delveBuddy);
     public abstract void Init(DelveBuddy delveBuddy);
     public abstract void Equip();
@@ -32,21 +34,34 @@ public abstract class DelveBuddyFunction
 
     public abstract void Update();
 
-    public void HandleButtonHeldDown(InputAction inputAction)
+    public void HandleSecondaryFire(InputAction inputAction, Action OnPressed)
+    {
+        if (inputAction.WasPressedThisFrame())
+        {
+            OnPressed?.Invoke();
+        }
+    }
+
+    public void HandleButtonHeldDown(InputAction inputAction, Action OnInputDown, Action OnInputUp, Action OnComplete)
     {
         if (inputAction.IsPressed())
         {
+            if (_timeHeldDown == 0)
+            {
+                OnInputDown?.Invoke();
+            }
             _timeHeldDown += Time.deltaTime * _holdRate;
-            Debug.Log("Buy button held down for " + _timeHeldDown + " frames");
+            // Debug.Log("Buy button held down for " + _timeHeldDown + " frames");
             if (_timeHeldDown >= _timeToHold)
             {
-                Debug.Log($"<color=cyan> Buy Triggered {_timeHeldDown} </color>");
+                OnComplete?.Invoke();
                 _timeHeldDown = 0;
             }
         }
         else if (inputAction.WasReleasedThisFrame())
         {
             _timeHeldDown = 0; // reset counter when button is released
+            OnInputUp?.Invoke();
         }
     }
 }
@@ -59,10 +74,7 @@ public class SpawnReturnBeacon : DelveBuddyFunction
 
     public LayerMask _groundLayer = new();
 
-    private bool _canPlace;
-
-    public float _raycastDistance = 100f;
-    private bool _lockedInPlace = false;
+    private bool _portalPlaced = false;
     public string _summonPortalAnimationName;
 
     public float _AnimationExitTime;
@@ -77,29 +89,55 @@ public class SpawnReturnBeacon : DelveBuddyFunction
         }
         _delveBuddy = delveBuddy;
 
-        cam = Camera.main;
+        //* DEACTIVATE  UPDATE ON AIM FUNCTION
+        _updateOnAim = false;
+
+        //* ACTIVATE UPDATE ALWAYS FUNCTION
+        updateAlways = true;
     }
 
     public override void Equip()
     {
         SpecialEquipmentManager.Instance._activeEquipment = _delveBuddy;
-        _delveBuddy._vShooterWeapon.onShot.AddListener(HandlePlaceMent);
-        _delveBuddy._vShooterWeapon._isMuted = true;
-        _delveBuddy.OnToggleAim += OnToggleAim;
+        // _delveBuddy._vShooterWeapon.onShot.AddListener(HandlePlaceMent);
+        // _delveBuddy._vShooterWeapon._isMuted = true;
+        // _delveBuddy.OnToggleAim += OnToggleAim;
     }
 
 
     public override void UnEquip()
     {
-        _delveBuddy._vShooterWeapon.onShot.RemoveListener(HandlePlaceMent);
-        _delveBuddy.OnToggleAim -= OnToggleAim;
+        // _delveBuddy._vShooterWeapon.onShot.RemoveListener(HandlePlaceMent);
+        // _delveBuddy.OnToggleAim -= OnToggleAim;
         _delveBuddy._vShooterWeapon._isMuted = false;
     }
     public override void Update()
     {
-        HandleButtonHeldDown(_delveBuddy._fireInput);
-        if (_lockedInPlace) return;
-        RayCastForDrop();
+        HandleButtonHeldDown(_delveBuddy._fireInput, OnInputDown, OnInputUp, OnComplete);
+        HandleSecondaryFire(_delveBuddy._delveBuddySecondaryFire, UsePortal);
+    }
+
+    private void UsePortal()
+    {
+        if (!_portalPlaced) return;
+        _returnBeaconInstance.ReturnToHomeRealm();
+    }
+
+    private void OnComplete()
+    {
+        Player.Instance.PlayAnimation(_summonPortalAnimationName, _AnimationExitTime, HandlePlaceMent);
+    }
+
+    private void OnInputUp()
+    {
+        Debug.Log($"<color=cyan>  Q Released </color>");
+    }
+
+    private void OnInputDown()
+    {
+        Debug.Log($"<color=cyan> Q Pressed </color>");
+        //* SET PORTAL TO PLAYER POSITION
+        _returnBeaconInstance.transform.position = Player.Instance.transform.position;
     }
 
     public override void Use(DelveBuddy delveBuddy)
@@ -111,56 +149,27 @@ public class SpawnReturnBeacon : DelveBuddyFunction
         // _returnBeaconInstance.transform.SetParent(SpecialEquipmentManager.Instance.transform);
     }
 
-    private void OnToggleAim(bool isAiming)
-    {
-        if (isAiming)
-        {
-            _lockedInPlace = false;
-            _returnBeaconInstance.gameObject.SetActive(true);
-        }
-        else
-        {
-            if (!_lockedInPlace)
-            {
-                _returnBeaconInstance.gameObject.SetActive(false);
-            }
-        }
-    }
+    // private void OnToggleAim(bool isAiming)
+    // {
+    //     if (isAiming)
+    //     {
+    //         _lockedInPlace = false;
+    //         _returnBeaconInstance.gameObject.SetActive(true);
+    //     }
+    //     else
+    //     {
+    //         if (!_lockedInPlace)
+    //         {
+    //             _returnBeaconInstance.gameObject.SetActive(false);
+    //         }
+    //     }
+    // }
 
-    void RayCastForDrop()
-    {
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f)); // Center of screen
-        if (Physics.Raycast(ray, out RaycastHit hit, _raycastDistance, _groundLayer))
-        {
-            _canPlace = true;
-            PreviewBeacon(hit.point, Quaternion.LookRotation(hit.normal));
-        }
-
-        else
-        {
-            _canPlace = false;
-        }
-
-    }
-
-    void PreviewBeacon(Vector3 position, Quaternion rotation)
-    {
-        _returnBeaconInstance.gameObject.SetActive(true);
-        // _returnBeaconInstance.transform.SetPositionAndRotation(position, Quaternion.identity);
-        _returnBeaconInstance.transform.position = Vector3.Lerp(_returnBeaconInstance.transform.position, position, 0.1f);
-    }
 
     private void HandlePlaceMent()
     {
-        if (_canPlace)
-        {
-            _lockedInPlace = true;
-            _canPlace = false;
-            Player.Instance.PlayAnimation(_summonPortalAnimationName, _AnimationExitTime);
-            Debug.Log("Used");
-            // ToggleEquipBuddy();
-            // ABUtils.DelayedInvoke(0.2f, () => ToggleEquipBuddy(true));
-        }
+        _returnBeaconInstance.gameObject.SetActive(true);
+        _portalPlaced = true;
     }
 }
 public class ScanEntity : DelveBuddyFunction
@@ -180,8 +189,11 @@ public class ScanEntity : DelveBuddyFunction
         _delveBuddy = delveBuddy;
         cam = Camera.main;
 
-        //* ACTIVATE UPDATE FUNCTION
+        //* ACTIVATE UPDATE ON AIM FUNCTION
         _updateOnAim = true;
+
+        //* DEACTIVATE UPDATE ALWAYS FUNCTION
+        updateAlways = false;
     }
 
 
