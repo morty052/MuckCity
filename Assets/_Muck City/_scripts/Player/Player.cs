@@ -247,10 +247,11 @@ public class Player : MonoBehaviour, IHavePersistentData
 
     private void OnToggleEquipmentWheel()
     {
-        if (_vThirdPersonCamera.LockCamera == false)
+        if (!HudManager.Instance._delveBuddyEquipmentWheel.gameObject.activeSelf)
         {
             LockAllInput(true);
-            _vThirdPersonCamera.LockCamera = true;
+            // _vThirdPersonCamera.LockCamera = true;
+            _vThirdPersonInput.lockCameraInput = true;
             _vThirdPersonInput.ShowCursor(true);
             _vThirdPersonInput.LockCursor(true);
         }
@@ -258,7 +259,8 @@ public class Player : MonoBehaviour, IHavePersistentData
         else
         {
             LockAllInput(false);
-            _vThirdPersonCamera.LockCamera = false;
+            // _vThirdPersonCamera.LockCamera = false;
+            _vThirdPersonInput.lockCameraInput = false;
             _vThirdPersonInput.ShowCursor(false);
             _vThirdPersonInput.LockCursor(false);
         }

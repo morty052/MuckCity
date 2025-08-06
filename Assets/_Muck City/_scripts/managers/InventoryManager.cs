@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using DG.Tweening;
 using Invector.vItemManager;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
@@ -12,6 +17,14 @@ public class InventoryManager : MonoBehaviour
 
     [TabGroup("Storage")] public BackPack _hotStorage;
     [TabGroup("Storage")] public Storage _activeStorage;
+
+    public static Action<ItemReference> OnAddItemToInventoryEvent;
+
+    public TextMeshProUGUI _addedItemToInventoryText;
+
+    List<ItemReference> _latestCollectedItems = new();
+
+    [SerializeField] float _timeToDisplayNewItemText = 1f;
 
     public void Awake()
     {
@@ -40,6 +53,38 @@ public class InventoryManager : MonoBehaviour
     {
         _inventory = Player.Instance.GetComponentInChildren<vInventory>();
         _itemManager = Player.Instance.GetComponent<vItemManager>();
+    }
+
+    void DisplayNewItemText(string item, int amount = 1)
+    {
+        string text = $"+{amount} {item}";
+        _addedItemToInventoryText.text = text;
+        FadeInText();
+    }
+
+    void FadeOutText()
+    {
+        _addedItemToInventoryText.DOFade(0f, 0.3f);
+    }
+
+    void FadeInText()
+    {
+        _addedItemToInventoryText.DOFade(1f, 0.3f);
+    }
+    async Task DisplayNewItems()
+    {
+        int itemCount = _latestCollectedItems.Count;
+        while (itemCount > 0)
+        {
+            int index = itemCount - 1;
+            Debug.Log("Item added to inventory: " + _latestCollectedItems[index]);
+            DisplayNewItemText(_latestCollectedItems[index].name, _latestCollectedItems[index].amount);
+            _latestCollectedItems.RemoveAt(index);
+            itemCount--;
+            await Task.Delay((int)(_timeToDisplayNewItemText * 1000));
+            FadeOutText();
+            // await Task.Yield();
+        }
     }
 
     #region Inventory Usage
@@ -97,8 +142,16 @@ public class InventoryManager : MonoBehaviour
         {
             _hotStorage.AddItem(item);
         }
-        Debug.Log("Item added to inventory: " + item.name);
-
+        OnAddItemToInventoryEvent?.Invoke(item);
+    }
+    public async void AddItemToInventory(List<ItemReference> _items)
+    {
+        foreach (ItemReference item in _items)
+        {
+            AddItemToInventory(item);
+            _latestCollectedItems.Add(item);
+        }
+        await DisplayNewItems();
     }
 
 

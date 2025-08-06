@@ -41,6 +41,8 @@ public class HudManager : MonoBehaviour
 
     public ActionText _actionText;
 
+    public RadialMenu _delveBuddyEquipmentWheel;
+
     public EventSystem _eventSystem;
 
 

@@ -15,10 +15,11 @@ public class HarvestableObject : MonoBehaviour, IHarvestableObject
     public void OnHarvest()
     {
         gameObject.SetActive(false);
-        for (int i = 0; i < _items.Count; i++)
-        {
-            InventoryManager.Instance.AddItemToInventory(_items[i]);
-        }
+        // for (int i = 0; i < _items.Count; i++)
+        // {
+        //     InventoryManager.Instance.AddItemToInventory(_items[i]);
+        // }
+        InventoryManager.Instance.AddItemToInventory(_items);
     }
 }
 

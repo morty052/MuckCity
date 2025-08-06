@@ -41,19 +41,19 @@ public class SpecialEquipmentManager : MonoBehaviour
     void OnEnable()
     {
         AltInput.OnPressUseSpecialEquipment += OnPressUseSpecialEquipment;
-        AltInput.OnToggleEquipmentWheel += OnToggleEquipmentWheel;
+        // AltInput.OnToggleEquipmentWheel += OnToggleEquipmentWheel;
     }
 
     void OnDisable()
     {
         AltInput.OnPressUseSpecialEquipment -= OnPressUseSpecialEquipment;
-        AltInput.OnToggleEquipmentWheel -= OnToggleEquipmentWheel;
+        // AltInput.OnToggleEquipmentWheel -= OnToggleEquipmentWheel;
     }
 
-    public void OnToggleEquipmentWheel()
-    {
-        _specialEquipmentWheel.SetActive(!_specialEquipmentWheel.activeSelf);
-    }
+    // public void OnToggleEquipmentWheel()
+    // {
+    //     _specialEquipmentWheel.SetActive(!_specialEquipmentWheel.activeSelf);
+    // }
 
     private void OnPressUseSpecialEquipment()
     {

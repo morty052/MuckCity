@@ -58,7 +58,7 @@ public class AltInput : MonoBehaviour
     #region Events
     public static Action OnPressUseSpecialEquipment;
     public static Action OnToggleEquipmentWheel;
-    public static Action<bool> OnEnterAimDelveBuddy;
+    public static Action<bool> OnEquipDelveBuddy;
     #endregion
 
     bool _isDelveBuddyEquipped;
@@ -215,7 +215,7 @@ public class AltInput : MonoBehaviour
         if (_aimDelveBuddyInput.WasPressedThisFrame())
         {
             _isDelveBuddyEquipped = !_isDelveBuddyEquipped;
-            OnEnterAimDelveBuddy?.Invoke(_isDelveBuddyEquipped);
+            OnEquipDelveBuddy?.Invoke(_isDelveBuddyEquipped);
         }
     }
     public void HandleBuyButton()

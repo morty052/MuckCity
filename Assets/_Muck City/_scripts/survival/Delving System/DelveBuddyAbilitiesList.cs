@@ -410,7 +410,7 @@ public class Harvest : DelveBuddyFunction
         // ABUtils.StartLerp(_harvestEffect.transform, _delveBuddy.transform, _attractionSpeed, _attractionDelay);
 
 
-        Debug.Log($"dir {dir}, IsAhead {ABUtils.IsAhead(entity, _delveBuddy.transform)}");
+        // Debug.Log($"dir {dir}, IsAhead {ABUtils.IsAhead(entity, _delveBuddy.transform)}");
         // if (!Application.isPlaying)
         // {
         //     entity.gameObject.SetActive(true);

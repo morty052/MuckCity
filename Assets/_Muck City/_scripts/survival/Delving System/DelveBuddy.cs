@@ -21,6 +21,8 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
     [SerializeField] private bool _isAiming;
     public vShooterWeapon _vShooterWeapon;
 
+    public RadialMenu _specialEquipmentWheel;
+
     public Action<vProjectileControl> OnInstantiateProjectileEvent;
     public Action<bool> OnToggleAim;
 
@@ -37,12 +39,20 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
     {
         _fireInput = InputSystem.actions.FindAction("DelveBuddyFire");
         _delveBuddySecondaryFire = InputSystem.actions.FindAction("DelveBuddySecondaryFire");
-        AltInput.OnEnterAimDelveBuddy += EquipDelveBuddy;
+        AltInput.OnEquipDelveBuddy += EquipDelveBuddy;
+        AltInput.OnToggleEquipmentWheel += OnToggleEquipmentWheel;
+
     }
 
     void OnDisable()
     {
-        AltInput.OnEnterAimDelveBuddy -= EquipDelveBuddy;
+        AltInput.OnEquipDelveBuddy -= EquipDelveBuddy;
+        AltInput.OnToggleEquipmentWheel -= OnToggleEquipmentWheel;
+    }
+
+    public void OnToggleEquipmentWheel()
+    {
+        _specialEquipmentWheel.gameObject.SetActive(!_specialEquipmentWheel.gameObject.activeSelf);
     }
 
     public void OnInstantiateProjectile(vProjectileControl projectile)
@@ -67,7 +77,8 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
     void Start()
     {
         //*GET ALL AVAILABLE SLOTS
-        List<RectTransform> equipmentSlots = SpecialEquipmentManager.Instance._specialEquipmentWheel.GetComponent<RadialMenu>().GetSlots();
+        _specialEquipmentWheel = HudManager.Instance._delveBuddyEquipmentWheel;
+        List<RectTransform> equipmentSlots = _specialEquipmentWheel.GetSlots();
         for (int i = 0; i < _installedFunctions.Count; i++)
         {
             //*INITIALIZE FUNCTION
