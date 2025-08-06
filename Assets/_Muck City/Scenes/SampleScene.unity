@@ -6685,7 +6685,7 @@ MonoBehaviour:
   _items:
   - id: 31
     name: Ifa Crystal
-    amount: 0
+    amount: 1
     attributes: []
     changeAttributes: 0
     autoEquip: 0

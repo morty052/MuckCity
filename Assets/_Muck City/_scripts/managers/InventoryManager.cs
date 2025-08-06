@@ -77,7 +77,7 @@ public class InventoryManager : MonoBehaviour
         while (itemCount > 0)
         {
             int index = itemCount - 1;
-            Debug.Log("Item added to inventory: " + _latestCollectedItems[index]);
+            Debug.Log("Item added to inventory: " + _latestCollectedItems[index].name + " amount: " + _latestCollectedItems[index].amount);
             DisplayNewItemText(_latestCollectedItems[index].name, _latestCollectedItems[index].amount);
             _latestCollectedItems.RemoveAt(index);
             itemCount--;
@@ -146,9 +146,11 @@ public class InventoryManager : MonoBehaviour
     }
     public async void AddItemToInventory(List<ItemReference> _items)
     {
+        //*PREPARE ITEMS FOR DISPLAY NOTIFICATION
         foreach (ItemReference item in _items)
         {
-            AddItemToInventory(item);
+            //* ADD ITEM TO ACTUAL INVENTORY
+            AddItemToInventory(new ItemReference(item.id));
             _latestCollectedItems.Add(item);
         }
         await DisplayNewItems();
