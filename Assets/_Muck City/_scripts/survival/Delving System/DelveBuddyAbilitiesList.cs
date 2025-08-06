@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using Invector.vShooter;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,7 +8,8 @@ public enum DelveBuddyFunctions
 {
     RETURN_BEACON = 0,
     SCAN_ENTITY = 1,
-    HARVEST = 2
+    HARVEST = 2,
+    SPAWN_POCKET_DIMENSION = 3
 }
 
 [Serializable]
@@ -262,12 +261,9 @@ public class Harvest : DelveBuddyFunction
 {
     public float _harvestDistance = 50;
     public float _harvestDuration = 3.5f; // Total time in seconds
-    public float _scanRate = 1f;
-    public float _timeOnScannable = 0;
+    public float _harvestRate = 1f;
+    public float _timeOnHarvestable = 0;
 
-    public float _attractionSpeed = 1.5f;
-
-    public float _attractionDelay = 3;
     public LayerMask _harvestableLayer = new();
 
     public VisualEffect _harvestEffect;
@@ -319,12 +315,12 @@ public class Harvest : DelveBuddyFunction
         {
             if (entity.CanHarvest)
             {
-                _timeOnScannable += _scanRate * Time.deltaTime;
-                float progress = Mathf.Clamp01(_timeOnScannable / _harvestDuration);
+                _timeOnHarvestable += _harvestRate * Time.deltaTime;
+                float progress = Mathf.Clamp01(_timeOnHarvestable / _harvestDuration);
                 float fillAmount = Mathf.Lerp(0f, 1f, progress);
                 // Debug.Log($"progress {progress}, timeOnScannable {_timeOnScannable}, timeToScan {_harvestDuration}");
                 ScannedObjectUI.Instance.ProgressScan(fillAmount, hit.transform);
-                if (_timeOnScannable >= _harvestDuration)
+                if (_timeOnHarvestable >= _harvestDuration)
                 {
 
                     HarvestEntity(entity.GameObject.transform, () => entity.OnHarvest());
@@ -342,7 +338,7 @@ public class Harvest : DelveBuddyFunction
         }
         else
         {
-            _timeOnScannable = 0;
+            _timeOnHarvestable = 0;
             ScannedObjectUI.Instance.HideScanBar();
         }
     }
@@ -350,10 +346,10 @@ public class Harvest : DelveBuddyFunction
     [Button]
     public virtual void HarvestEntity(Transform entity, Action OnHarvest = null)
     {
-        if (!Application.isPlaying)
-        {
-            _delveBuddy = GameObject.FindFirstObjectByType<DelveBuddy>();
-        }
+        // if (!Application.isPlaying)
+        // {
+        //     _delveBuddy = GameObject.FindFirstObjectByType<DelveBuddy>();
+        // }
 
         Mesh mesh = entity.GetComponent<MeshFilter>().sharedMesh;
 
@@ -374,11 +370,6 @@ public class Harvest : DelveBuddyFunction
         //* SET EFFECT MESH TO ENTITY MESH
         _harvestEffect.SetMesh("Sampled Mesh", mesh);
 
-        //* RESTART PARTICLE EFFECT
-        // _harvestEffect.Reinit();
-
-        //* STOP PARTICLE EFFECT
-        // _harvestEffect.Stop();
 
         //* DISABLE ENTITY
         entity.gameObject.SetActive(false);
@@ -388,11 +379,6 @@ public class Harvest : DelveBuddyFunction
 
         _harvestEffect.transform.localRotation = Quaternion.identity;
 
-        // //* SET LERP TARGET TO DELVE BUDDY
-        // _harvestEffectController.SetLerpTarget(_delveBuddy.transform);
-
-
-
 
         //* PLAY PARTICLE EFFECT
         _harvestEffect.Play();
@@ -400,7 +386,6 @@ public class Harvest : DelveBuddyFunction
         //*ENABLE PARTICLE EFFECT 
         _harvestEffect.gameObject.SetActive(true);
 
-        // ABUtils.DelayedInvoke(_attractionDelay, () => ABUtils.StartLerp(_harvestEffect.transform, _delveBuddy.transform, _attractionSpeed, 0, _harvestEffectController._lerpCurve, () => _harvestEffectController.ResetParticle()));
         ABUtils.DelayedInvoke(4f, () =>
         {
             _harvestEffectController.ResetParticle();
@@ -414,6 +399,102 @@ public class Harvest : DelveBuddyFunction
         // if (!Application.isPlaying)
         // {
         //     entity.gameObject.SetActive(true);
+        // }
+    }
+
+}
+public class SpawnPocketDimension : DelveBuddyFunction
+{
+    public float _spawnDistance = 50;
+    public float _harvestDuration = 3.5f; // Total time in seconds
+    public float _scanRate = 1f;
+    public float _timeOnScannable = 0;
+
+    public LayerMask _groundLayer = new();
+
+    [SerializeField] PocketDimension _pocketDimensionPrefab;
+
+    PocketDimension _pocketDimensionInstance;
+
+
+    public override void Init(DelveBuddy delveBuddy)
+    {
+        _delveBuddy = delveBuddy;
+
+        //* ACTIVATE UPDATE ON AIM FUNCTION
+        _updateOnAim = true;
+
+        //* DEACTIVATE UPDATE ALWAYS FUNCTION
+        updateAlways = false;
+
+        cam = Camera.main;
+
+        if (_pocketDimensionInstance == null)
+        {
+            _pocketDimensionInstance = GameObject.Instantiate(_pocketDimensionPrefab);
+            _pocketDimensionInstance.gameObject.SetActive(false);
+        }
+    }
+
+    public override void Equip()
+    {
+
+    }
+
+    public override void UnEquip()
+    {
+
+    }
+
+    public override void Update()
+    {
+        RayCastForScannable();
+    }
+
+    public override void Use(DelveBuddy delveBuddy)
+    {
+        Debug.Log("Using Delve Buddy Function" + _id);
+    }
+
+    void OnScanObject(RaycastHit hit)
+    {
+        if (hit.transform.TryGetComponent(out IHarvestableObject entity))
+        {
+            if (entity.CanHarvest)
+            {
+                _timeOnScannable += _scanRate * Time.deltaTime;
+                float progress = Mathf.Clamp01(_timeOnScannable / _harvestDuration);
+                float fillAmount = Mathf.Lerp(0f, 1f, progress);
+                // Debug.Log($"progress {progress}, timeOnScannable {_timeOnScannable}, timeToScan {_harvestDuration}");
+                ScannedObjectUI.Instance.ProgressScan(fillAmount, hit.transform);
+                if (_timeOnScannable >= _harvestDuration)
+                {
+
+                    SpawnPocketDimensionObject(entity.GameObject.transform, () => entity.OnHarvest());
+                }
+            }
+        }
+    }
+
+    void RayCastForScannable()
+    {
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f)); // Center of screen
+        if (Physics.Raycast(ray, out RaycastHit hit, _spawnDistance, _groundLayer))
+        {
+            OnScanObject(hit);
+        }
+        else
+        {
+
+        }
+    }
+
+    [Button]
+    public virtual void SpawnPocketDimensionObject(Transform entity, Action OnHarvest = null)
+    {
+        // if (!Application.isPlaying)
+        // {
+        //     _delveBuddy = GameObject.FindFirstObjectByType<DelveBuddy>();
         // }
     }
 

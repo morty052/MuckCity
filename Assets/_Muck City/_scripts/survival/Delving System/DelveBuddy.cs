@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Invector.vShooter;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
@@ -14,14 +15,25 @@ public class DelveBuddy : SpecialEquipment, IOnClickSlotReceiver
     [HideInInspector] public InputAction _fireInput;
     [HideInInspector] public InputAction _delveBuddySecondaryFire;
 
+    [TabGroup("Components"), HideInInspector]
+    public RadialMenu _specialEquipmentWheel;
+
+    [TabGroup("Installs")]
     [SerializeReference] public List<DelveBuddyFunction> _installedFunctions;
 
+    [TabGroup("Effects")]
     public Transform _effectsParent;
+
+    [TabGroup("Effects")]
     public VisualEffect _harvestEffect;
+
+    [TabGroup("Debug")]
     [SerializeField] private bool _isAiming;
+
+    [TabGroup("Components"), HideInInspector]
     public vShooterWeapon _vShooterWeapon;
 
-    public RadialMenu _specialEquipmentWheel;
+
 
     public Action<vProjectileControl> OnInstantiateProjectileEvent;
     public Action<bool> OnToggleAim;

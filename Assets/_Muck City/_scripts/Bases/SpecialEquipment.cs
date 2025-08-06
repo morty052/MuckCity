@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public enum SpecialEquipmentID
@@ -13,6 +14,7 @@ public class SpecialEquipment : Tradeable
 {
     public SpecialEquipmentID _id;
 
+    [TabGroup("Debug")]
     [SerializeField] protected bool _debugEquipment;
     public virtual void Init()
     {

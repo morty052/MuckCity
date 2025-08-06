@@ -3,21 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using Invector.vItemManager;
 using Sirenix.OdinInspector;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
 public class Tradeable : MonoBehaviour
 {
 
-    // [SerializeField] GameObject _highlight;
+    [ShowIf("_isTradeable")]
     [SerializeField] Material _highlightMat;
+
+    [ShowIf("_isTradeable")]
     public ShopItemSO _itemData;
 
+    [ShowIf("_isTradeable")]
     public bool _shouldHighlight = false;
 
-    [ShowInInspector]
+    [ShowInInspector, ShowIf("_isTradeable")]
     public HashSet<Mesh> meshes = new();
+
+    [TabGroup("Tradeable")]
+    public bool _isTradeable = true;
 
     void Awake()
     {
@@ -40,7 +45,7 @@ public class Tradeable : MonoBehaviour
         Debug.Log("Selling");
     }
 
-    [Button]
+    [Button, ShowIf("_isTradeable")]
     public void ToggleHighlight()
     {
         // _highlight.SetActive(!_highlight.activeSelf);
@@ -66,7 +71,7 @@ public class Tradeable : MonoBehaviour
         }
     }
 
-    [Button]
+    [Button, ShowIf("_isTradeable")]
     void GetMeshes()
     {
 
@@ -96,8 +101,6 @@ public class Tradeable : MonoBehaviour
             meshes.Add(mesh);
         }
     }
-
-
 
     void DrawPreview()
     {
