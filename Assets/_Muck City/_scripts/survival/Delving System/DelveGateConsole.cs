@@ -126,6 +126,7 @@ public class DelveGateConsole : Interactable, IBrowsable
         };
         Player.Instance.UseAltControls(false);
         _consoleUI.gameObject.SetActive(false);
+        Player.Instance.SetInteractableObject(null);
         await SceneLoader.Instance.LoadSceneGroup(sceneToLoad, true, true);
     }
 }

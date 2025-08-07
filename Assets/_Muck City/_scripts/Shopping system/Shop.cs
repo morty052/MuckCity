@@ -58,8 +58,9 @@ public class Shop : Interactable, IFindable
 
 
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         for (int i = 0; i < _tradeables.Count; i++)
         {
             ShopItemButton shopItem = Instantiate(_shopButtonPrefab, _shopItemsParent);

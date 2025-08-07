@@ -4,6 +4,18 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Animations;
 
+public struct PocketDimensionData
+{
+    public bool _expanded;
+
+    public bool _playerIsInPocketDimension;
+    public  PocketDimensionData(bool expanded, bool playerIsInDimension)
+    {
+       _expanded = expanded;
+       _playerIsInPocketDimension = playerIsInDimension;
+    }
+}
+
 public class PocketDimension : MonoBehaviour
 {
     public GameObject _pocketDimensionMiniaturePrefab;
@@ -13,7 +25,7 @@ public class PocketDimension : MonoBehaviour
 
     [SerializeField] Pos _miniaturePos;
 
-    [SerializeField] GameObject _outerStructurePreview;
+
 
     [SerializeField] Transform _outerStructure;
 
@@ -24,6 +36,8 @@ public class PocketDimension : MonoBehaviour
     public bool _canExpand = false;
     public bool _expanded = false;
 
+    public bool _playerIsInPocketDimension = false;
+
 
     // [SerializeField, HideInInspector] Material _previewMat;
     // [SerializeField, HideInInspector] List<Material> _childrenMat;
@@ -33,7 +47,11 @@ public class PocketDimension : MonoBehaviour
     {
         _pocketDimensionMiniature = GameObject.Instantiate(_pocketDimensionMiniaturePrefab);
         ParentToMiniature();
-
+        LoadPersistentData();
+        if (_playerIsInPocketDimension)
+        {
+           return;   
+        }
         //TODO WHEN YOU ADD SAVING REFACTOR TO ONLY SET INACTIVE IF PLYER IS NOT IN POCKET DIMENSION
         _outerStructure.gameObject.SetActive(false);
 
@@ -42,6 +60,26 @@ public class PocketDimension : MonoBehaviour
 
         //* DISABLE POCKET DIMENSION
         gameObject.SetActive(false);
+    }
+
+
+    void AutoSave()
+    {
+        PocketDimensionData data = new(_expanded,_playerIsInPocketDimension );
+        ES3.Save("POCKET_DIMENSION_DATA", data);
+    }
+
+     void LoadPersistentData()
+    {
+        if(!ES3.KeyExists("POCKET_DIMENSION_DATA")) return;
+        PocketDimensionData data = (PocketDimensionData)ES3.Load("POCKET_DIMENSION_DATA");
+        _expanded = data._expanded;
+        _playerIsInPocketDimension = data._playerIsInPocketDimension;
+    }
+
+    void OnDisable()
+    {
+        AutoSave();
     }
 
 
@@ -81,6 +119,13 @@ public class PocketDimension : MonoBehaviour
 
     }
 
+    public void Shrink()
+    {
+        _lockedInPlace = false;
+        _expanded = false;
+        gameObject.SetActive(false);
+    }
+
     public void ToggleExpansionWarning(bool show)
     {
         if (show)
@@ -95,21 +140,12 @@ public class PocketDimension : MonoBehaviour
             _canExpand = true;
         }
     }
-
-    public void TogglePreview(bool showPreview)
+    public void TogglePlayerPresence(bool state)
     {
-        if (showPreview)
-        {
-            _outerStructurePreview.SetActive(true);
-            // _outerStructure.gameObject.SetActive(false);
-        }
-
-        else
-        {
-            _outerStructurePreview.SetActive(false);
-            // _outerStructure.gameObject.SetActive(true);
-        }
+        _playerIsInPocketDimension = state;
+        AutoSave();
     }
+
 
     public void HandlePlaceMent()
     {
@@ -129,7 +165,33 @@ public class PocketDimension : MonoBehaviour
         _lockedInPlace = true;
         Debug.Log("Locked in place");
     }
+    [Button]
+    void ParentToMiniature()
+    {
+        if (_parentConstraint != null && _pocketDimensionMiniature != null)
+        {
+            //* POSITION MINIATURE EXACTLY IN THE CENTER OF THE PARENT OBJECT
+            _pocketDimensionMiniature.transform.position = transform.TransformPoint(_miniaturePos.position);
+            ConstraintSource newSource = new()
+            {
+                sourceTransform = _pocketDimensionMiniature.transform,
+                weight = 1.0f
+            };
 
+            int sourceIndex = _parentConstraint.sourceCount;
+
+            _parentConstraint.AddSource(newSource);
+            _parentConstraint.SetSource(sourceIndex, newSource);
+
+            //* Maintain the relative position and rotation of the parent object   
+            _parentConstraint.SetTranslationOffset(sourceIndex, _parentConstraint.transform.position - _pocketDimensionMiniature.transform.position);
+            _parentConstraint.SetRotationOffset(sourceIndex, (_parentConstraint.transform.rotation * Quaternion.Inverse(_pocketDimensionMiniature.transform.rotation)).eulerAngles);
+
+
+            // Optionally, activate the constraint
+            _parentConstraint.constraintActive = true;
+        }
+    }
 
 
     [Button]
@@ -185,42 +247,7 @@ public class PocketDimension : MonoBehaviour
 
     // }
 
-    [Button]
-    void ParentToMiniature()
-    {
-        if (_parentConstraint != null && _pocketDimensionMiniature != null)
-        {
-            //* POSITION MINIATURE EXACTLY IN THE CENTER OF THE PARENT OBJECT
-            _pocketDimensionMiniature.transform.position = transform.TransformPoint(_miniaturePos.position);
-            ConstraintSource newSource = new()
-            {
-                sourceTransform = _pocketDimensionMiniature.transform,
-                weight = 1.0f
-            };
 
-            int sourceIndex = _parentConstraint.sourceCount;
-
-            _parentConstraint.AddSource(newSource);
-            _parentConstraint.SetSource(sourceIndex, newSource);
-
-            //* Maintain the relative position and rotation of the parent object   
-            _parentConstraint.SetTranslationOffset(sourceIndex, _parentConstraint.transform.position - _pocketDimensionMiniature.transform.position);
-            _parentConstraint.SetRotationOffset(sourceIndex, (_parentConstraint.transform.rotation * Quaternion.Inverse(_pocketDimensionMiniature.transform.rotation)).eulerAngles);
-
-
-            // Optionally, activate the constraint
-            _parentConstraint.constraintActive = true;
-        }
-    }
-
-    public void Shrink()
-    {
-        // _pocketDimensionMiniature.SetActive(false);
-        // _landingAreaHelper.SetActive(false);
-        _lockedInPlace = false;
-        _expanded = false;
-        gameObject.SetActive(false);
-    }
 }
 
 

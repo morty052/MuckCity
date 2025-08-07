@@ -49,11 +49,17 @@ public class InventoryManager : MonoBehaviour
         GameEventsManager.OnCraftItemEvent -= AddItemToInventory;
     }
 
-    public void Start()
+    public void Init()
     {
         _inventory = Player.Instance.GetComponentInChildren<vInventory>();
         _itemManager = Player.Instance.GetComponent<vItemManager>();
     }
+
+    // public void Start()
+    // {
+    //     _inventory = Player.Instance.GetComponentInChildren<vInventory>();
+    //     _itemManager = Player.Instance.GetComponent<vItemManager>();
+    // }
 
     void DisplayNewItemText(string item, int amount = 1)
     {

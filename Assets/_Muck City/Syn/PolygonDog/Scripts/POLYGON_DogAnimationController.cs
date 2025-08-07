@@ -43,8 +43,8 @@ public class POLYGON_DogAnimationController : MonoBehaviour
         ZombieDoberman,
         ZombieGermanShepherd
     };
-    public bool DisplayUI = true; // Toggle displaying UI
-    private GameObject DogObject;
+    // public bool DisplayUI = true; // Toggle displaying UI
+    // private GameObject DogObject;
     Transform[] children;
     [Header("Action Keys")]
     public KeyCode Attack = KeyCode.Mouse0; // Mouse Left-Click Attack
@@ -80,27 +80,27 @@ public class POLYGON_DogAnimationController : MonoBehaviour
     static private string[] DogNewTypes; // Dog Types
     Animator dogAnim;// Animator for the assigned dog
     bool dogActionEnabled;
-    public float timeRemaining = 1.0f;
+    // public float timeRemaining = 1.0f;
     private int countDown = 1;
-    bool Movement_f;
-    bool death_b = false;
-    bool Sleep_b = false;
-    bool Sit_b = false;
-    private float w_movement = 0.0f; // Run value
-    public float acceleration = 1.0f;
-    public float decelleration = 1.0f;
-    private float maxWalk = 0.5f;
-    private float maxRun = 1.0f;
+    // bool Movement_f;
+    // bool death_b = false;
+    // bool Sleep_b = false;
+    // bool Sit_b = false;
+    // private float w_movement = 0.0f; // Run value
+    // public float acceleration = 1.0f;
+    // public float decelleration = 1.0f;
+    // private float maxWalk = 0.5f;
+    // private float maxRun = 1.0f;
     private float currentSpeed;
     private Transform getDogName;
     private GUIStyle guiStyle = new GUIStyle();
     [Header("Particle FX")]
-    public ParticleSystem poopFX;
-    public ParticleSystem dirtFX;
-    public ParticleSystem peeFX;
-    public ParticleSystem waterFX;
+    // public ParticleSystem poopFX;
+    // public ParticleSystem dirtFX;
+    // public ParticleSystem peeFX;
+    // public ParticleSystem waterFX;
     private Vector3 newSpawn = new Vector3();
-    public Transform fxTransform;
+    // public Transform fxTransform;
     public Transform fxTail;
     void Start() // On start store dogKeyCodes
     {

@@ -121,8 +121,9 @@ public class Rack : Interactable, IBrowsable
         // _items = _items.OrderBy(x => x._itemData._orderInRack).ToList();
     }
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         OnInitialized?.Invoke(_stockType);
         if (_items.Count != 0)
         {

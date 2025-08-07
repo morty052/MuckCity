@@ -39,10 +39,10 @@ public class Dog : SpecialEquipment
     bool dogActionEnabled;
 
     private int countDown = 1;
-    bool Movement_f;
-    bool death_b = false;
-    bool Sleep_b = false;
-    bool Sit_b = false;
+    // bool Movement_f;
+    // bool death_b = false;
+    // bool Sleep_b = false;
+    // bool Sit_b = false;
 
     [TabGroup("Movement")]
     private float w_movement = 0.0f; // Run value
@@ -62,19 +62,19 @@ public class Dog : SpecialEquipment
     private float currentSpeed;
     [Header("Particle FX")]
     [TabGroup("Particle FX")]
-    public ParticleSystem poopFX;
-    [TabGroup("Particle FX")]
-    public ParticleSystem dirtFX;
-    [TabGroup("Particle FX")]
-    public ParticleSystem peeFX;
-    [TabGroup("Particle FX")]
-    public ParticleSystem waterFX;
-    [TabGroup("Particle FX")]
-    private Vector3 newSpawn = new Vector3();
-    [TabGroup("Particle FX")]
-    public Transform fxTransform;
-    [TabGroup("Particle FX")]
-    public Transform fxTail;
+    // public ParticleSystem poopFX;
+    // [TabGroup("Particle FX")]
+    // public ParticleSystem dirtFX;
+    // [TabGroup("Particle FX")]
+    // public ParticleSystem peeFX;
+    // [TabGroup("Particle FX")]
+    // public ParticleSystem waterFX;
+    // [TabGroup("Particle FX")]
+    // private Vector3 newSpawn = new Vector3();
+    // [TabGroup("Particle FX")]
+    // public Transform fxTransform;
+    // [TabGroup("Particle FX")]
+    // public Transform fxTail;
 
     [HideInInspector]
     public NavMeshAgent _agent;
@@ -83,13 +83,13 @@ public class Dog : SpecialEquipment
     public DogSensor _dogSensor;
 
     [TabGroup("Movement")]
-    public float _walkingStoppingDistance = 1.4f;
-    [TabGroup("Movement")]
-    public float _runningStoppingDistance = 2.8f;
+    // public float _walkingStoppingDistance = 1.4f;
+    // [TabGroup("Movement")]
+    // public float _runningStoppingDistance = 2.8f;
     [TabGroup("Attack")]
     public float _combatDistance = 1f;
     [TabGroup("Attack")]
-    public float _chaseDistance = 2.8f;
+    // public float _chaseDistance = 2.8f;
 
     [TabGroup("Movement")]
     public bool walkPressed = false;
@@ -108,7 +108,7 @@ public class Dog : SpecialEquipment
     public bool _searchingForPlayer = false;
     [TabGroup("State")]
 
-    public Mode _mode;
+    // public Mode _mode;
 
     [TabGroup("Attack")]
     public Transform _currentTarget;
