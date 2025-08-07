@@ -1,8 +1,10 @@
 using System;
+using Invector.vShooter;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
+using UnityUtils;
 
 public enum DelveBuddyFunctions
 {
@@ -217,12 +219,6 @@ public class ScanEntity : DelveBuddyFunction
     }
 
 
-    // private void OnInstantiateProjectile(vProjectileControl control)
-    // {
-    //     // Debug.Log($"<color=cyan> Scanned Entity </color>");
-    //     control.onCastCollider.AddListener(OnScanObject);
-    // }
-
     void OnScanObject(RaycastHit hit)
     {
         if (hit.transform.TryGetComponent(out IScannableObject entity))
@@ -405,10 +401,7 @@ public class Harvest : DelveBuddyFunction
 }
 public class SpawnPocketDimension : DelveBuddyFunction
 {
-    public float _spawnDistance = 50;
-    public float _harvestDuration = 3.5f; // Total time in seconds
-    public float _scanRate = 1f;
-    public float _timeOnScannable = 0;
+    public float _offsetFromGround = 1f; // Total time in seconds
 
     public LayerMask _groundLayer = new();
 
@@ -417,38 +410,50 @@ public class SpawnPocketDimension : DelveBuddyFunction
     PocketDimension _pocketDimensionInstance;
 
 
+    private GameObject _notAllowed;
+    private bool _aiming;
+    private float _spawnDistance = 20f;
+
     public override void Init(DelveBuddy delveBuddy)
     {
         _delveBuddy = delveBuddy;
 
-        //* ACTIVATE UPDATE ON AIM FUNCTION
-        _updateOnAim = true;
+        //* DEACTIVATE UPDATE ON AIM FUNCTION
+        _updateOnAim = false;
 
-        //* DEACTIVATE UPDATE ALWAYS FUNCTION
-        updateAlways = false;
+        //* ACTIVATE UPDATE ALWAYS FUNCTION
+        updateAlways = true;
 
         cam = Camera.main;
 
+        //* SPAWN NEW POCKET DIMENSION INSTANCE IF INSTANCE IS NULL
         if (_pocketDimensionInstance == null)
         {
             _pocketDimensionInstance = GameObject.Instantiate(_pocketDimensionPrefab);
-            _pocketDimensionInstance.gameObject.SetActive(false);
         }
+
+        _notAllowed = vControlAimCanvas.instance.aimCanvasCollection[_delveBuddy._vShooterWeapon.scopeID].aimTarget.transform.Find("Not Allowed").gameObject;
     }
 
     public override void Equip()
     {
-
+        _delveBuddy.OnInstantiateProjectileEvent += OnInstantiateProjectile;
+        _delveBuddy.OnToggleAim += OnToggleAim;
     }
 
     public override void UnEquip()
     {
-
+        _delveBuddy.OnInstantiateProjectileEvent -= OnInstantiateProjectile;
+        _delveBuddy.OnToggleAim -= OnToggleAim;
     }
 
     public override void Update()
     {
-        RayCastForScannable();
+        HandleSecondaryFire(_delveBuddy._delveBuddySecondaryFire, HandlePocketDimensionPlacement);
+        if (_aiming)
+        {
+            RayCastTerrain();
+        }
     }
 
     public override void Use(DelveBuddy delveBuddy)
@@ -456,46 +461,88 @@ public class SpawnPocketDimension : DelveBuddyFunction
         Debug.Log("Using Delve Buddy Function" + _id);
     }
 
-    void OnScanObject(RaycastHit hit)
+    private void OnInstantiateProjectile(vProjectileControl control)
     {
-        if (hit.transform.TryGetComponent(out IHarvestableObject entity))
-        {
-            if (entity.CanHarvest)
-            {
-                _timeOnScannable += _scanRate * Time.deltaTime;
-                float progress = Mathf.Clamp01(_timeOnScannable / _harvestDuration);
-                float fillAmount = Mathf.Lerp(0f, 1f, progress);
-                // Debug.Log($"progress {progress}, timeOnScannable {_timeOnScannable}, timeToScan {_harvestDuration}");
-                ScannedObjectUI.Instance.ProgressScan(fillAmount, hit.transform);
-                if (_timeOnScannable >= _harvestDuration)
-                {
+        // Debug.Log($"<color=cyan> Scanned Entity </color>");
+        control.onCastCollider.AddListener(SpawnMinature);
+    }
 
-                    SpawnPocketDimensionObject(entity.GameObject.transform, () => entity.OnHarvest());
-                }
-            }
+    private void SpawnMinature(RaycastHit hit)
+    {
+        if (_groundLayer.Contains(hit.transform.gameObject.layer))
+        {
+            //* GET HIT POSITION
+            Vector3 pos = new(hit.point.x, hit.point.y + _offsetFromGround, hit.point.z);
+
+            //* SET POCKET DIMENSION MINIATURE POSITION TO HIT POINT
+            _pocketDimensionInstance._pocketDimensionMiniature.transform.position = pos;
+
+            //* TRIGGER POCKET DIMENSION PLACEMENT
+            _pocketDimensionInstance.HandlePlaceMent();
+        }
+
+        else
+        {
+            Debug.Log($"<color=orange> Layer mask does not contain {hit.transform.gameObject.layer} </color>");
+        }
+
+    }
+
+    // void SpawnItemInFront()
+    // {
+    //     //* SHOW CURSOR
+    //     // _pocketDimensionSpawnCursor.SetActive(true);
+
+    //     //* ENABLE POCKET DIMENSION MAIN GAME OBJECT
+    //     _pocketDimensionInstance.gameObject.SetActive(true);
+    // }
+
+    private void OnToggleAim(bool obj)
+    {
+        _aiming = obj;
+        if (!_aiming)
+        {
+            _notAllowed.SetActive(false);
         }
     }
 
-    void RayCastForScannable()
+
+    void RayCastTerrain()
     {
+        //* IGNORE PLACEMENT IF ALREADY PLACED
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f)); // Center of screen
         if (Physics.Raycast(ray, out RaycastHit hit, _spawnDistance, _groundLayer))
         {
-            OnScanObject(hit);
+            _notAllowed.SetActive(false);
         }
         else
         {
-
+            _notAllowed.SetActive(true);
         }
     }
 
+
     [Button]
-    public virtual void SpawnPocketDimensionObject(Transform entity, Action OnHarvest = null)
+    public virtual void HandlePocketDimensionPlacement()
     {
-        // if (!Application.isPlaying)
-        // {
-        //     _delveBuddy = GameObject.FindFirstObjectByType<DelveBuddy>();
-        // }
+
+        //* EXPAND IF NOT ALREADY EXPANDED AND LOCKED IN PLACE
+        if (!_pocketDimensionInstance._expanded)
+        {
+            _pocketDimensionInstance.Expand();
+
+            // Debug.Log("Attempting to expand");
+            return;
+        }
+
+        //* ALLOW REPLACEMENT IF ALREADY PLACED
+        if (_pocketDimensionInstance._expanded)
+        {
+            _pocketDimensionInstance.Shrink();
+            // Debug.Log("Attempting to shrink");
+        }
     }
+
+
 
 }

@@ -159,7 +159,7 @@ namespace Invector.vCharacterController
 
         public virtual void FindCamera()
         {
-            var tpCameras = FindObjectsOfType<vCamera.vThirdPersonCamera>();
+            var tpCameras = FindObjectsByType<vCamera.vThirdPersonCamera>(FindObjectsSortMode.None);
 
             if (tpCameras.Length > 1)
             {

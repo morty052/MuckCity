@@ -31,7 +31,7 @@ public class Player : MonoBehaviour, IHavePersistentData
     vGenericAnimation _vGenericAnimation;
 
 
-    vItemManager _itemManager;
+    vControlAimCanvas _aimCanvas;
 
     Vehicle _currentVehicle;
 
@@ -533,6 +533,11 @@ public class Player : MonoBehaviour, IHavePersistentData
     void OnDrawGizmosSelected()
     {
         Gizmos.DrawSphere(transform.position + Vector3.up, _interactionRange);
+    }
+
+    public void ChangeAimCursor()
+    {
+
     }
 
     [Button]

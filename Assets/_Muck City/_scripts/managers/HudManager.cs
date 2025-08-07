@@ -90,39 +90,42 @@ public class HudManager : MonoBehaviour
         _ui.SetActive(!_ui.activeSelf);
     }
 
-    void UseStatusText(string text, Color color = default)
+    public void UseStatusText(string text, Color color = default, bool autoFadeOut = true)
     {
         if (color != default)
         {
             _statusText.color = color;
         }
         _statusText.text = text;
-        Invoke(nameof(HideStatusText), 3f);
+        if (autoFadeOut)
+        {
+            Invoke(nameof(HideStatusText), 3f);
+        }
     }
 
-    void HideStatusText()
+    public void HideStatusText()
     {
         _statusText.text = "";
         _statusText.color = Color.white;
     }
 
 
-    public void ToggleUiVisibility()
-    {
+    // public void ToggleUiVisibility()
+    // {
 
-    }
-    private void OnSocialCreditUpdated(int amount, bool isDeduction)
-    {
-        if (isDeduction)
-        {
-            UseStatusText($"- {amount}", Color.red);
-        }
+    // }
+    // private void OnSocialCreditUpdated(int amount, bool isDeduction)
+    // {
+    //     if (isDeduction)
+    //     {
+    //         UseStatusText($"- {amount}", Color.red);
+    //     }
 
-        else
-        {
-            UseStatusText($"+ {amount}", Color.green);
-        }
-    }
+    //     else
+    //     {
+    //         UseStatusText($"+ {amount}", Color.green);
+    //     }
+    // }
 
     private void OnDisplayPhone()
     {
@@ -216,6 +219,8 @@ public class HudManager : MonoBehaviour
     {
         _tutorialPrompt.SetActive(false);
     }
+
+
 }
 
 
