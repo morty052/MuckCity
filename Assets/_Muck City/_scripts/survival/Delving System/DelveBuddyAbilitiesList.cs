@@ -536,7 +536,7 @@ public class SpawnPocketDimension : DelveBuddyFunction
         }
 
         //* ALLOW REPLACEMENT IF ALREADY PLACED
-        if (_pocketDimensionInstance._expanded)
+        if (_pocketDimensionInstance._expanded && _aiming)
         {
             _pocketDimensionInstance.Shrink();
             // Debug.Log("Attempting to shrink");
