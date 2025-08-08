@@ -1,16 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using ImprovedTimers;
 using DynamicEnums;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityUtils;
-using DG.Tweening;
 using Systems.SceneManagement;
-using UnityEngine.SceneManagement;
-using System.Collections;
 
 public enum PocketDimensionDeviceID
 {
@@ -118,6 +113,7 @@ public struct PocketDimensionData
 
 public class PocketDimension : Interactable
 {
+    public static PocketDimension Instance;
     public GameObject _pocketDimensionMiniaturePrefab;
     public GameObject _pocketDimensionMiniature;
 
@@ -152,19 +148,35 @@ public class PocketDimension : Interactable
 
     void Awake()
     {
-        _pocketDimensionMiniature = GameObject.Instantiate(_pocketDimensionMiniaturePrefab);
+        if (Instance == null)
+        {
+            Instance = this;
+            SetupPocketDimension();
+        }
 
+
+        else
+        {
+            Destroy(_pocketDimensionMiniature);
+        }
+
+    }
+
+
+    void SetupPocketDimension()
+    {
+        _pocketDimensionMiniature = GameObject.Instantiate(_pocketDimensionMiniaturePrefab);
 
         _itemFinder = GetComponent<ChildrenItemFinder>();
         _itemFinder.SetEnumType<PodItemName>();
         _itemFinder.SearchChildrenIterative(transform);
+
         ParentToMiniature();
         LoadPersistentData();
-        if (_playerIsInPocketDimension)
-        {
-            return;
-        }
-        //TODO WHEN YOU ADD SAVING REFACTOR TO ONLY SET INACTIVE IF PLYER IS NOT IN POCKET DIMENSION
+
+        if (_playerIsInPocketDimension) return;
+
+        //* DISABLE OUTER STRUCTURE IF PLAYER NOT IN DIMENSION
         _outerStructure.gameObject.SetActive(false);
 
         //* DISABLE LANDING AREA HELPER
@@ -172,8 +184,6 @@ public class PocketDimension : Interactable
 
         //* DISABLE POCKET DIMENSION
         gameObject.SetActive(false);
-
-
     }
 
 
@@ -200,7 +210,7 @@ public class PocketDimension : Interactable
         PocketDimensionData data = new(_expanded, _playerIsInPocketDimension);
 
         ES3.Save("POCKET_DIMENSION_DATA", data);
-        Debug.Log("Saved data expanded " + data._expanded + " is in dimension " + data._playerIsInPocketDimension);
+        // Debug.Log("Saved data expanded " + data._expanded + " is in dimension " + data._playerIsInPocketDimension);
     }
 
     void LoadPersistentData()
@@ -209,7 +219,7 @@ public class PocketDimension : Interactable
         PocketDimensionData data = (PocketDimensionData)ES3.Load("POCKET_DIMENSION_DATA");
         _expanded = data._expanded;
         _playerIsInPocketDimension = data._playerIsInPocketDimension;
-        Debug.Log("Loaded data expanded " + data._expanded + " is in dimension " + data._playerIsInPocketDimension);
+        // Debug.Log("Loaded data expanded " + data._expanded + " is in dimension " + data._playerIsInPocketDimension);
     }
 
 
@@ -406,33 +416,3 @@ public class PocketDimension : Interactable
 }
 
 
-
-public static class SceneAdder
-{
-    /// <summary>
-    /// Loads a scene additively and invokes a callback when done.
-    /// </summary>
-    /// <param name="sceneName">Scene name in Build Settings</param>
-    /// <param name="onLoaded">Callback after scene finishes loading</param>
-    public static void LoadSceneAdditive(string sceneName, Action onLoaded = null)
-    {
-        CoroutineRunner.Instance.StartCoroutine(LoadSceneRoutine(sceneName, onLoaded));
-    }
-
-    private static IEnumerator LoadSceneRoutine(string sceneName, Action onLoaded)
-    {
-        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-
-        if (op == null)
-        {
-            Debug.LogError($"SceneLoader: Could not load scene '{sceneName}'. Check Build Settings.");
-            yield break;
-        }
-
-        // Wait until loading finishes
-        while (!op.isDone)
-            yield return null;
-
-        onLoaded?.Invoke();
-    }
-}

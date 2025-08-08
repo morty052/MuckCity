@@ -80,6 +80,7 @@ public class ChildrenItemFinder : MonoBehaviour
     private Dictionary<string, string> enumLookup = new();
 
     private Type enumType;
+    public bool _debug = false;
 
     // ----------------------------
     // Unity lifecycle
@@ -127,7 +128,11 @@ public class ChildrenItemFinder : MonoBehaviour
                 if (!foundItems.ContainsKey(enumName))
                 {
                     foundItems.Add(enumName, current);
-                    Debug.Log($"[ChildrenItemFinder] ✅ Found and stored: {enumName} at path {GetFullPath(current)}");
+                    if (_debug)
+                    {
+                        Debug.Log($"[ChildrenItemFinder] ✅ Found and stored: {enumName} at path {GetFullPath(current)}");
+                    }
+
                 }
                 else
                 {
@@ -169,7 +174,11 @@ public class ChildrenItemFinder : MonoBehaviour
         enumTypeName = fullName;
         InitializeEnumType();
 
-        Debug.Log($"[ChildrenItemFinder] Enum type changed via script to: {enumTypeName}");
+        if (_debug)
+        {
+
+            Debug.Log($"[ChildrenItemFinder] Enum type changed via script to: {enumTypeName}");
+        }
         if (searchNow)
             SearchChildrenIterative(transform);
     }

@@ -405,11 +405,6 @@ public class SpawnPocketDimension : DelveBuddyFunction
 
     public LayerMask _groundLayer = new();
 
-    [SerializeField] PocketDimension _pocketDimensionPrefab;
-
-    PocketDimension _pocketDimensionInstance;
-
-
     private GameObject _notAllowed;
     private bool _aiming;
     private float _spawnDistance = 20f;
@@ -427,10 +422,10 @@ public class SpawnPocketDimension : DelveBuddyFunction
         cam = Camera.main;
 
         //* SPAWN NEW POCKET DIMENSION INSTANCE IF INSTANCE IS NULL
-        if (_pocketDimensionInstance == null)
-        {
-            _pocketDimensionInstance = GameObject.Instantiate(_pocketDimensionPrefab);
-        }
+        // if (_pocketDimensionInstance == null)
+        // {
+        //     _pocketDimensionInstance = GameObject.Instantiate(_pocketDimensionPrefab);
+        // }
 
         _notAllowed = vControlAimCanvas.instance.aimCanvasCollection[_delveBuddy._vShooterWeapon.scopeID].aimTarget.transform.Find("Not Allowed").gameObject;
     }
@@ -475,10 +470,10 @@ public class SpawnPocketDimension : DelveBuddyFunction
             Vector3 pos = new(hit.point.x, hit.point.y + _offsetFromGround, hit.point.z);
 
             //* SET POCKET DIMENSION MINIATURE POSITION TO HIT POINT
-            _pocketDimensionInstance._pocketDimensionMiniature.transform.position = pos;
+            PocketDimension.Instance._pocketDimensionMiniature.transform.position = pos;
 
             //* TRIGGER POCKET DIMENSION PLACEMENT
-            _pocketDimensionInstance.HandlePlaceMent();
+            PocketDimension.Instance.HandlePlaceMent();
         }
 
         else
@@ -506,7 +501,6 @@ public class SpawnPocketDimension : DelveBuddyFunction
         }
     }
 
-
     void RayCastTerrain()
     {
         //* IGNORE PLACEMENT IF ALREADY PLACED
@@ -527,18 +521,18 @@ public class SpawnPocketDimension : DelveBuddyFunction
     {
 
         //* EXPAND IF NOT ALREADY EXPANDED AND LOCKED IN PLACE
-        if (!_pocketDimensionInstance._expanded)
+        if (!PocketDimension.Instance._expanded)
         {
-            _pocketDimensionInstance.Expand();
+            PocketDimension.Instance.Expand();
 
             // Debug.Log("Attempting to expand");
             return;
         }
 
         //* ALLOW REPLACEMENT IF ALREADY PLACED
-        if (_pocketDimensionInstance._expanded && _aiming)
+        if (PocketDimension.Instance._expanded && _aiming)
         {
-            _pocketDimensionInstance.Shrink();
+            PocketDimension.Instance.Shrink();
             // Debug.Log("Attempting to shrink");
         }
     }
