@@ -7,17 +7,33 @@ using UnityEngine.Events;
 public enum DoorType
 {
     AUTO_OPEN,
-    MANUAL
+    MANUAL,
+    ANIMATED
 }
 
 public class PodDoor : MonoBehaviour
 {
     public Transform _doorModel;
+
+    public bool _isLocked;
     public bool _isOpen;
     [SerializeField] UnityEvent OnExitDoor;
     [SerializeField] UnityEvent OnEnterDoor;
 
     public DoorType _doorType;
+
+
+    Animator _animator;
+
+    readonly int _openDoorAnimation = Animator.StringToHash("Open");
+
+    void Awake()
+    {
+        if (_doorType == DoorType.ANIMATED)
+        {
+            _animator = GetComponent<Animator>();
+        }
+    }
 
     void OnTriggerEnter()
     {
@@ -25,12 +41,22 @@ public class PodDoor : MonoBehaviour
         {
             Open();
         }
+
+        if (_doorType == DoorType.ANIMATED && !_isOpen && !_isLocked)
+        {
+            _animator.SetTrigger(_openDoorAnimation);
+        }
     }
 
 
     public void Open()
     {
-        if (_isOpen) return;
+        if (_isOpen || _isLocked) return;
+        if (_doorType == DoorType.ANIMATED)
+        {
+            _animator.SetTrigger(_openDoorAnimation);
+            return;
+        }
         bool playerIsAheadOfDoor = ABUtils.IsAhead(transform, Player.Instance.transform);
 
         if (playerIsAheadOfDoor)

@@ -74,10 +74,10 @@ public class ChildrenItemFinder : MonoBehaviour
     // Internal state
     // ----------------------------
     [ShowInInspector, ReadOnly]
-    private Dictionary<string, Transform> foundItems = new Dictionary<string, Transform>();
+    private Dictionary<string, Transform> foundItems = new();
 
     // normalized name -> enumName (un-normalized, as string)
-    private Dictionary<string, string> enumLookup = new Dictionary<string, string>();
+    private Dictionary<string, string> enumLookup = new();
 
     private Type enumType;
 
@@ -93,12 +93,12 @@ public class ChildrenItemFinder : MonoBehaviour
         }
     }
 
-    // #if UNITY_EDITOR
-    //     private void OnValidate()
-    //     {
-    //         InitializeEnumType();
-    //     }
-    // #endif
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        InitializeEnumType();
+    }
+#endif
 
     // ----------------------------
     // Public API

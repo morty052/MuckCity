@@ -23,6 +23,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Muck City/Scenes/Hellus Contaminus.unity
     guid: f043f596f8596ef4394bfdf2c6cb9976
+  - enabled: 1
+    path: Assets/_Muck City/Scenes/Pocket Dimension.unity
+    guid: 8b4cf3a36b28e314eb8dad8fde6e51f3
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 22e0e2d1f4f713b4cb6ec9e20e698c41, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

@@ -7,7 +7,8 @@ using UnityEngine;
 
 public enum RealmID
 {
-    HELLUS_CONTAMINUS = 0
+    HELLUS_CONTAMINUS = 0,
+    POCKET_DIMENSION = 1
 }
 [CreateAssetMenu(fileName = "RealmData", menuName = "ScriptableObjects/RealmData", order = 1)]
 public class RealmDataSO : ScriptableObject

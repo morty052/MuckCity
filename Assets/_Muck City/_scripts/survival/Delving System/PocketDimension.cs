@@ -8,6 +8,9 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityUtils;
 using DG.Tweening;
+using Systems.SceneManagement;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public enum PocketDimensionDeviceID
 {
@@ -56,6 +59,7 @@ public abstract class PocketDimensionDevice
 
 public class PocketDimensionGate : PocketDimensionDevice
 {
+    public SceneData _pocketDimensionScene;
     public override void HideInteractionPrompt()
     {
 
@@ -68,16 +72,36 @@ public class PocketDimensionGate : PocketDimensionDevice
     }
     public override void Interact(PocketDimension pocketDimension)
     {
-        Debug.Log($"<color=green> Interacting with {_deviceType}</color>");
-        Transform doorToYourWorld = _pocketDimension._itemFinder.GetItem<PodItemName>(PodItemName.PocketDoor).transform;
-        doorToYourWorld.GetComponent<PodDoor>().Open();
+
+        PodDoor door = _pocketDimension._itemFinder.GetItem<PodItemName>(PodItemName.PocketDoor).transform.GetComponent<PodDoor>();
+
+
+        OpenPocketDimension(() =>
+        {
+            _pocketDimension.SnapDimensionToPod();
+            door._isLocked = false;
+            door.Open();
+            Debug.Log($"<color=green> Pocket Dimension Ready</color>");
+        });
     }
+
 
     public override void PrepareInteraction(PocketDimension pocketDimension)
     {
         ShowActionText("Open Pocket");
     }
+    async void OpenPocketDimension(Action OnComplete = null)
+    {
 
+        SceneGroup sceneToLoad = new()
+        {
+            GroupName = _pocketDimensionScene.Name,
+            Scenes = new() { _pocketDimensionScene }
+        };
+        Player.Instance.SetInteractableObject(null);
+        await SceneLoader.Instance.LoadSceneGroup(sceneToLoad);
+        OnComplete?.Invoke();
+    }
 }
 
 public struct PocketDimensionData
@@ -382,3 +406,33 @@ public class PocketDimension : Interactable
 }
 
 
+
+public static class SceneAdder
+{
+    /// <summary>
+    /// Loads a scene additively and invokes a callback when done.
+    /// </summary>
+    /// <param name="sceneName">Scene name in Build Settings</param>
+    /// <param name="onLoaded">Callback after scene finishes loading</param>
+    public static void LoadSceneAdditive(string sceneName, Action onLoaded = null)
+    {
+        CoroutineRunner.Instance.StartCoroutine(LoadSceneRoutine(sceneName, onLoaded));
+    }
+
+    private static IEnumerator LoadSceneRoutine(string sceneName, Action onLoaded)
+    {
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+
+        if (op == null)
+        {
+            Debug.LogError($"SceneLoader: Could not load scene '{sceneName}'. Check Build Settings.");
+            yield break;
+        }
+
+        // Wait until loading finishes
+        while (!op.isDone)
+            yield return null;
+
+        onLoaded?.Invoke();
+    }
+}
