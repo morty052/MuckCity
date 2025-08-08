@@ -9,10 +9,10 @@ public class SceneLoadTrigger : MonoBehaviour
 {
 
     [SerializeField] SceneReference _sceneToLoad;
-    [SerializeField] SceneReference _sceneToUnload;
+    // [SerializeField] SceneReference _sceneToUnload;
 
-    [SerializeField] bool _autoLoad = false;
-    [SerializeField] bool _unloadPrev = true;
+    // [SerializeField] bool _autoLoad = false;
+    // [SerializeField] bool _unloadPrev = true;
 
 
     void OnTriggerEnter(Collider other)

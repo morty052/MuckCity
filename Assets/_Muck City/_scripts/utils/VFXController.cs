@@ -14,14 +14,14 @@ public class VFXController : MonoBehaviour
 
     public float _attractionSpeed = 1.5f;
 
-    public float _attractionDelay = 3;
+    // public float _attractionDelay = 3;
 
     public DelveBuddy _delveBuddy;
 
-    public float _playRate = 1;
-    private bool _lerping;
+    // public float _playRate = 1;
+    // private bool _lerping;
 
-    private bool _canUse = false;
+    // private bool _canUse = false;
 
     bool triggeredOnreachedTimeEvent = false;
 

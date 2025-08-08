@@ -1,22 +1,98 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImprovedTimers;
+using DynamicEnums;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityUtils;
+using DG.Tweening;
+
+public enum PocketDimensionDeviceID
+{
+    DIMENSION_GATE = 0,
+}
+
+
+
+[Serializable]
+public abstract class PocketDimensionDevice
+{
+
+    public PocketDimensionDeviceID _deviceType;
+    public string _interactionPrompt = "Interact";
+    public Pos _actionTextPos;
+    [HideInInspector] public ObjectDetector _objectDetector;
+    public PocketDimension _pocketDimension;
+
+
+
+    public abstract void Init(PocketDimension pocketDimension);
+    public abstract void Interact(PocketDimension pocketDimension);
+    public abstract void PrepareInteraction(PocketDimension pocketDimension);
+    public abstract void HideInteractionPrompt();
+
+
+    public void ShowActionText(string text = null)
+    {
+        if (text.IsNullOrEmpty())
+        {
+            _pocketDimension._actionText.SetText(_interactionPrompt);
+        }
+        else
+        {
+            _pocketDimension._actionText.SetText(text);
+        }
+        _pocketDimension._actionText.transform.position = _pocketDimension.transform.TransformPoint(_actionTextPos.position);
+        _pocketDimension._actionText.gameObject.SetActive(true);
+    }
+
+    public void GetItem(QuestItemStruct itemData)
+    {
+        IFindable item = _objectDetector.DetectFindable<IFindable>(itemData._position, itemData._radius);
+    }
+}
+
+public class PocketDimensionGate : PocketDimensionDevice
+{
+    public override void HideInteractionPrompt()
+    {
+
+    }
+
+    public override void Init(PocketDimension pocketDimension)
+    {
+        Debug.Log("Init" + _deviceType);
+        _pocketDimension = pocketDimension;
+    }
+    public override void Interact(PocketDimension pocketDimension)
+    {
+        Debug.Log($"<color=green> Interacting with {_deviceType}</color>");
+        Transform doorToYourWorld = _pocketDimension._itemFinder.GetItem<PodItemName>(PodItemName.PocketDoor).transform;
+        doorToYourWorld.GetComponent<PodDoor>().Open();
+    }
+
+    public override void PrepareInteraction(PocketDimension pocketDimension)
+    {
+        ShowActionText("Open Pocket");
+    }
+
+}
 
 public struct PocketDimensionData
 {
     public bool _expanded;
 
     public bool _playerIsInPocketDimension;
-    public  PocketDimensionData(bool expanded, bool playerIsInDimension)
+    public PocketDimensionData(bool expanded, bool playerIsInDimension)
     {
-       _expanded = expanded;
-       _playerIsInPocketDimension = playerIsInDimension;
+        _expanded = expanded;
+        _playerIsInPocketDimension = playerIsInDimension;
     }
 }
 
-public class PocketDimension : MonoBehaviour
+public class PocketDimension : Interactable
 {
     public GameObject _pocketDimensionMiniaturePrefab;
     public GameObject _pocketDimensionMiniature;
@@ -25,18 +101,25 @@ public class PocketDimension : MonoBehaviour
 
     [SerializeField] Pos _miniaturePos;
 
-
-
     [SerializeField] Transform _outerStructure;
 
     [SerializeField] GameObject _landingAreaHelper;
+
+
+    public Pos _dimensionSnappingPoint;
 
     public bool _lockedInPlace = false;
 
     public bool _canExpand = false;
     public bool _expanded = false;
 
-    public bool _playerIsInPocketDimension = false;
+    public bool _playerIsInPocketDimension = true;
+
+    [SerializeReference] public List<PocketDimensionDevice> _devices;
+
+    public ChildrenItemFinder _itemFinder;
+
+    PocketDimensionDevice _currentDevice;
 
 
     // [SerializeField, HideInInspector] Material _previewMat;
@@ -46,11 +129,16 @@ public class PocketDimension : MonoBehaviour
     void Awake()
     {
         _pocketDimensionMiniature = GameObject.Instantiate(_pocketDimensionMiniaturePrefab);
+
+
+        _itemFinder = GetComponent<ChildrenItemFinder>();
+        _itemFinder.SetEnumType<PodItemName>();
+        _itemFinder.SearchChildrenIterative(transform);
         ParentToMiniature();
         LoadPersistentData();
         if (_playerIsInPocketDimension)
         {
-           return;   
+            return;
         }
         //TODO WHEN YOU ADD SAVING REFACTOR TO ONLY SET INACTIVE IF PLYER IS NOT IN POCKET DIMENSION
         _outerStructure.gameObject.SetActive(false);
@@ -60,29 +148,73 @@ public class PocketDimension : MonoBehaviour
 
         //* DISABLE POCKET DIMENSION
         gameObject.SetActive(false);
+
+
     }
 
 
-    void AutoSave()
-    {
-        PocketDimensionData data = new(_expanded,_playerIsInPocketDimension );
-        ES3.Save("POCKET_DIMENSION_DATA", data);
-    }
-
-     void LoadPersistentData()
-    {
-        if(!ES3.KeyExists("POCKET_DIMENSION_DATA")) return;
-        PocketDimensionData data = (PocketDimensionData)ES3.Load("POCKET_DIMENSION_DATA");
-        _expanded = data._expanded;
-        _playerIsInPocketDimension = data._playerIsInPocketDimension;
-    }
 
     void OnDisable()
     {
         AutoSave();
     }
 
+    public override void Start()
+    {
+        base.Start();
+        //* INITIALIZE DEVICES
+        foreach (PocketDimensionDevice device in _devices)
+        {
+            device.Init(this);
+        }
 
+    }
+
+    [Button]
+    void AutoSave()
+    {
+        PocketDimensionData data = new(_expanded, _playerIsInPocketDimension);
+
+        ES3.Save("POCKET_DIMENSION_DATA", data);
+        Debug.Log("Saved data expanded " + data._expanded + " is in dimension " + data._playerIsInPocketDimension);
+    }
+
+    void LoadPersistentData()
+    {
+        if (!ES3.KeyExists("POCKET_DIMENSION_DATA")) return;
+        PocketDimensionData data = (PocketDimensionData)ES3.Load("POCKET_DIMENSION_DATA");
+        _expanded = data._expanded;
+        _playerIsInPocketDimension = data._playerIsInPocketDimension;
+        Debug.Log("Loaded data expanded " + data._expanded + " is in dimension " + data._playerIsInPocketDimension);
+    }
+
+
+    PocketDimensionDevice GetDevice(string deviceString)
+    {
+        PocketDimensionDeviceID deviceType = (PocketDimensionDeviceID)System.Enum.Parse(typeof(PocketDimensionDeviceID), deviceString);
+        return _devices.Find(d => d._deviceType == deviceType);
+    }
+
+    public override void Interact()
+    {
+        _currentDevice.Interact(this);
+    }
+
+    public void PrepareDeviceInteraction(string deviceString)
+    {
+
+        PocketDimensionDevice device = GetDevice(deviceString);
+        _currentDevice = device;
+        Player.Instance.SetInteractableObject(this);
+        device.PrepareInteraction(this);
+    }
+
+    public override void HideInteractionPrompt()
+    {
+        base.HideInteractionPrompt();
+        _currentDevice.HideInteractionPrompt();
+        Player.Instance.SetInteractableObject(null);
+    }
 
     // void OnTriggerEnter(Collider other)
     // {
@@ -99,8 +231,6 @@ public class PocketDimension : MonoBehaviour
     //         HudManager.Instance.HideStatusText();
     //     }
     // }
-
-
 
     public void Expand()
     {
@@ -145,7 +275,6 @@ public class PocketDimension : MonoBehaviour
         _playerIsInPocketDimension = state;
         AutoSave();
     }
-
 
     public void HandlePlaceMent()
     {
@@ -195,11 +324,10 @@ public class PocketDimension : MonoBehaviour
 
 
     [Button]
-    public virtual void DebugSafeDistance(float _safeDistance)
+    public virtual void SnapDimensionToPod()
     {
-        Player delveBuddy = GameObject.FindFirstObjectByType<Player>();
-        bool IsInSafeDistanceToSpawn = Vector3.Distance(delveBuddy.transform.position, _pocketDimensionMiniature.transform.position) > _safeDistance;
-        Debug.Log($"<color=orange>Is In Safe distance: {IsInSafeDistanceToSpawn}, Current distance {Vector3.Distance(delveBuddy.transform.position, _pocketDimensionMiniature.transform.position)} </color>");
+        PocketDimensionManager pocketDimensionManager = GameObject.FindFirstObjectByType<PocketDimensionManager>();
+        pocketDimensionManager.transform.position = transform.TransformPoint(_dimensionSnappingPoint.position);
     }
 
     // [Button]
@@ -247,7 +375,10 @@ public class PocketDimension : MonoBehaviour
 
     // }
 
-
+    public void OnAllChildrenFound()
+    {
+        Debug.Log($"<color=green> All Children Found </color>");
+    }
 }
 
 

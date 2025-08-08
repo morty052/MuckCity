@@ -4,6 +4,12 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum DoorType
+{
+    AUTO_OPEN,
+    MANUAL
+}
+
 public class PodDoor : MonoBehaviour
 {
     public Transform _doorModel;
@@ -11,7 +17,18 @@ public class PodDoor : MonoBehaviour
     [SerializeField] UnityEvent OnExitDoor;
     [SerializeField] UnityEvent OnEnterDoor;
 
+    public DoorType _doorType;
+
     void OnTriggerEnter()
+    {
+        if (_doorType == DoorType.AUTO_OPEN)
+        {
+            Open();
+        }
+    }
+
+
+    public void Open()
     {
         if (_isOpen) return;
         bool playerIsAheadOfDoor = ABUtils.IsAhead(transform, Player.Instance.transform);
@@ -29,31 +46,33 @@ public class PodDoor : MonoBehaviour
     }
 
 
-
     void OnTriggerExit()
     {
         if (_isOpen)
         {
-            StartCoroutine(CloseDoor());
+            if (_doorType == DoorType.AUTO_OPEN)
+            {
+                StartCoroutine(CloseDoor());
+            }
         }
     }
 
-  
+
 
     IEnumerator CloseDoor()
     {
         yield return new WaitForSeconds(1.5f);
         while (Vector3.Distance(transform.position, Player.Instance.transform.position) < 1.8f) yield return null;
         _doorModel.transform.DOLocalRotate(new Vector3(0, 0, 0), 1f).OnComplete(() => _isOpen = false);
-       
-       bool playerIsAheadOfDoor = ABUtils.IsAhead(transform, Player.Instance.transform);
+
+        bool playerIsAheadOfDoor = ABUtils.IsAhead(transform, Player.Instance.transform);
         if (playerIsAheadOfDoor)
         {
             OnExitDoor?.Invoke();
         }
         else
         {
-           OnEnterDoor?.Invoke();
+            OnEnterDoor?.Invoke();
         }
     }
 }
