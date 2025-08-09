@@ -8061,7 +8061,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0f302609b00b5ae4ba6becf7ccd4aa67, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: Dispatcher Model
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
