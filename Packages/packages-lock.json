@@ -24,6 +24,12 @@
       "dependencies": {},
       "hash": "abce380167a02eff74cfeb1b64a33e31efa1441e"
     },
+    "com.mibdev.fullscreen-editor": {
+      "version": "file:com.mibdev.fullscreen-editor",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.addressables": {
       "version": "2.2.2",
       "depth": 0,
