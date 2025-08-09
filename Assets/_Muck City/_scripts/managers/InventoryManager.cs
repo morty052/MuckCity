@@ -42,17 +42,20 @@ public class InventoryManager : MonoBehaviour
     void OnEnable()
     {
         GameEventsManager.OnCraftItemEvent += AddItemToInventory;
+        Player.OnPlayerLoaded += Init;
     }
 
     void OnDisable()
     {
         GameEventsManager.OnCraftItemEvent -= AddItemToInventory;
+        Player.OnPlayerLoaded -= Init;
     }
 
     public void Init()
     {
         _inventory = Player.Instance.GetComponentInChildren<vInventory>();
         _itemManager = Player.Instance.GetComponent<vItemManager>();
+        Debug.Log("InventoryManager Init");
     }
 
     // public void Start()

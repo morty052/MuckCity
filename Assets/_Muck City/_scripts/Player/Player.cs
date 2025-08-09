@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Tracing;
 using System.Threading.Tasks;
 using DialogueEditor;
 using Invector;
@@ -92,6 +93,9 @@ public class Player : MonoBehaviour, IHavePersistentData
     private bool _isSubscribedToThirdPersonInputs = false;
 
     public IDoQuickAction _activeQuickAction;
+
+    [TabGroup("Events")]
+    public static Action OnPlayerLoaded;
     void OnEnable()
     {
         GameEventsManager.OnConversationStartedEvent += OnEnterConversation;
@@ -179,6 +183,8 @@ public class Player : MonoBehaviour, IHavePersistentData
         }
 
         SpecialEquipmentManager.Instance.SetSpecialEquipments();
+
+        OnPlayerLoaded?.Invoke();
 
     }
 

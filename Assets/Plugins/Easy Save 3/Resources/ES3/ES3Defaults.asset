@@ -43,6 +43,8 @@ MonoBehaviour:
     - MalbersAnimations.Cinemachine
     - MalbersAnimations.Editor
     - MalbersAnimations.InputSystem
+    - MK.Toon
+    - MK.Toon.URP
     - Sirenix.OdinInspector.Modules.Unity.Addressables
     - Unity.RenderPipelines.Core.Samples.Runtime
     - VFXGraph.OutputEventHandlers
