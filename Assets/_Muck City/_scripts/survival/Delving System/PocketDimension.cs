@@ -172,9 +172,9 @@ public class PocketDimension : Interactable
         _itemFinder.SearchChildrenIterative(transform);
 
         ParentToMiniature();
-        LoadPersistentData();
+        bool playerIsInDimension = LoadPersistentData();
 
-        if (_playerIsInPocketDimension) return;
+        if (playerIsInDimension) return;
 
         //* DISABLE OUTER STRUCTURE IF PLAYER NOT IN DIMENSION
         _outerStructure.gameObject.SetActive(false);
@@ -213,12 +213,13 @@ public class PocketDimension : Interactable
         // Debug.Log("Saved data expanded " + data._expanded + " is in dimension " + data._playerIsInPocketDimension);
     }
 
-    void LoadPersistentData()
+    bool LoadPersistentData()
     {
-        if (!ES3.KeyExists("POCKET_DIMENSION_DATA")) return;
+        if (!ES3.KeyExists("POCKET_DIMENSION_DATA")) return false;
         PocketDimensionData data = (PocketDimensionData)ES3.Load("POCKET_DIMENSION_DATA");
         _expanded = data._expanded;
         _playerIsInPocketDimension = data._playerIsInPocketDimension;
+        return data._playerIsInPocketDimension;
         // Debug.Log("Loaded data expanded " + data._expanded + " is in dimension " + data._playerIsInPocketDimension);
     }
 
